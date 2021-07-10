@@ -1,0 +1,10 @@
+.pytest_cache
+__pycache__
+.vscode
+*egg-info*
+*.swp
+build
+*.cpython*
+lightning_logs
+.mypy_cache
+dist/

@@ -1,0 +1,47 @@
+defaults:
+  - training_stages: # can create other training stages in folder and add here
+      - s1_motion_estimation
+      - s2_motion_compression
+      - s3_motion_compensation
+      - s4_total_2frame
+      - s5_total
+
+# data configs
+data:
+  data_dir: ??? # root directory for Vimeo
+  num_workers: 4 # number of dataloader workers
+  image_size: [256, 256]
+  train_batch_size: 8
+  val_batch_size: 8
+
+# resource configs
+ngpu: 1 # number of GPUs
+trainer: # arguments for PTL trainer
+  gpus: ${ngpu}
+  accelerator: ddp
+
+# model config
+model: # see DVC for parameter details.
+  coder_channels: 128
+
+# PyTorch Lightning module config
+module:
+  pretrained_model_name: "bmshj2018-hyperprior" # pretrained CompressAI model
+  pretrained_model_quality_level: 3 # hyperprior quality level
+  distortion_type: "MSE"
+  distortion_lambda: 256.0
+  aux_learning_rate: 1e-3 # learning rate for calculating quantiles
+
+# logging configs
+checkpoint:
+  overwrite: False # overwrite logs already in training dir
+  resume_training: True # resume training from previous logs
+  model_checkpoint: # passed to PyTorch Lightning's ModelCheckpoint callback
+    save_top_k: 1
+    monitor: "val_loss"
+    save_last: True
+
+logging:
+  image_seed: 123 # seed for images to log to wandb
+  save_root: "." # use root of Hydra outputs dir
+  num_log_images: 8 # number of images to log to wandb

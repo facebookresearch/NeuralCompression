@@ -1,0 +1,53 @@
+save_dir: "."
+resume_training: True # If True, resumes from the last checkpoint if one exists.
+
+# If overwrite and resume_training are both False, the script will throw an error 
+# if checkpoints already exist in the save_dir.
+overwrite: False 
+ngpu: 1
+
+
+model: # See ScaleHyperprior for parameter details.
+  network_channels: 128
+  compression_channels: 192
+
+
+training_loop:
+  distortion_lambda: 1e-2
+  learning_rate: 1e-4
+  aux_learning_rate: 1e-3
+
+
+data:
+  data_dir: ???
+  num_workers: 4
+  patch_size: [256, 256]
+  train_batch_size: 8
+  val_batch_size: 8
+
+
+save_model: # Passed to PyTorch Lightning's ModelCheckpoint callback.
+  dirpath: ${save_dir}
+  save_top_k: 1
+  monitor: "val_loss"
+  save_last: True
+
+
+hydra: # So hydra will put your config info in the same dir as your checkpoints
+  run:
+    dir: ${save_dir}
+  sweep:
+    dir: ${save_dir}
+
+
+loggers:
+  - _target_: pytorch_lightning.loggers.WandbLogger
+    save_dir: ${save_dir}
+
+  
+# These flags are passed to the PyTorch Lightning Trainer - add
+# any extra customization here!
+trainer: 
+  max_steps: 1000000 # 1M
+  gpus: ${ngpu}
+  accelerator: ddp

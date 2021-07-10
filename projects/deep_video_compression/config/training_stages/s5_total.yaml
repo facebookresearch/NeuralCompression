@@ -1,0 +1,13 @@
+s5_total:
+  save_dir: null # can put previous run here and it will be loaded
+
+  module:
+    num_pframes: 6
+    training_stage: "5_total"
+    learning_rate: 1e-4
+    lr_scheduler_params:
+      step_size: 200000
+      gamma: 0.1
+
+  trainer:
+    max_steps: 500000

@@ -1,0 +1,11 @@
+s1_motion_estimation:
+  save_dir: null # can put previous run here and it will be loaded
+
+  module:
+    num_pframes: 1
+    training_stage: "1_motion_estimation"
+    distortion_lambda: 1
+    learning_rate: 1e-4
+
+  trainer:
+    max_steps: 2000

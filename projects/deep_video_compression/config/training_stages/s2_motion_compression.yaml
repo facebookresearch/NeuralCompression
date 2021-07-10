@@ -1,0 +1,10 @@
+s2_motion_compression:
+  save_dir: null # can put previous run here and it will be loaded
+
+  module:
+    num_pframes: 1
+    training_stage: "2_motion_compression"
+    learning_rate: 1e-4
+
+  trainer:
+    max_steps: 20000

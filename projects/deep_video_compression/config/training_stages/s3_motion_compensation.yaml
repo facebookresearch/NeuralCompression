@@ -1,0 +1,10 @@
+s3_motion_compensation:
+  save_dir: null # can put previous run here and it will be loaded
+
+  module:
+    num_pframes: 1
+    training_stage: "3_motion_compensation"
+    learning_rate: 1e-4
+
+  trainer:
+    max_steps: 20000
