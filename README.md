@@ -37,10 +37,11 @@ to get the latest version from PyPI.
 
 ### Development Installation
 
-To match your local environment to the test environment, first run
+First, clone the repository and navigate to the NeuralCompression root
+directory. To match your local environment to the test environment, run
 
 ```bash
-pip install -r requirements.txt
+pip install -r dev-requirements.txt
 ```
 
 Then, you can install the package in development mode by running
@@ -49,8 +50,8 @@ Then, you can install the package in development mode by running
 pip install -e .
 ```
 
-If you are not interested in extending the package and running tests, then you
-only need to apply the second step to install.
+If you are not interested in matching the test environment, then you only need
+to apply the second step to install.
 
 ## Repository Structure
 
