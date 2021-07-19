@@ -6,8 +6,7 @@ LICENSE file in the root directory of this source tree.
 """
 
 __version__ = "0.1.0.post20210719"
-__author__ = "Facebook"
-__author_email__ = "mmuckley@fb.com"
+__author__ = "Facebook AI Research"
 __license__ = "MIT"
 __homepage__ = ""
 __docs__ = "A collection of tools for neural compression enthusiasts."

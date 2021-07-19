@@ -43,7 +43,6 @@ setup(
     long_description_content_type="text/markdown",
     long_description=readme,
     author="Facebook AI Research",
-    author_email="mmuckley@fb.com",
     license="MIT",
     project_urls={
         "Source": "https://github.com/facebookresearch/NeuralCompression",
