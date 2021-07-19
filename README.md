@@ -24,6 +24,17 @@ compatibility.
 NeuralCompression is a project currently under development. You can install the
 repository in development mode.
 
+### PyPI Installation
+
+First, install PyTorch according to the directions from the
+[PyTorch Website](https://pytorch.org/). Then, you should be able to run
+
+```bash
+pip install neuralcompression
+```
+
+to get the latest version from PyPI.
+
 ### Development Installation
 
 To match your local environment to the test environment, first run
