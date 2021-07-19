@@ -27,7 +27,7 @@ repository in development mode.
 ### PyPI Installation
 
 First, install PyTorch according to the directions from the
-[PyTorch Website](https://pytorch.org/). Then, you should be able to run
+[PyTorch website](https://pytorch.org/). Then, you should be able to run
 
 ```bash
 pip install neuralcompression
