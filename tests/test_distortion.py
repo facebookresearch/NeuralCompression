@@ -7,6 +7,7 @@ LICENSE file in the root directory of this source tree.
 
 import pytest
 import tensorflow as tf
+import numpy as np
 import torch
 
 from neuralcompression.functional import (
@@ -26,6 +27,12 @@ def tf_ms_ssim(x, y):
     return torch.tensor(tf.image.ssim_multiscale(x, y, max_val=1).numpy())
 
 
+def rand_im(shape, seed=12345):
+    rng = np.random.default_rng(seed)
+
+    return torch.tensor(rng.uniform(size=shape), dtype=torch.get_default_dtype())
+
+
 @pytest.mark.parametrize(
     "num_channels,img_size,batch_size",
     [(1, 256, 1), (1, 250, 4), (10, 256, 1)],
@@ -34,8 +41,8 @@ def test_ms_ssim_functional(num_channels, img_size, batch_size):
     # Testing basic properties of the functional MS-SSIM API,
     # plus comparing its output to Tensorflow's implementation.
 
-    img1 = torch.rand([batch_size, num_channels, img_size, img_size])
-    img2 = torch.rand([batch_size, num_channels, img_size, img_size])
+    img1 = rand_im([batch_size, num_channels, img_size, img_size], 100)
+    img2 = rand_im([batch_size, num_channels, img_size, img_size], 101)
 
     assert torch.allclose(
         multiscale_structural_similarity(img1, img1), torch.tensor(1.0)
@@ -70,11 +77,11 @@ def test_ms_ssim_module(num_channels, img_size, batch_sizes):
     metric = MultiscaleStructuralSimilarity()
 
     imgs1 = [
-        torch.rand([batch_size, num_channels, img_size, img_size])
+        rand_im([batch_size, num_channels, img_size, img_size], 123)
         for batch_size in batch_sizes
     ]
     imgs2 = [
-        torch.rand([batch_size, num_channels, img_size, img_size])
+        rand_im([batch_size, num_channels, img_size, img_size], 124)
         for batch_size in batch_sizes
     ]
 
@@ -106,8 +113,8 @@ def test_lpips(batch_sizes, input_shape):
 
     metric = LearnedPerceptualImagePatchSimilarity()
 
-    imgs1 = [torch.rand([batch_size, 3, *input_shape]) for batch_size in batch_sizes]
-    imgs2 = [torch.rand([batch_size, 3, *input_shape]) for batch_size in batch_sizes]
+    imgs1 = [rand_im([batch_size, 3, *input_shape], 0) for batch_size in batch_sizes]
+    imgs2 = [rand_im([batch_size, 3, *input_shape], 1) for batch_size in batch_sizes]
 
     for img1, img2 in zip(imgs1, imgs2):
         score = metric(img1, img2)
