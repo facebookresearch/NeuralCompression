@@ -7,6 +7,7 @@ LICENSE file in the root directory of this source tree.
 
 import pytest
 import tensorflow as tf
+import numpy as np
 import torch
 
 from neuralcompression.functional import (
@@ -26,16 +27,23 @@ def tf_ms_ssim(x, y):
     return torch.tensor(tf.image.ssim_multiscale(x, y, max_val=1).numpy())
 
 
+def rand_im(shape, rng=None):
+    if rng is None:
+        rng = np.random.default_rng()
+    return torch.tensor(rng.uniform(size=shape), dtype=torch.get_default_dtype())
+
+
 @pytest.mark.parametrize(
-    "num_channels,img_size,batch_size",
-    [(1, 256, 1), (1, 250, 4), (10, 256, 1)],
+    "num_channels, img_size, batch_size, seed",
+    [(1, 256, 1, 100), (1, 250, 4, 101), (10, 256, 1, 102)],
 )
-def test_ms_ssim_functional(num_channels, img_size, batch_size):
+def test_ms_ssim_functional(num_channels, img_size, batch_size, seed):
     # Testing basic properties of the functional MS-SSIM API,
     # plus comparing its output to Tensorflow's implementation.
+    rng = np.random.default_rng(seed)
 
-    img1 = torch.rand([batch_size, num_channels, img_size, img_size])
-    img2 = torch.rand([batch_size, num_channels, img_size, img_size])
+    img1 = rand_im([batch_size, num_channels, img_size, img_size], rng)
+    img2 = rand_im([batch_size, num_channels, img_size, img_size], rng)
 
     assert torch.allclose(
         multiscale_structural_similarity(img1, img1), torch.tensor(1.0)
@@ -59,22 +67,23 @@ def test_ms_ssim_functional(num_channels, img_size, batch_size):
 
 
 @pytest.mark.parametrize(
-    "num_channels,img_size,batch_sizes",
-    [(2, 256, [1, 5, 3])],
+    "num_channels, img_size, batch_sizes, seed",
+    [(2, 256, [1, 5, 3], 123)],
 )
-def test_ms_ssim_module(num_channels, img_size, batch_sizes):
+def test_ms_ssim_module(num_channels, img_size, batch_sizes, seed):
     # Tests that the MS-SSIM Module API produces identical
     # results to the functional API after accumulating
     # variable-sized batches.
 
+    rng = np.random.default_rng(seed)
     metric = MultiscaleStructuralSimilarity()
 
     imgs1 = [
-        torch.rand([batch_size, num_channels, img_size, img_size])
+        rand_im([batch_size, num_channels, img_size, img_size], rng)
         for batch_size in batch_sizes
     ]
     imgs2 = [
-        torch.rand([batch_size, num_channels, img_size, img_size])
+        rand_im([batch_size, num_channels, img_size, img_size], rng)
         for batch_size in batch_sizes
     ]
 
@@ -91,23 +100,24 @@ def test_ms_ssim_module(num_channels, img_size, batch_sizes):
 
 
 @pytest.mark.parametrize(
-    "batch_sizes, input_shape",
+    "batch_sizes, input_shape, seed",
     [
-        [[3, 2, 5], (64, 64)],
-        [[1], (35, 35)],
-        [[1, 2], (129, 31)],
-        [[2, 1], (50, 123)],
+        [[3, 2, 5], (64, 64), 0],
+        [[1], (35, 35), 1],
+        [[1, 2], (129, 31), 2],
+        [[2, 1], (50, 123), 3],
     ],
 )
-def test_lpips(batch_sizes, input_shape):
+def test_lpips(batch_sizes, input_shape, seed):
     # Tests that the LPIPS module and functional APIs
     # produce identical results across a variety of
     # image and batch sizes.
 
+    rng = np.random.default_rng(seed)
     metric = LearnedPerceptualImagePatchSimilarity()
 
-    imgs1 = [torch.rand([batch_size, 3, *input_shape]) for batch_size in batch_sizes]
-    imgs2 = [torch.rand([batch_size, 3, *input_shape]) for batch_size in batch_sizes]
+    imgs1 = [rand_im([batch_size, 3, *input_shape], rng) for batch_size in batch_sizes]
+    imgs2 = [rand_im([batch_size, 3, *input_shape], rng) for batch_size in batch_sizes]
 
     for img1, img2 in zip(imgs1, imgs2):
         score = metric(img1, img2)
