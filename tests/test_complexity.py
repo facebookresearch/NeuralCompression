@@ -144,7 +144,7 @@ def test_flop_counter_overrides():
     count, _, _ = ncF.count_flops(
         Addition(),
         (torch.tensor(5.0), torch.tensor(6.0)),
-        counter_overrides={"aten::add": lambda inputs,outputs: add_override_value},
+        counter_overrides={"aten::add": lambda inputs, outputs: add_override_value},
     )
 
     assert torch.allclose(
