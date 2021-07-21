@@ -1,7 +1,7 @@
 # NeuralCompression
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebookresearch/NeuralCompression/tree/main/LICENSE)
-[![Linting and Tests](https://github.com/facebookresearch/NeuralCompression/actions/workflows/linting-and-tests.yml/badge.svg)](https://github.com/facebookresearch/NeuralCompression/actions/workflows/linting-and-tests.yml)
+[![Build and Test](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml)
 
 ## What's New
 
