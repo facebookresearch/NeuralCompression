@@ -9,7 +9,7 @@ from copy import copy
 from typing import Any, Dict, Optional, Sequence, Tuple
 
 from fvcore.nn import FlopCountAnalysis
-from fvcore.nn.jit_handles import generic_activation_jit, Handle
+from fvcore.nn.jit_handles import Handle, generic_activation_jit
 from torch import nn
 
 # These ops aren't supported by fvcore - we estimate their FLOPs
