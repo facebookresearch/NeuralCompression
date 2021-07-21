@@ -5,12 +5,12 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-from typing import Any, Callable, Dict, Optional, Tuple
-from torch import nn
 from copy import copy
+from typing import Any, Callable, Dict, Optional, Tuple
 
-from fvcore.nn.jit_handles import generic_activation_jit
 from fvcore.nn import FlopCountAnalysis
+from fvcore.nn.jit_handles import generic_activation_jit
+from torch import nn
 
 # These ops aren't supported by fvcore - we estimate their FLOPs
 # by counting 1 FLOP per element of the output tensor. Note that
