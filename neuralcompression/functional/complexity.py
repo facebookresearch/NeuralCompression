@@ -104,7 +104,7 @@ def count_flops(
             to the number of times that operator was invoked by the model.
     """
 
-    # fvcore requires a tuple of inputs and 
+    # fvcore requires a tuple of inputs and
     # will often crash if a list is passed
     inputs = tuple(inputs)
 
