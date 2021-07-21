@@ -6,15 +6,15 @@ LICENSE file in the root directory of this source tree.
 """
 
 from copy import copy
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple
 
 from fvcore.nn import FlopCountAnalysis
-from fvcore.nn.jit_handles import generic_activation_jit
+from fvcore.nn.jit_handles import generic_activation_jit, Handle
 from torch import nn
 
 # These ops aren't supported by fvcore - we estimate their FLOPs
 # by counting 1 FLOP per element of the output tensor. Note that
-# this method handles broadcasting shapes.
+# this method handles broadcasting input shapes.
 _OPS_TO_ADD = [
     f"aten::{name}"
     for name in [
@@ -56,8 +56,8 @@ _OPS_TO_IGNORE = ["aten::empty_like"]
 
 def count_flops(
     module: nn.Module,
-    inputs: Tuple[Any, ...],
-    counter_overrides: Optional[Dict[str, Callable]] = None,
+    inputs: Sequence[Any],
+    counter_overrides: Optional[Dict[str, Handle]] = None,
 ) -> Tuple[float, Dict[str, float], Dict[str, int]]:
     """
     Counts the FLOPs in the forward function of an ``nn.Module``.
@@ -103,6 +103,10 @@ def count_flops(
             functions. This dictionary maps the names of unsupported operators
             to the number of times that operator was invoked by the model.
     """
+
+    # fvcore requires a tuple of inputs and 
+    # will often crash if a list is passed
+    inputs = tuple(inputs)
 
     counters_to_add = copy(_ADDITONAL_COUNTERS)
     if counter_overrides is not None:

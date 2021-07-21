@@ -132,18 +132,21 @@ def test_flop_count_hyperprior(
 
 
 def test_flop_counter_overrides():
+    # Testing that one can override the counter's default implementation for
+    # an operation with a custom counter function.
+
     class Addition(nn.Module):
         def forward(self, x, y):
             return x + y
 
-    add_count_override = 1234567.0
+    add_override_value = 1234567.0
 
     count, _, _ = ncF.count_flops(
         Addition(),
         (torch.tensor(5.0), torch.tensor(6.0)),
-        counter_overrides={"aten::add": lambda x, y: add_count_override},
+        counter_overrides={"aten::add": lambda inputs,outputs: add_override_value},
     )
 
     assert torch.allclose(
-        torch.tensor(count).float(), torch.tensor(add_count_override).float()
+        torch.tensor(count).float(), torch.tensor(add_override_value).float()
     )
