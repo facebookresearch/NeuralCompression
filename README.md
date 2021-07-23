@@ -102,9 +102,8 @@ new code is tested. Tests for `neuralcompression` go in the `tests` folder in
 the root of the repository. Tests for individual projects go in those projects'
 own `tests` folder.
 
-We use `black` for formatting, `isorst` for import sorting,
-`flake8` for linting, `mypy` for type checking. We enforce these on the
-`neuralcompression` package, but not in the `projects` folder.
+We use `black` for formatting, `isort` for import sorting, `flake8` for
+linting, `mypy` for type checking.
 
 ## License
 
