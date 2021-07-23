@@ -103,7 +103,7 @@ the root of the repository. Tests for individual projects go in those projects'
 own `tests` folder.
 
 We use `black` for formatting, `isort` for import sorting, `flake8` for
-linting, `mypy` for type checking.
+linting, and `mypy` for type checking.
 
 ## License
 
