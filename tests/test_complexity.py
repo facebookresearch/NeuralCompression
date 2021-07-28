@@ -110,7 +110,9 @@ def test_flop_count_elementwise(input_shape):
     inp = torch.randn(input_shape)
     _, correct_flops = model(inp)
 
-    counted_flops, _, unsupported_ops = ncF.count_flops(model, (inp,))
+    counted_flops, _, unsupported_ops = ncF.count_flops(
+        model, (inp,), use_single_flop_estimates=True
+    )
     assert torch.allclose(torch.tensor(counted_flops).long(), correct_flops)
     assert len(unsupported_ops) == 0
 
@@ -127,7 +129,9 @@ def test_flop_count_hyperprior(
         network_channels=network_channels, compression_channels=compression_channels
     )
     inputs = (torch.randn(batch_size, 3, img_size, img_size),)
-    _, _, unsupported_ops = ncF.count_flops(model, inputs)
+    _, _, unsupported_ops = ncF.count_flops(
+        model, inputs, use_single_flop_estimates=True
+    )
     assert len(unsupported_ops) == 0
 
 
