@@ -37,10 +37,10 @@ _SINGLE_FLOP_OPS_TO_ADD = [
 # these ops as unregistered/ignored. However, if your model has lots of these
 # operations and you wish to obtain a rough estimate of their contributions
 # to total model complexity, for convenience we expose the
-# use_single_flop_estimates flag. If True, this flag will 
+# use_single_flop_estimates flag. If True, this flag will
 # register counter functions for the ops below
-# that count 1 flop per output element. If you know exactly 
-# how many flops some of these ops should have on your platform, 
+# that count 1 flop per output element. If you know exactly
+# how many flops some of these ops should have on your platform,
 # use the counter_overrides argument.
 _SINGLE_FLOP_ESTIMATES_TO_ADD = [
     f"aten::{name}"
