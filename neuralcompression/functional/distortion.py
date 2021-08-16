@@ -345,7 +345,7 @@ def learned_perceptual_image_patch_similarity(
     )
     model.eval()
 
-    for param in model.parameters:
+    for param in model.parameters():
         param.requires_grad_(False)
 
     outputs = model(preds, target, normalize=normalize).view(-1)
