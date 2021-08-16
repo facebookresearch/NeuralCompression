@@ -161,8 +161,18 @@ class LearnedPerceptualImagePatchSimilarity(Metric):
             verbose=False,
         )
 
+        self.model.eval()
+        for param in self.model.parameters():
+            param.requires_grad_(False)
+
         self.add_state("score_sum", default=torch.tensor(0.0), dist_reduce_fx="sum")
         self.add_state("total", default=torch.tensor(0), dist_reduce_fx="sum")
+
+    def train(self, _):
+        """
+        Ensuring that LPIPS model is always in eval mode.
+        """
+        return super().train(False)
 
     def update(self, preds, target):
         self.score_sum += self.model(preds, target, normalize=self.normalize).sum()
