@@ -14,6 +14,7 @@ from torchmetrics import Metric
 from neuralcompression.functional.distortion import (
     MS_SSIM_FACTORS,
     multiscale_structural_similarity,
+    _load_lpips_model,
 )
 
 
@@ -154,16 +155,11 @@ class LearnedPerceptualImagePatchSimilarity(Metric):
         )
 
         self.normalize = normalize
-        self.model = lpips.LPIPS(
-            net=base_network,
-            version=linear_weights_version,
-            lpips=use_linear_calibration,
-            verbose=False,
+        self.model = _load_lpips_model(
+            base_network=base_network,
+            linear_weights_version=linear_weights_version,
+            use_linear_calibration=use_linear_calibration,
         )
-
-        self.model.eval()
-        for param in self.model.parameters():
-            param.requires_grad_(False)
 
         self.add_state("score_sum", default=torch.tensor(0.0), dist_reduce_fx="sum")
         self.add_state("total", default=torch.tensor(0), dist_reduce_fx="sum")

@@ -279,6 +279,23 @@ def multiscale_structural_similarity(
     return reduction_op(ms_ssim.mean(dim=0))
 
 
+def _load_lpips_model(
+    base_network: str, linear_weights_version: str, use_linear_calibration: bool
+):
+    model = lpips_package.LPIPS(
+        net=base_network,
+        version=linear_weights_version,
+        lpips=use_linear_calibration,
+        verbose=False,
+    )
+    model.eval()
+
+    for param in model.parameters():
+        param.requires_grad_(False)
+
+    return model
+
+
 def learned_perceptual_image_patch_similarity(
     preds: Tensor,
     target: Tensor,
@@ -337,17 +354,11 @@ def learned_perceptual_image_patch_similarity(
             " - please pass '0.0' or '0.1'."
         )
 
-    model = lpips_package.LPIPS(
-        net=base_network,
-        version=linear_weights_version,
-        lpips=use_linear_calibration,
-        verbose=False,
+    model = _load_lpips_model(
+        base_network=base_network,
+        linear_weights_version=linear_weights_version,
+        use_linear_calibration=use_linear_calibration,
     )
-    model.eval()
-
-    for param in model.parameters():
-        param.requires_grad_(False)
-
     outputs = model(preds, target, normalize=normalize).view(-1)
     reduction_op = _get_reduction_op(reduction)
     return reduction_op(outputs)
