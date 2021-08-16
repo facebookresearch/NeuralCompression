@@ -343,6 +343,10 @@ def learned_perceptual_image_patch_similarity(
         lpips=use_linear_calibration,
         verbose=False,
     )
+    model.eval()
+
+    for param in model.parameters:
+        param.requires_grad_(False)
 
     outputs = model(preds, target, normalize=normalize).view(-1)
     reduction_op = _get_reduction_op(reduction)
