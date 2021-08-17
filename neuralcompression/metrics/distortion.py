@@ -7,7 +7,6 @@ LICENSE file in the root directory of this source tree.
 
 from typing import Any, Callable, Optional, Sequence
 
-import lpips
 import torch
 from torchmetrics import Metric
 
