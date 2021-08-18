@@ -1,7 +1,7 @@
 # NeuralCompression
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebookresearch/NeuralCompression/tree/main/LICENSE)
-[![Linting and Tests](https://github.com/facebookresearch/NeuralCompression/actions/workflows/linting-and-tests.yml/badge.svg)](https://github.com/facebookresearch/NeuralCompression/actions/workflows/linting-and-tests.yml)
+[![Build and Test](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml)
 
 ## What's New
 
@@ -102,9 +102,8 @@ new code is tested. Tests for `neuralcompression` go in the `tests` folder in
 the root of the repository. Tests for individual projects go in those projects'
 own `tests` folder.
 
-We use `black` for formatting, `isorst` for import sorting,
-`flake8` for linting, `mypy` for type checking. We enforce these on the
-`neuralcompression` package, but not in the `projects` folder.
+We use `black` for formatting, `isort` for import sorting, `flake8` for
+linting, and `mypy` for type checking.
 
 ## License
 

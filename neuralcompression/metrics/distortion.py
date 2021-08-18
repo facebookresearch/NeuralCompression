@@ -7,13 +7,13 @@ LICENSE file in the root directory of this source tree.
 
 from typing import Any, Callable, Optional, Sequence
 
-import lpips
 import torch
 from torchmetrics import Metric
 
 from neuralcompression.functional.distortion import (
     MS_SSIM_FACTORS,
     multiscale_structural_similarity,
+    _load_lpips_model,
 )
 
 
@@ -154,15 +154,20 @@ class LearnedPerceptualImagePatchSimilarity(Metric):
         )
 
         self.normalize = normalize
-        self.model = lpips.LPIPS(
-            net=base_network,
-            version=linear_weights_version,
-            lpips=use_linear_calibration,
-            verbose=False,
+        self.model = _load_lpips_model(
+            base_network=base_network,
+            linear_weights_version=linear_weights_version,
+            use_linear_calibration=use_linear_calibration,
         )
 
         self.add_state("score_sum", default=torch.tensor(0.0), dist_reduce_fx="sum")
         self.add_state("total", default=torch.tensor(0), dist_reduce_fx="sum")
+
+    def train(self, _):
+        """
+        Ensuring that LPIPS model is always in eval mode.
+        """
+        return super().train(False)
 
     def update(self, preds, target):
         self.score_sum += self.model(preds, target, normalize=self.normalize).sum()
