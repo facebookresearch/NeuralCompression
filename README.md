@@ -73,7 +73,7 @@ The 2-tier structure enables rapid iteration and reproduction via code in
   - `entropy_coders` - lossless compression algorithms in JAX
     - `craystack` - an implementation of the rANS algorithm with the
     [craystack](https://github.com/j-towns/craystack) API
-  - `functional` - methods for image warping, information cost, etc.
+  - `functional` - methods for image warping, information cost, flop counting, etc.
   - `layers` - building blocks for compression models
   - `metrics` - `torchmetrics` classes for assessing model performance
   - `models` - complete compression models
@@ -83,6 +83,14 @@ The 2-tier structure enables rapid iteration and reproduction via code in
 - `projects` - recipes and code for reproducing papers
   - `scale_hyperprior_lightning` [Scale Hyperprior (Balle et al., 2018)](https://arxiv.org/abs/1802.01436)
   - `deep_video_compression` [DVC (Lu et al., 2019)](https://openaccess.thecvf.com/content_CVPR_2019/html/Lu_DVC_An_End-To-End_Deep_Video_Compression_Framework_CVPR_2019_paper.html)
+
+# Tutorial Notebooks
+
+This repository also features interactive notebooks detailing different 
+parts of the package, which can be found in the `tutorials` directory. 
+Existing tutorials are:
+
+- Walkthrough of the `neuralcompression` flop counter ([view on Colab](https://colab.research.google.com/github/facebookresearch/NeuralCompression/blob/main/tutorials/Flop_Count_Example.ipynb)).
 
 ## Getting Started
 
