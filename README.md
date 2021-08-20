@@ -86,7 +86,9 @@ The 2-tier structure enables rapid iteration and reproduction via code in
 
 # Tutorial Notebooks
 
-This repository also features interactive notebooks detailing different parts of the package, which can be found in the `tutorials` directory. Existing tutorials are:
+This repository also features interactive notebooks detailing different 
+parts of the package, which can be found in the `tutorials` directory. 
+Existing tutorials are:
 
 - Walkthrough of the `neuralcompression` flop counter ([view on Colab](https://colab.research.google.com/github/facebookresearch/NeuralCompression/blob/main/tutorials/Flop_Count_Example.ipynb)).
 
