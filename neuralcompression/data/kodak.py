@@ -39,8 +39,7 @@ class Kodak(torch.utils.data.Dataset):
         kodak_url: URL for downloading public images.
             Defaults to http://r0k.us/graphics/kodak/kodak/.
         transform: callable object for transforming the
-            loaded images. If ``None``, defaults to
-            ``torchvision.transforms.ToTensor``.
+            loaded images.
     """
 
     def __init__(
@@ -54,7 +53,7 @@ class Kodak(torch.utils.data.Dataset):
     ):
         self.root = Path(root)
         self.im_list = []
-        self.transform = ToTensor() if transform is None else transform
+        self.transform = transform
 
         self.im_list = [
             self.root / "kodim{:02}.png".format(im_num)
