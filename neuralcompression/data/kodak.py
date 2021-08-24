@@ -14,7 +14,6 @@ from typing import Any, Callable, Optional, Union
 import torch
 from torch import Tensor
 from torchvision.datasets.folder import default_loader
-from torchvision.transforms.transforms import ToTensor
 from tqdm import tqdm
 
 NUM_IMAGES = 24
