@@ -401,7 +401,7 @@ class ScaleHyperprior(nn.Module):
             cpu = torch.device("cpu")
             if param.device != cpu:
                 raise ValueError(
-                    f"Trying to compress/decompress on a GPU - "
+                    "Trying to compress/decompress on a GPU - "
                     "this has known numerical and reproducability issues "
                     "with the default entropy bottleneck implementation. "
                     "Either move your model to the CPU or pass "
