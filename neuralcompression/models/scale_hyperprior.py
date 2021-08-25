@@ -394,15 +394,33 @@ class ScaleHyperprior(nn.Module):
         hyper_bottleneck_updated = self.hyper_bottleneck.update(force=force)
         return image_bottleneck_updated | hyper_bottleneck_updated
 
+    def _assert_on_cpu(self, force_cpu: bool):
+        if not force_cpu:
+            return
+        for param in self.parameters():
+            cpu = torch.device("cpu")
+            if param.device != cpu:
+                raise ValueError(
+                    f"Trying to compress/decompress on a GPU - "
+                    "this has known numerical and reproducability issues "
+                    "with the default entropy bottleneck implementation. "
+                    "Either move your model to the CPU or pass "
+                    "force_cpu=False to bypass this check."
+                )
+
     # TODO: Switch to named tuple
     def compress(
-        self, images: Tensor
+        self, images: Tensor, force_cpu: bool = True
     ) -> Tuple[List[str], List[str], Sequence[int], Sequence[int], Sequence[int]]:
         """
         Compress a batch of images into strings.
 
         Args:
-            images: Tensor of shape [batch, channels, height, width].
+            images: ``Tensor`` of shape [batch, channels, height, width].
+            force_cpu: whether to throw an error if the model is
+                not on the CPU when compressing. Compressing/decompressing
+                on the GPU has known numerical and reproducability
+                issues with the default entropy bottleneck implementation.
 
         Returns:
             latent_strings: list containing a compressed latent string for
@@ -416,6 +434,7 @@ class ScaleHyperprior(nn.Module):
             hyper_latent_shape: list storing the height and width of the
                 hyperprior, for use during decoding.
         """
+        self._assert_on_cpu(force_cpu)
 
         latent = self.image_analysis(images)
         hyper_latent = self.hyper_analysis(latent)
@@ -445,6 +464,7 @@ class ScaleHyperprior(nn.Module):
         image_shape: Sequence[int],
         latent_shape: Sequence[int],
         hyper_latent_shape: Sequence[int],
+        force_cpu: bool = True,
     ) -> Tensor:
         """
         Decompress a batch of binary strings into images.
@@ -460,10 +480,15 @@ class ScaleHyperprior(nn.Module):
                 image latent.
             hyper_latent_shape: list storing the height and width of
                 the hyperprior.
+            force_cpu: whether to throw an error if the model is
+                not on the CPU when decompressing. Compressing/decompressing
+                on the GPU has known numerical and reproducability
+                issues with the default entropy bottleneck implementation.
 
         Returns:
             reconstruction: Tensor of shape [batch, channels, height, width].
         """
+        self._assert_on_cpu(force_cpu)
 
         hyper_latent_decoded = self.hyper_bottleneck.decompress(  # type: ignore
             hyper_latent_strings, hyper_latent_shape
