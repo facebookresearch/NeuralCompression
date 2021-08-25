@@ -91,6 +91,7 @@ parts of the package, which can be found in the `tutorials` directory.
 Existing tutorials are:
 
 - Walkthrough of the `neuralcompression` flop counter ([view on Colab](https://colab.research.google.com/github/facebookresearch/NeuralCompression/blob/main/tutorials/Flop_Count_Example.ipynb)).
+- Using `neuralcompression.metrics` and `torchmetrics` to calculate rate-distortion curves ([view on Colab](https://colab.research.google.com/github/facebookresearch/NeuralCompression/blob/main/tutorials/Metrics_Example.ipynb)).
 
 ## Getting Started
 
