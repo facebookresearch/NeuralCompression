@@ -27,14 +27,14 @@ class Kodak(torch.utils.data.Dataset):
 
     Args:
         root: base directory for data set.
-        check_hash: if True, checks the sha1 hash of root at
+        check_hash: if ``True``, checks the sha1 hash of root at
             initialization time to make sure files were downloaded correctly.
-        download: if True, downloads the dataset from the
+        download: if ``True``, downloads the dataset from the
             internet and puts it in root directory.
-        force_download: if True and download=True, will download the dataset
-            even if the root directory already exists. If False, an error
-            will be thrown if download=True but the root directory already
-            exists.
+        force_download: if ``True`` and ``download=True``, will download
+            the dataset even if the root directory already exists.
+            If ``False``, an error will be thrown if ``download=True``
+            but the root directory already exists.
         kodak_url: URL for downloading public images.
             Defaults to http://r0k.us/graphics/kodak/kodak/.
         transform: callable object for transforming the

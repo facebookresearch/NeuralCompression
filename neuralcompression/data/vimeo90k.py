@@ -25,25 +25,37 @@ class Vimeo90kSeptuplet(torch.utils.data.Dataset):
     Xue, Tianfan, et al. "Video enhancement with task-oriented flow."
     International Journal of Computer Vision 127.8 (2019): 1106-1125.
 
+    Note:
+        Following the conventions of ``torchvision``, in video mode this
+        dataset will have a default transform of
+        ``torchvision.transforms.ToTensor``, while in image mode no default
+        transform is provided.
+
     Args:
         root: Path to the Vimeo-90k root directory (i.e. the
             directory containing the dataset's README).
-        as_video: Determines whether the dataset should return individual images
-            (as_video=False) or multiple consecutive frames (as_video=True) at
-            a time.
-        frames_per_group: The number of frames to include from each septuplet.
-            Specifically, the first frames_per_group frames from each septuplet
-            are included in the dataset. Must be between 1 and 7.
+        as_video: Determines whether the dataset should return
+            individual images (``as_video=False``) or
+            multiple consecutive frames  (``as_video=True``)
+            at a time.
+        frames_per_group: The number of frames to include from
+            each septuplet. Specifically, the first ``frames_per_group``
+            frames from each septuplet are included in
+            the dataset. Must be between 1 and 7.
         split: Specifies which dataset parition should be used. Valid values
-            are "train" or "test". Exactly one of ``split`` or
+            are ``"train"`` or ``"test"``. Exactly one of ``split`` or
             'folder_list' must be specified.
         folder_list: A list of paths to septuplets to include in the dataset
             split. Each septuplet path must be a directory containing the files
-            im1.png, ..., im7.png. Exactly one of ``split`` or
+            ``im1.png``, ..., ``im7.png``. Exactly one of ``split`` or
             ``folder_list`` must be specified.
         pil_transform: Callable object for applying transforms to
             the PIL images prior to image concatenation. If using, be sure to
             have the final operation convert the PIL image to a tensor.
+            Following ``torchvision``'s dataset conventions, the default
+            transform is ``torchvision.transforms.ToTensor`` when
+            in video mode (i.e. when ``as_video=True``), while no
+            default transform is applied in image mode.
         tensor_transform: Callable object for applying PyTorch
             transforms after data conversion and septuplet concatenation.
     """
@@ -68,7 +80,9 @@ class Vimeo90kSeptuplet(torch.utils.data.Dataset):
             )
 
         self.frames_per_group = frames_per_group
-        self.pil_transform = ToTensor() if pil_transform is None else pil_transform
+        self.pil_transform = (
+            ToTensor() if pil_transform is None and as_video else pil_transform
+        )
         self.tensor_transform = tensor_transform
 
         if (split is None) == (folder_list is None):

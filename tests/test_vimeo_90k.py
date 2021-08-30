@@ -86,7 +86,7 @@ def test_image_mode(tmp_path: Path, frames_per_group: int):
         as_video=False,
         frames_per_group=frames_per_group,
         split="test",
-        pil_transform=None,
+        pil_transform=ToTensor(),
         tensor_transform=lambda t: 5 * t,
     )
 
