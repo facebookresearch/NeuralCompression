@@ -25,6 +25,12 @@ class Vimeo90kSeptuplet(torch.utils.data.Dataset):
     Xue, Tianfan, et al. "Video enhancement with task-oriented flow."
     International Journal of Computer Vision 127.8 (2019): 1106-1125.
 
+    Note:
+        Following the conventions of ``torchvision``, in video mode this
+        dataset will have a default transform of
+        ``torchvision.transforms.ToTensor``, while in image mode no default
+        transform is provided.
+
     Args:
         root: Path to the Vimeo-90k root directory (i.e. the
             directory containing the dataset's README).
