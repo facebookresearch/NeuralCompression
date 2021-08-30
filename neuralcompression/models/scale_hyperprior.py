@@ -395,8 +395,8 @@ class ScaleHyperprior(nn.Module):
         return image_bottleneck_updated | hyper_bottleneck_updated
 
     def _on_cpu(self):
+        cpu = torch.device("cpu")
         for param in self.parameters():
-            cpu = torch.device("cpu")
             if param.device != cpu:
                 return False
         return True
