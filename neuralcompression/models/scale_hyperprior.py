@@ -394,19 +394,12 @@ class ScaleHyperprior(nn.Module):
         hyper_bottleneck_updated = self.hyper_bottleneck.update(force=force)
         return image_bottleneck_updated | hyper_bottleneck_updated
 
-    def _assert_on_cpu(self, force_cpu: bool):
-        if not force_cpu:
-            return
+    def _on_cpu(self):
         for param in self.parameters():
             cpu = torch.device("cpu")
             if param.device != cpu:
-                raise ValueError(
-                    "Trying to compress/decompress on a GPU - "
-                    "this has known numerical and reproducability issues "
-                    "with the default entropy bottleneck implementation. "
-                    "Either move your model to the CPU or pass "
-                    "force_cpu=False to bypass this check."
-                )
+                return False
+        return True
 
     # TODO: Switch to named tuple
     def compress(
@@ -434,7 +427,8 @@ class ScaleHyperprior(nn.Module):
             hyper_latent_shape: list storing the height and width of the
                 hyperprior, for use during decoding.
         """
-        self._assert_on_cpu(force_cpu)
+        if not self._on_cpu() and force_cpu:
+            raise ValueError("Compress not supported on GPU.")
 
         latent = self.image_analysis(images)
         hyper_latent = self.hyper_analysis(latent)
@@ -488,7 +482,8 @@ class ScaleHyperprior(nn.Module):
         Returns:
             reconstruction: Tensor of shape [batch, channels, height, width].
         """
-        self._assert_on_cpu(force_cpu)
+        if not self._on_cpu() and force_cpu:
+            raise ValueError("Compress not supported on GPU.")
 
         hyper_latent_decoded = self.hyper_bottleneck.decompress(  # type: ignore
             hyper_latent_strings, hyper_latent_shape
