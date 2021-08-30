@@ -483,7 +483,7 @@ class ScaleHyperprior(nn.Module):
             reconstruction: Tensor of shape [batch, channels, height, width].
         """
         if not self._on_cpu() and force_cpu:
-            raise ValueError("Compress not supported on GPU.")
+            raise ValueError("Decompress not supported on GPU.")
 
         hyper_latent_decoded = self.hyper_bottleneck.decompress(  # type: ignore
             hyper_latent_strings, hyper_latent_shape
