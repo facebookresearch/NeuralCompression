@@ -8,6 +8,19 @@ possible.
 We will periodically release updates to the core `neuralcompression` package to
 PyPI.
 
+## Building
+
+```sh
+pip install -e .
+pip install -r dev-requirements.txt
+```
+
+## Testing
+
+```sh
+pytest
+```
+
 ## Pull Requests
 
 We actively welcome your pull requests.
