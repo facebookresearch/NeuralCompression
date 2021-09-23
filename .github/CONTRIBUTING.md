@@ -18,7 +18,7 @@ pip install -r dev-requirements.txt
 ## Testing
 
 ```sh
-pytest
+pytest tests
 ```
 
 ## Pull Requests
