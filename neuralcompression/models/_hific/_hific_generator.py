@@ -50,12 +50,12 @@ class _HiFiCGenerator(torch.nn.Module):
 
         norm_kwargs = {"momentum": 0.1, "affine": True, "track_running_stats": False}
 
-        self.block_0 = torch.nn.Sequential()
-
-        self.block_0 += self.norm(channels, **norm_kwargs)
-        self.block_0 += torch.nn.ReflectionPad2d(1)
-        self.block_0 += torch.nn.Conv2d(channels, filters[0], (3, 3), 1)
-        self.block_0 += self.norm(filters[0], **norm_kwargs)
+        self.block_0 = torch.nn.Sequential(
+            self.norm(channels, **norm_kwargs),
+            torch.nn.ReflectionPad2d(1),
+            torch.nn.Conv2d(channels, filters[0], (3, 3), 1),
+            self.norm(filters[0], **norm_kwargs),
+        )
 
         if sample_noise is True:
             filters[0] += self.noise_dimension
@@ -69,34 +69,34 @@ class _HiFiCGenerator(torch.nn.Module):
 
             self.add_module(f"_ResidualBlock_{str(m)}", residual_block_m)
 
-        self.block_1 = torch.nn.Sequential()
+        self.block_1 = torch.nn.Sequential(
+            torch.nn.ConvTranspose2d(filters[0], filters[1], 3, **conv_kwargs),
+            self.norm(filters[1], **norm_kwargs),
+            self.activation(),
+        )
 
-        self.block_1 += torch.nn.ConvTranspose2d(filters[0], filters[1], 3, **conv_kwargs)
-        self.block_1 += self.norm(filters[1], **norm_kwargs)
-        self.block_1 += self.activation()
+        self.block_2 = torch.nn.Sequential(
+            torch.nn.ConvTranspose2d(filters[1], filters[2], 3, **conv_kwargs),
+            self.norm(filters[2], **norm_kwargs),
+            self.activation(),
+        )
 
-        self.block_2 = torch.nn.Sequential()
+        self.block_3 = torch.nn.Sequential(
+            torch.nn.ConvTranspose2d(filters[2], filters[3], 3, **conv_kwargs),
+            self.norm(filters[3], **norm_kwargs),
+            self.activation(),
+        )
 
-        self.block_2 += torch.nn.ConvTranspose2d(filters[1], filters[2], 3, **conv_kwargs)
-        self.block_2 += self.norm(filters[2], **norm_kwargs)
-        self.block_2 += self.activation()
+        self.block_4 = torch.nn.Sequential(
+            torch.nn.ConvTranspose2d(filters[3], filters[4], 3, **conv_kwargs),
+            self.norm(filters[4], **norm_kwargs),
+            self.activation(),
+        )
 
-        self.block_3 = torch.nn.Sequential()
-
-        self.block_3 += torch.nn.ConvTranspose2d(filters[2], filters[3], 3, **conv_kwargs)
-        self.block_3 += self.norm(filters[3], **norm_kwargs)
-        self.block_3 += self.activation()
-
-        self.block_4 = torch.nn.Sequential()
-
-        self.block_4 += torch.nn.ConvTranspose2d(filters[3], filters[4], 3, **conv_kwargs)
-        self.block_4 += self.norm(filters[4], **norm_kwargs)
-        self.block_4 += self.activation()
-
-        self.generate = torch.nn.Sequential()
-
-        self.generate += torch.nn.ReflectionPad2d(3)
-        self.generate += torch.nn.Conv2d(filters[-1], 3, (7, 7), 1)
+        self.generate = torch.nn.Sequential(
+            torch.nn.ReflectionPad2d(3),
+            torch.nn.Conv2d(filters[-1], 3, (7, 7), 1),
+        )
 
     def forward(self, x):
         block_0 = self.block_0(x)
