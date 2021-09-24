@@ -3,7 +3,7 @@ import torch.nn
 import torch.nn.functional
 
 from ._channel_norm_2d import _channel_norm_2d
-from ._channel_norm_2d import _instance_norm_2d
+from ._instance_norm_2d import _instance_norm_2d
 
 
 class _ResidualBlock(torch.nn.Module):
