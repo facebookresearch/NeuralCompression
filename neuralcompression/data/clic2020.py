@@ -34,7 +34,7 @@ class CLIC2020(torch.utils.data.Dataset):
         transform (callable, optional): A function/transform that takes in an PIL image
             and returns a transformed version.  E.g, ``transforms.RandomCrop``.
     """
-    resources = {
+    splits = {
         "train": {
             "filename": "train.zip",
             "md5": "a6845cac88c3dd882246575f7a2fc5f9",
@@ -54,33 +54,21 @@ class CLIC2020(torch.utils.data.Dataset):
 
     def __init__(
             self,
-            root: str,
+            root: typing.Union[str, pathlib.Path],
             split: str = "train",
             download: bool = False,
             transform: typing.Optional[typing.Callable] = None,
     ):
-        if not pathlib.Path(root).exists():
-            raise ValueError
-
-        self.root: pathlib.Path = pathlib.Path(root, "clic2020")
+        self.root: pathlib.Path = pathlib.Path(root).joinpath("clic2020")
 
         self.split = torchvision.datasets.utils.verify_str_arg(split, "split", ("train", "val", "test"))
 
         self.transform = transform
 
-        self.resource = self.resources[self.split]
-
-        self.destination = self.root.joinpath(self.split)
-
-        if self.destination.exists() and not download:
-            raise RuntimeError
-
-        self.root.mkdir(exist_ok=True)
-
         if download:
             self.download()
 
-        self.paths = [*self.destination.glob("*.png")]
+        self.paths = [*self.root.joinpath(self.split).glob("*.png")]
 
     def __getitem__(self, index: int) -> PIL.Image.Image:
         path = self.paths[index]
@@ -97,9 +85,9 @@ class CLIC2020(torch.utils.data.Dataset):
 
     def download(self):
         kwargs = {
-            "download_root": self.root,
-            "extract_root": self.root,
-            **self.resource
+            "download_root": str(self.root),
+            "extract_root": str(self.root),
+            **self.splits[self.split]
         }
 
         if self.split == "test":
@@ -108,9 +96,9 @@ class CLIC2020(torch.utils.data.Dataset):
         torchvision.datasets.utils.download_and_extract_archive(**kwargs)
 
         if self.split == "val":
-            os.rename(self.root.joinpath("valid"), self.destination)
+            os.rename(self.root.joinpath("valid"), self.root.joinpath(self.split))
 
         if self.split in {"train", "val"}:
             shutil.rmtree(self.root.joinpath("__MACOSX"))
         else:
-            shutil.rmtree(self.destination.joinpath("__MACOSX"))
+            shutil.rmtree(self.root.joinpath(self.split).joinpath("__MACOSX"))
