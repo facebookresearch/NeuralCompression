@@ -11,7 +11,7 @@ import torch.utils.data
 import torchvision.datasets.folder
 
 
-class CLIC2020ImageCompression(torch.utils.data.Dataset):
+class CLIC2020(torch.utils.data.Dataset):
     resources = {
         "training": {
             "digest": "3f196ab93fc77d97bc99661c1cb1cfb983f17770",

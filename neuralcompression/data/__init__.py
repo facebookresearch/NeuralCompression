@@ -7,4 +7,4 @@ LICENSE file in the root directory of this source tree.
 
 from .kodak import Kodak
 from .vimeo90k import Vimeo90kSeptuplet
-from .clic2020_image_compression import CLIC2020ImageCompression
+from .clic2020 import CLIC2020
