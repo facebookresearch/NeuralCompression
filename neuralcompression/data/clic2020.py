@@ -9,6 +9,7 @@ import zipfile
 import PIL.Image
 import torch.utils.data
 import torchvision.datasets.folder
+import torchvision.datasets.utils
 
 
 class CLIC2020(torch.utils.data.Dataset):
@@ -23,9 +24,9 @@ class CLIC2020(torch.utils.data.Dataset):
                 <root>
                     └── clic2020
                         ├── test
-                            ├── *.png
+                        │   ├── *.png
                         ├── train
-                            ├── *.png
+                        │   ├── *.png
                         └── val
                             └── *.png
         split (str): The dataset split to use. One of {``train``, ``val``, ``test``}.
@@ -66,10 +67,9 @@ class CLIC2020(torch.utils.data.Dataset):
 
         self.root: pathlib.Path = pathlib.Path(root, "clic2020")
 
-        if split not in ("train", "val", "test"):
-            raise ValueError
-
-        self.split = split
+        self.split = torchvision.datasets.utils.verify_str_arg(
+            split, "split", ("train", "val", "test")
+        )
 
         self.transform = transform
 
