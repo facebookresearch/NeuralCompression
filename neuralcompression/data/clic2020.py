@@ -1,10 +1,7 @@
-import hashlib
 import os
 import pathlib
 import shutil
 import typing
-import urllib.request
-import zipfile
 
 import PIL.Image
 import torch.utils.data
@@ -39,19 +36,19 @@ class CLIC2020(torch.utils.data.Dataset):
     """
     resources = {
         "train": {
-            "digest": "3f196ab93fc77d97bc99661c1cb1cfb983f17770",
-            "endpoint": "https://data.vision.ee.ethz.ch/cvl/clic/professional_train_2020.zip",
-            "source": "train",
+            "filename": "train.zip",
+            "md5": "a6845cac88c3dd882246575f7a2fc5f9",
+            "url": "https://data.vision.ee.ethz.ch/cvl/clic/professional_train_2020.zip",
         },
         "val": {
-            "digest": "196a602548afcc1949e5ec3a5dd0f6e713b34201",
-            "endpoint": "https://data.vision.ee.ethz.ch/cvl/clic/professional_valid_2020.zip",
-            "source": "valid",
+            "filename": "val.zip",
+            "md5": "7111ee240435911db04dbc5f40d50272",
+            "url": "https://data.vision.ee.ethz.ch/cvl/clic/professional_valid_2020.zip",
         },
         "test": {
-            "digest": "6dadb31eeae6cee8d2455a35818129eb68b0adbb",
-            "endpoint": "https://storage.googleapis.com/clic2021_public/professional_test_2021.zip",
-            "source": ".",
+            "filename": "test.zip",
+            "md5": "4476b708ea4c492505dd70061bebe202",
+            "url": "https://storage.googleapis.com/clic2021_public/professional_test_2021.zip",
         }
     }
 
@@ -67,15 +64,11 @@ class CLIC2020(torch.utils.data.Dataset):
 
         self.root: pathlib.Path = pathlib.Path(root, "clic2020")
 
-        self.split = torchvision.datasets.utils.verify_str_arg(
-            split, "split", ("train", "val", "test")
-        )
+        self.split = torchvision.datasets.utils.verify_str_arg(split, "split", ("train", "val", "test"))
 
         self.transform = transform
 
         self.resource = self.resources[self.split]
-
-        self.source = self.root.joinpath(self.resource["source"])
 
         self.destination = self.root.joinpath(self.split)
 
@@ -103,35 +96,21 @@ class CLIC2020(torch.utils.data.Dataset):
         return len(self.paths)
 
     def download(self):
-        path, _ = urllib.request.urlretrieve(self.resource["endpoint"])
+        kwargs = {
+            "download_root": self.root,
+            "extract_root": self.root,
+            **self.resource
+        }
 
-        with zipfile.ZipFile(path, "r") as archive:
-            self._check_integrity(archive, self.resource["digest"])
+        if self.split == "test":
+            kwargs["extract_root"] = self.root.joinpath("test")
 
-            if self.split == "test":
-                archive.extractall(self.destination)
+        torchvision.datasets.utils.download_and_extract_archive(**kwargs)
 
-                shutil.rmtree(self.destination.joinpath("__MACOSX"))
+        if self.split == "val":
+            os.rename(self.root.joinpath("valid"), self.destination)
 
-                return
-
-            archive.extractall(self.root)
-
-            os.rename(self.source, self.destination)
-
+        if self.split in {"train", "val"}:
             shutil.rmtree(self.root.joinpath("__MACOSX"))
-
-    @staticmethod
-    def _check_integrity(archive: zipfile.ZipFile, checksum: str):
-        sha1 = hashlib.sha1()
-
-        while True:
-            chunk = archive.fp.read(16 * 1024)
-
-            if not chunk:
-                break
-
-            sha1.update(chunk)
-
-        if sha1.hexdigest() != checksum:
-            raise RuntimeError
+        else:
+            shutil.rmtree(self.destination.joinpath("__MACOSX"))
