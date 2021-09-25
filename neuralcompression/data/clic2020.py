@@ -12,13 +12,37 @@ import torchvision.datasets.folder
 
 
 class CLIC2020(torch.utils.data.Dataset):
+    """`Challenge on Learned Image Compression (CLIC) 2020 <http://compression.cc/tasks/>`_ Dataset.
+
+    Args:
+        root (str): Root directory where images are downloaded to.
+            Expects the following folder structure if download=False:
+
+            .. code::
+
+                <root>
+                    └── clic2020
+                        ├── test
+                            ├── *.png
+                        ├── train
+                            ├── *.png
+                        └── val
+                            └── *.png
+        split (str): The dataset split to use. One of {``train``, ``val``, ``test``}.
+            Defaults to ``train``.
+        download (bool, optional): If true, downloads the dataset from the internet and
+            puts it in root directory. If dataset is already downloaded, it is not
+            downloaded again.
+        transform (callable, optional): A function/transform that takes in an PIL image
+            and returns a transformed version.  E.g, ``transforms.RandomCrop``.
+    """
     resources = {
-        "training": {
+        "train": {
             "digest": "3f196ab93fc77d97bc99661c1cb1cfb983f17770",
             "endpoint": "https://data.vision.ee.ethz.ch/cvl/clic/professional_train_2020.zip",
             "source": "train",
         },
-        "validation": {
+        "val": {
             "digest": "196a602548afcc1949e5ec3a5dd0f6e713b34201",
             "endpoint": "https://data.vision.ee.ethz.ch/cvl/clic/professional_valid_2020.zip",
             "source": "valid",
@@ -32,31 +56,28 @@ class CLIC2020(torch.utils.data.Dataset):
 
     def __init__(
             self,
-            root: typing.Union[str, pathlib.Path],
-            partition: str = "training",
-            check_hash: bool = True,
+            root: str,
+            split: str = "train",
             download: bool = False,
-            transform: typing.Optional[typing.Callable[[typing.Any], torch.Tensor]] = None,
+            transform: typing.Optional[typing.Callable] = None,
     ):
         if not pathlib.Path(root).exists():
             raise ValueError
 
-        self.root = pathlib.Path(root, "clic2020")
+        self.root: pathlib.Path = pathlib.Path(root, "clic2020")
 
-        if partition not in ("training", "validation", "test"):
+        if split not in ("train", "val", "test"):
             raise ValueError
 
-        self.partition = partition
-
-        self.check_hash = check_hash
+        self.split = split
 
         self.transform = transform
 
-        self.resource = self.resources[self.partition]
+        self.resource = self.resources[self.split]
 
         self.source = self.root.joinpath(self.resource["source"])
 
-        self.destination = self.root.joinpath(self.partition)
+        self.destination = self.root.joinpath(self.split)
 
         if self.destination.exists() and not download:
             raise RuntimeError
@@ -85,10 +106,9 @@ class CLIC2020(torch.utils.data.Dataset):
         path, _ = urllib.request.urlretrieve(self.resource["endpoint"])
 
         with zipfile.ZipFile(path, "r") as archive:
-            if self.check_hash:
-                self._check_integrity(archive, self.resource["digest"])
+            self._check_integrity(archive, self.resource["digest"])
 
-            if self.partition == "test":
+            if self.split == "test":
                 archive.extractall(self.destination)
 
                 shutil.rmtree(self.destination.joinpath("__MACOSX"))
