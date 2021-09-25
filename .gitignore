@@ -6,6 +6,6 @@
 .pytest_cache
 .vscode
 __pycache__
-build
+docs/build
 dist/
 lightning_logs
