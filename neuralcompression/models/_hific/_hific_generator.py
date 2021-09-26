@@ -2,9 +2,9 @@ import torch
 import torch.nn
 import torch.nn.functional
 
-from _channel_norm_2d import _channel_norm_2d
-from _instance_norm_2d import _instance_norm_2d
-from _residual_block import _ResidualBlock
+from ._channel_norm_2d import _channel_norm_2d
+from ._instance_norm_2d import _instance_norm_2d
+from ._residual_block import _ResidualBlock
 
 
 class _HiFiCGenerator(torch.nn.Module):
