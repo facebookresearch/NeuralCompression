@@ -11,5 +11,6 @@ from .distortion import (
     multiscale_structural_similarity,
 )
 from .information import information_content
+from ._losses import generative_loss, weighted_rate_loss
 from .visualize import hsv2rgb, optical_flow_to_color
 from .warp import dense_image_warp
