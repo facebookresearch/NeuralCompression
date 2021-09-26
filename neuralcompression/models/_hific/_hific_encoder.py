@@ -10,7 +10,7 @@ class Encoder(torch.nn.Module):
             input_dimensions,
             activation="relu",
             channel_norm=True,
-            channels=220,
+            bottleneck_filters=220,
     ):
         super(Encoder, self).__init__()
 
@@ -80,7 +80,7 @@ class Encoder(torch.nn.Module):
 
         self.encode = torch.nn.Sequential(
             torch.nn.ReflectionPad2d(1),
-            torch.nn.Conv2d(filters[4], channels, 3, 1),
+            torch.nn.Conv2d(filters[4], bottleneck_filters, 3, 1),
         )
 
     def forward(self, x):
