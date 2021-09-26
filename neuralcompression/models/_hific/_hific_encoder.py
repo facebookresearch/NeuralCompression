@@ -4,7 +4,7 @@ from ._channel_norm_2d import _channel_norm_2d
 from ._instance_norm_2d import _instance_norm_2d
 
 
-class Encoder(torch.nn.Module):
+class _HiFiCEncoder(torch.nn.Module):
     def __init__(
             self,
             input_dimensions,
@@ -12,7 +12,7 @@ class Encoder(torch.nn.Module):
             channel_norm=True,
             bottleneck_filters=220,
     ):
-        super(Encoder, self).__init__()
+        super(_HiFiCEncoder, self).__init__()
 
         activations = {
             "elu": "ELU",
