@@ -1,3 +1,5 @@
+import typing
+
 import torch.nn
 
 from ._channel_norm_2d import _channel_norm_2d
@@ -7,10 +9,10 @@ from ._instance_norm_2d import _instance_norm_2d
 class _HiFiCEncoder(torch.nn.Module):
     def __init__(
             self,
-            input_dimensions,
-            activation="relu",
-            channel_norm=True,
-            bottleneck_filters=220,
+            input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
+            channels: int = 220,
+            activation: str = "relu",
+            channel_norm: bool = True,
     ):
         super(_HiFiCEncoder, self).__init__()
 
@@ -80,7 +82,7 @@ class _HiFiCEncoder(torch.nn.Module):
 
         self.encode = torch.nn.Sequential(
             torch.nn.ReflectionPad2d(1),
-            torch.nn.Conv2d(filters[4], bottleneck_filters, 3, 1),
+            torch.nn.Conv2d(filters[4], channels, 3, 1),
         )
 
     def forward(self, x):

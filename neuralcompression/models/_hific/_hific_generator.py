@@ -1,3 +1,5 @@
+import typing
+
 import torch
 import torch.nn
 import torch.nn.functional
@@ -10,14 +12,14 @@ from ._residual_block import _ResidualBlock
 class _HiFiCGenerator(torch.nn.Module):
     def __init__(
             self,
-            input_dimensions,
-            batch_size,
-            activation='relu',
-            channel_norm=True,
-            channels=16,
-            n_residual_blocks=8,
-            noise_dim=32,
-            sample_noise=False,
+            input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
+            batch_size: int = 8,
+            activation: str = "relu",
+            channel_norm: bool = True,
+            channels: int = 220,
+            n_residual_blocks: int = 9,
+            noise_dim: int = 32,
+            sample_noise: bool = False,
     ):
         super(_HiFiCGenerator, self).__init__()
 
