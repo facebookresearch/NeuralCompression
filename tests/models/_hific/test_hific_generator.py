@@ -7,6 +7,8 @@ class TestHiFiCGenerator:
     def test_forward(self):
         generator = _HiFiCGenerator((16, 16, 16), 8)
 
-        x = torch.rand((8, 16, 16, 16))
+        y = torch.rand((8, 16, 16, 16))
 
-        assert generator(x).shape == torch.Size([8, 3, 256, 256])
+        x_prime = generator(y)
+
+        assert x_prime.shape == torch.Size([8, 3, 256, 256])
