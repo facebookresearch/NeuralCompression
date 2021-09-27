@@ -8,6 +8,23 @@ possible.
 We will periodically release updates to the core `neuralcompression` package to
 PyPI.
 
+## Building
+
+Using `pip`, you can install the package in development mode by running:
+
+```sh
+pip install -e .
+pip install -r dev-requirements.txt
+```
+
+## Testing
+
+We test the package using `pytest`, which you can run locally by typing
+
+```sh
+pytest tests
+```
+
 ## Pull Requests
 
 We actively welcome your pull requests.
