@@ -24,7 +24,7 @@ copyright = "2021, Facebook"
 author = "Facebook"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.0"
+release = neuralcompression.__version__
 
 
 # -- General configuration ---------------------------------------------------
