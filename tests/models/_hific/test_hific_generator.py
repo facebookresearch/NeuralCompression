@@ -1,11 +1,11 @@
 import torch
 
-from neuralcompression.models._hific._hific_generator import _HiFiCGenerator
+from neuralcompression.models._hific._hific_generator import HiFiCGenerator
 
 
 class TestHiFiCGenerator:
     def test_forward(self):
-        generator = _HiFiCGenerator()
+        generator = HiFiCGenerator()
 
         y = torch.rand((8, 220, 16, 16))
 

@@ -1,11 +1,11 @@
 import torch
 
-from neuralcompression.models._hific._hific_discriminator import _HiFiCDiscriminator
+from neuralcompression.models._hific._hific_discriminator import HiFiCDiscriminator
 
 
 class TestHiFiCDiscriminator:
     def test_forward(self):
-        discriminator = _HiFiCDiscriminator()
+        discriminator = HiFiCDiscriminator()
 
         x = torch.rand((8, 3, 256, 256))
         y = torch.rand((8, 220, 16, 16))

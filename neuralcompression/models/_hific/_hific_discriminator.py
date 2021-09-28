@@ -5,13 +5,13 @@ import torch.nn
 import torch.nn.functional
 
 
-class _HiFiCDiscriminator(torch.nn.Module):
+class HiFiCDiscriminator(torch.nn.Module):
     def __init__(
             self,
             image_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
             latent_features: int = 220,
     ):
-        super(_HiFiCDiscriminator, self).__init__()
+        super(HiFiCDiscriminator, self).__init__()
 
         self.image_dimensions = image_dimensions
 

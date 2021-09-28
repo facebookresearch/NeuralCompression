@@ -50,7 +50,7 @@ class _ResidualBlock(torch.nn.Module):
         return torch.add(features, identity_map)
 
 
-class _HiFiCGenerator(torch.nn.Module):
+class HiFiCGenerator(torch.nn.Module):
     def __init__(
             self,
             input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
@@ -58,7 +58,7 @@ class _HiFiCGenerator(torch.nn.Module):
             latent_features: int = 220,
             n_residual_blocks: int = 9,
     ):
-        super(_HiFiCGenerator, self).__init__()
+        super(HiFiCGenerator, self).__init__()
 
         self.n_residual_blocks = n_residual_blocks
 
