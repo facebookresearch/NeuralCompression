@@ -1,6 +1,6 @@
 import torch
 
-from neuralcompression.models._hific._hific_discriminator import HiFiCDiscriminator
+from neuralcompression.models import HiFiCDiscriminator
 
 
 class TestHiFiCDiscriminator:

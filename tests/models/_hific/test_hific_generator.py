@@ -1,6 +1,6 @@
 import torch
 
-from neuralcompression.models._hific._hific_generator import HiFiCGenerator
+from neuralcompression.models import HiFiCGenerator
 
 
 class TestHiFiCGenerator:
