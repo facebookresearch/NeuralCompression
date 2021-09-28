@@ -34,7 +34,7 @@ install_requires = [
     "torchvision>=0.9.1",
     "tqdm>=4.61.0",
     "torchmetrics>=0.3.2",
-    "fvcore>=0.1.5"
+    "fvcore>=0.1.5",
 ]
 
 setup(
@@ -67,4 +67,10 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: System :: Archiving :: Compression",
     ],
+    extras_require={
+        "dev": [
+            "black>=21.9b0",
+            "pre-commit>=2.15.0",
+        ],
+    },
 )
