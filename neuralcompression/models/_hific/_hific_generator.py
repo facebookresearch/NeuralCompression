@@ -10,7 +10,7 @@ from ._channel_norm_2d import _channel_norm_2d
 class _ResidualBlock(torch.nn.Module):
     def __init__(
             self,
-            input_dims,
+            input_dimensions,
             kernel_size=(3, 3),
             stride=(1, 1),
     ):
@@ -20,8 +20,8 @@ class _ResidualBlock(torch.nn.Module):
 
         self.pad = torch.nn.ReflectionPad2d(int((kernel_size[0] - 1) / 2))
 
-        self.conv_a = torch.nn.Conv2d(input_dims[1], input_dims[1], kernel_size, stride)
-        self.conv_b = torch.nn.Conv2d(input_dims[1], input_dims[1], kernel_size, stride)
+        self.conv_a = torch.nn.Conv2d(input_dimensions[1], input_dimensions[1], kernel_size, stride)
+        self.conv_b = torch.nn.Conv2d(input_dimensions[1], input_dimensions[1], kernel_size, stride)
 
         kwargs = {
             "affine": True,
@@ -29,8 +29,8 @@ class _ResidualBlock(torch.nn.Module):
             "track_running_stats": False,
         }
 
-        self.norm_a = _channel_norm_2d(input_dims[1], **kwargs)
-        self.norm_b = _channel_norm_2d(input_dims[1], **kwargs)
+        self.norm_a = _channel_norm_2d(input_dimensions[1], **kwargs)
+        self.norm_b = _channel_norm_2d(input_dimensions[1], **kwargs)
 
     def forward(self, x):
         identity_map = x
