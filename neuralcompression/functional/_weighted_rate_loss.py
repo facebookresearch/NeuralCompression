@@ -9,10 +9,7 @@ class _Schedule(typing.TypedDict):
 
 
 def _get_scheduled_parameters(
-        parameter: float,
-        schedule: _Schedule,
-        step: int,
-        ignore_schedule: bool = False
+    parameter: float, schedule: _Schedule, step: int, ignore_schedule: bool = False
 ) -> float:
     if ignore_schedule:
         return parameter
@@ -23,15 +20,15 @@ def _get_scheduled_parameters(
 
 
 def weighted_rate_loss(
-        a: float,
-        b: float,
-        schedule: _Schedule,
-        target: float,
-        target_schedule: _Schedule,
-        nbpp: float,
-        qbpp: float,
-        step: int,
-        ignore_schedule: bool = False
+    a: float,
+    b: float,
+    schedule: _Schedule,
+    target: float,
+    target_schedule: _Schedule,
+    nbpp: float,
+    qbpp: float,
+    step: int,
+    ignore_schedule: bool = False,
 ) -> float:
     a = _get_scheduled_parameters(a, schedule, step, ignore_schedule)
     b = _get_scheduled_parameters(b, schedule, step, ignore_schedule)
