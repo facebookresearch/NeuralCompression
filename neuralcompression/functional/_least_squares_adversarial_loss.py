@@ -3,7 +3,7 @@ import typing
 import torch
 
 
-def _least_squares_adversarial_loss(
+def least_squares_adversarial_loss(
         authentic: torch.Tensor,
         synthetic: torch.Tensor,
 ) -> typing.Optional[typing.Tuple[torch.Tensor, torch.Tensor]]:
