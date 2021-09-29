@@ -2,9 +2,7 @@ import torch
 
 
 def soft_round_inverse(
-        y: torch.Tensor,
-        alpha: float,
-        eps: float = 1e-3
+    y: torch.Tensor, alpha: float, eps: float = 1e-3
 ) -> torch.Tensor:
     alpha, eps = torch.tensor(alpha), torch.tensor(eps)
 
