@@ -34,6 +34,7 @@ class CLIC2020(torch.utils.data.Dataset):
         transform (callable, optional): A function/transform that takes in an PIL image
             and returns a transformed version.  E.g, ``transforms.RandomCrop``.
     """
+
     splits = {
         "train": {
             "filename": "train.zip",
@@ -49,19 +50,21 @@ class CLIC2020(torch.utils.data.Dataset):
             "filename": "test.zip",
             "md5": "4476b708ea4c492505dd70061bebe202",
             "url": "https://storage.googleapis.com/clic2021_public/professional_test_2021.zip",
-        }
+        },
     }
 
     def __init__(
-            self,
-            root: typing.Union[str, pathlib.Path],
-            split: str = "train",
-            download: bool = False,
-            transform: typing.Optional[typing.Callable] = None,
+        self,
+        root: typing.Union[str, pathlib.Path],
+        split: str = "train",
+        download: bool = False,
+        transform: typing.Optional[typing.Callable] = None,
     ):
         self.root: pathlib.Path = pathlib.Path(root).joinpath("clic2020")
 
-        self.split = torchvision.datasets.utils.verify_str_arg(split, "split", ("train", "val", "test"))
+        self.split = torchvision.datasets.utils.verify_str_arg(
+            split, "split", ("train", "val", "test")
+        )
 
         self.transform = transform
 
@@ -94,7 +97,7 @@ class CLIC2020(torch.utils.data.Dataset):
         kwargs = {
             "download_root": str(self.root),
             "extract_root": str(self.root),
-            **self.splits[self.split]
+            **self.splits[self.split],
         }
 
         if self.split == "test":
