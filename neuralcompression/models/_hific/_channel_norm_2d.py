@@ -2,17 +2,21 @@ import torch
 import torch.nn
 
 
-def _channel_norm_2d(input_channels, momentum=0.1, affine=True, track_running_stats=False, **kwargs):
+def _channel_norm_2d(
+    input_channels, momentum=0.1, affine=True, track_running_stats=False, **kwargs
+):
     return ChannelNorm2D(
         input_channels,
         momentum=momentum,
         affine=affine,
-        track_running_stats=track_running_stats
+        track_running_stats=track_running_stats,
     )
 
 
 class ChannelNorm2D(torch.nn.Module):
-    def __init__(self, input_channels, momentum=0.1, epsilon=1e-3, affine=True, **kwargs):
+    def __init__(
+        self, input_channels, momentum=0.1, epsilon=1e-3, affine=True, **kwargs
+    ):
         super(ChannelNorm2D, self).__init__()
 
         self.momentum = momentum

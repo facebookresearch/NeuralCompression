@@ -7,9 +7,9 @@ from ._channel_norm_2d import _channel_norm_2d
 
 class HiFiCEncoder(torch.nn.Module):
     def __init__(
-            self,
-            input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
-            latent_features: int = 220,
+        self,
+        input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
+        latent_features: int = 220,
     ):
         super(HiFiCEncoder, self).__init__()
 

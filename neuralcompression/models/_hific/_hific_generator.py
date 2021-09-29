@@ -9,10 +9,10 @@ from ._channel_norm_2d import _channel_norm_2d
 
 class _ResidualBlock(torch.nn.Module):
     def __init__(
-            self,
-            input_dimensions,
-            kernel_size=(3, 3),
-            stride=(1, 1),
+        self,
+        input_dimensions,
+        kernel_size=(3, 3),
+        stride=(1, 1),
     ):
         super(_ResidualBlock, self).__init__()
 
@@ -20,8 +20,12 @@ class _ResidualBlock(torch.nn.Module):
 
         self.pad = torch.nn.ReflectionPad2d(int((kernel_size[0] - 1) / 2))
 
-        self.conv_a = torch.nn.Conv2d(input_dimensions[1], input_dimensions[1], kernel_size, stride)
-        self.conv_b = torch.nn.Conv2d(input_dimensions[1], input_dimensions[1], kernel_size, stride)
+        self.conv_a = torch.nn.Conv2d(
+            input_dimensions[1], input_dimensions[1], kernel_size, stride
+        )
+        self.conv_b = torch.nn.Conv2d(
+            input_dimensions[1], input_dimensions[1], kernel_size, stride
+        )
 
         kwargs = {
             "affine": True,
@@ -52,11 +56,11 @@ class _ResidualBlock(torch.nn.Module):
 
 class HiFiCGenerator(torch.nn.Module):
     def __init__(
-            self,
-            input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
-            batch_size: int = 8,
-            latent_features: int = 220,
-            n_residual_blocks: int = 9,
+        self,
+        input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
+        batch_size: int = 8,
+        latent_features: int = 220,
+        n_residual_blocks: int = 9,
     ):
         super(HiFiCGenerator, self).__init__()
 
@@ -84,7 +88,9 @@ class HiFiCGenerator(torch.nn.Module):
         )
 
         for m in range(self.n_residual_blocks):
-            residual_block_m = _ResidualBlock((batch_size, filters[0], *input_dimensions[1:]))
+            residual_block_m = _ResidualBlock(
+                (batch_size, filters[0], *input_dimensions[1:])
+            )
 
             self.add_module(f"_ResidualBlock_{str(m)}", residual_block_m)
 

@@ -7,9 +7,9 @@ import torch.nn.functional
 
 class HiFiCDiscriminator(torch.nn.Module):
     def __init__(
-            self,
-            image_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
-            latent_features: int = 220,
+        self,
+        image_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
+        latent_features: int = 220,
     ):
         super(HiFiCDiscriminator, self).__init__()
 
@@ -19,7 +19,9 @@ class HiFiCDiscriminator(torch.nn.Module):
 
         self.activation = torch.nn.LeakyReLU(0.2)
 
-        self.conv_0 = torch.nn.Conv2d(self.features, 12, (3, 3), padding=1, padding_mode="reflect")
+        self.conv_0 = torch.nn.Conv2d(
+            self.features, 12, (3, 3), padding=1, padding_mode="reflect"
+        )
         self.conv_0 = torch.nn.utils.spectral_norm(self.conv_0)
 
         self.upsample = torch.nn.Upsample(None, 16, "nearest")
@@ -32,7 +34,9 @@ class HiFiCDiscriminator(torch.nn.Module):
             "stride": 2,
         }
 
-        self.conv_1 = torch.nn.Conv2d(self.image_dimensions[0] + 12, filters[0], (4, 4), **kwargs)
+        self.conv_1 = torch.nn.Conv2d(
+            self.image_dimensions[0] + 12, filters[0], (4, 4), **kwargs
+        )
         self.conv_1 = torch.nn.utils.spectral_norm(self.conv_1)
 
         self.conv_2 = torch.nn.Conv2d(filters[0], filters[1], (4, 4), **kwargs)
@@ -46,7 +50,9 @@ class HiFiCDiscriminator(torch.nn.Module):
 
         self.predictions = torch.nn.Conv2d(filters[3], 1, (1, 1), (1, 1))
 
-    def forward(self, x: torch.Tensor, y: torch.Tensor) -> typing.Tuple[torch.Tensor, torch.Tensor]:
+    def forward(
+        self, x: torch.Tensor, y: torch.Tensor
+    ) -> typing.Tuple[torch.Tensor, torch.Tensor]:
         y = self.activation(self.conv_0(y))
 
         y = self.upsample(y)
