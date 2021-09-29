@@ -1,0 +1,46 @@
+import typing
+
+import numpy
+
+
+class _Schedule(typing.TypedDict):
+    parameters: typing.List[float]
+    steps: typing.List[int]
+
+
+def _get_scheduled_parameters(
+        parameter: float,
+        schedule: _Schedule,
+        step: int,
+        ignore_schedule: bool = False
+) -> float:
+    if ignore_schedule:
+        return parameter
+
+    index = numpy.where(step < numpy.array(schedule["steps"] + [step + 1]))
+
+    return parameter * schedule["parameters"][index[0][0]]
+
+
+def weighted_rate_loss(
+        a: float,
+        b: float,
+        schedule: _Schedule,
+        target: float,
+        target_schedule: _Schedule,
+        nbpp: float,
+        qbpp: float,
+        step: int,
+        ignore_schedule: bool = False
+) -> float:
+    a = _get_scheduled_parameters(a, schedule, step, ignore_schedule)
+    b = _get_scheduled_parameters(b, schedule, step, ignore_schedule)
+
+    target = _get_scheduled_parameters(target, target_schedule, step, ignore_schedule)
+
+    if qbpp > target:
+        penalty = a
+    else:
+        penalty = b
+
+    return penalty * nbpp
