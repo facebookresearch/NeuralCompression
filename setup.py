@@ -34,7 +34,7 @@ install_requires = [
     "torchvision>=0.9.1",
     "tqdm>=4.61.0",
     "torchmetrics>=0.3.2",
-    "fvcore>=0.1.5"
+    "fvcore>=0.1.5",
 ]
 
 setup(
