@@ -10,7 +10,8 @@ import torchvision.datasets.utils
 
 
 class CLIC2020(torch.utils.data.Dataset):
-    """`Challenge on Learned Image Compression (CLIC) 2020 <http://compression.cc/tasks/>`_ Dataset.
+    """`Challenge on Learned Image Compression (CLIC) 2020
+    <http://compression.cc/tasks/>`_ Dataset.
 
     Args:
         root (str): Root directory where images are downloaded to.
@@ -26,13 +27,15 @@ class CLIC2020(torch.utils.data.Dataset):
                         │   ├── *.png
                         └── val
                             └── *.png
-        split (str): The dataset split to use. One of {``train``, ``val``, ``test``}.
+        split (str): The dataset split to use. One of
+            {``train``, ``val``, ``test``}.
             Defaults to ``train``.
-        download (bool, optional): If true, downloads the dataset from the internet and
-            puts it in root directory. If dataset is already downloaded, it is not
-            downloaded again.
-        transform (callable, optional): A function/transform that takes in an PIL image
-            and returns a transformed version.  E.g, ``transforms.RandomCrop``.
+        download (bool, optional): If true, downloads the dataset from the
+            internet and puts it in root directory. If dataset is already
+            downloaded, it is not downloaded again.
+        transform (callable, optional): A function/transform that takes in a
+            PIL image and returns a transformed version.  E.g,
+            ``transforms.RandomCrop``.
     """
 
     splits = {
