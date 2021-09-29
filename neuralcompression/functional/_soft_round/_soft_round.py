@@ -2,9 +2,7 @@ import torch
 
 
 def soft_round(x: torch.Tensor, alpha: float, eps: float = 1e-3) -> torch.Tensor:
-    alpha, eps = torch.tensor(alpha), torch.tensor(eps)
-
-    maximum = torch.maximum(alpha, eps)
+    maximum = torch.tensor(max(alpha, eps))
 
     m = torch.floor(x) + 0.5
 
@@ -12,4 +10,4 @@ def soft_round(x: torch.Tensor, alpha: float, eps: float = 1e-3) -> torch.Tensor
 
     y = m + torch.tanh(maximum * (x - m)) / z
 
-    return torch.where(alpha < eps, x, y)
+    return torch.where(torch.tensor(alpha < eps), x, y)

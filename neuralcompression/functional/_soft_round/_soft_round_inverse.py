@@ -4,9 +4,7 @@ import torch
 def soft_round_inverse(
     y: torch.Tensor, alpha: float, eps: float = 1e-3
 ) -> torch.Tensor:
-    alpha, eps = torch.tensor(alpha), torch.tensor(eps)
-
-    maximum = torch.maximum(alpha, eps)
+    maximum = torch.tensor(max(alpha, eps))
 
     m = torch.floor(y) + 0.5
 
@@ -18,4 +16,4 @@ def soft_round_inverse(
 
     x = m + r
 
-    return torch.where(alpha < eps, y, x)
+    return torch.where(torch.tensor(alpha < eps), y, x)
