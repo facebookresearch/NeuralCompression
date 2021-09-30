@@ -3,7 +3,7 @@ import typing
 import torch.nn.functional
 
 
-def non_saturating_adversarial_loss(
+def _non_saturating_adversarial_loss(
     authentic: torch.Tensor,
     synthetic: torch.Tensor,
 ) -> typing.Optional[typing.Tuple[torch.Tensor, torch.Tensor]]:
