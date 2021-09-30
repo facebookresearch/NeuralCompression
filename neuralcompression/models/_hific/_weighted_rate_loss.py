@@ -17,7 +17,7 @@ def _get_scheduled_parameters(
     return parameter * schedule["parameters"][index[0][0]]
 
 
-def weighted_rate_loss(
+def _weighted_rate_loss(
     a: float,
     b: float,
     schedule: _Schedule,
