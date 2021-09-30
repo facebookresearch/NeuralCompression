@@ -24,7 +24,6 @@ class HiFiCEncoder(torch.nn.Module):
         norm_kwargs = {
             "affine": True,
             "momentum": 0.1,
-            "track_running_stats": False,
         }
 
         self.block_0 = torch.nn.Sequential(

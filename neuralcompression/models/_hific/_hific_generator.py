@@ -30,7 +30,6 @@ class _ResidualBlock(torch.nn.Module):
         kwargs = {
             "affine": True,
             "momentum": 0.1,
-            "track_running_stats": False,
         }
 
         self.norm_a = _channel_norm_2d(input_dimensions[1], **kwargs)
@@ -77,7 +76,6 @@ class HiFiCGenerator(torch.nn.Module):
         norm_kwargs = {
             "affine": True,
             "momentum": 0.1,
-            "track_running_stats": False,
         }
 
         self.block_0 = torch.nn.Sequential(
