@@ -1,0 +1,4 @@
+sphinx>=3.2.0
+pytorch-sphinx-theme>=0.0.19
+sphinxcontrib-katex
+sphinx-autodoc-typehints
