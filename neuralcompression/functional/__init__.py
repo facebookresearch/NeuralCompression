@@ -6,6 +6,11 @@ LICENSE file in the root directory of this source tree.
 """
 
 from ._estimate_tails import estimate_tails
+from ._soft_round import (
+    soft_round,
+    soft_round_conditional_mean,
+    soft_round_inverse,
+)
 from .complexity import count_flops
 from .distortion import (
     learned_perceptual_image_patch_similarity,
