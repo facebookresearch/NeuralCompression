@@ -14,7 +14,7 @@ class CLIC2020(torch.utils.data.Dataset):
     <http://compression.cc/tasks/>`_ Dataset.
 
     Args:
-        root (str): Root directory where images are downloaded to.
+        root: Root directory where images are downloaded to.
             Expects the following folder structure if download=False:
 
             .. code::
@@ -27,13 +27,13 @@ class CLIC2020(torch.utils.data.Dataset):
                         │   ├── *.png
                         └── val
                             └── *.png
-        split (str): The dataset split to use. One of
+        split: The dataset split to use. One of
             {``train``, ``val``, ``test``}.
             Defaults to ``train``.
-        download (bool, optional): If true, downloads the dataset from the
+        download: If true, downloads the dataset from the
             internet and puts it in root directory. If dataset is already
             downloaded, it is not downloaded again.
-        transform (callable, optional): A function/transform that takes in a
+        transform: A function/transform that takes in a
             PIL image and returns a transformed version.  E.g,
             ``transforms.RandomCrop``.
     """
