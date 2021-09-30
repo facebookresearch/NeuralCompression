@@ -14,7 +14,7 @@ def soft_round(x: torch.Tensor, alpha: float, eps: float = 1e-3) -> torch.Tensor
     > https://arxiv.org/abs/2006.09952
 
     Args:
-        x:
+        x: The input tensor.
         alpha: smoothness of the approximation
         eps: threshold below which ``soft_round`` returns the identity
 
