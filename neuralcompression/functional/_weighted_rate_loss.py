@@ -3,9 +3,7 @@ import typing
 import numpy
 
 
-class _Schedule(typing.TypedDict):
-    parameters: typing.List[float]
-    steps: typing.List[int]
+_Schedule = typing.Dict[str, typing.List[typing.Union[int, float]]]
 
 
 def _get_scheduled_parameters(
