@@ -71,6 +71,7 @@ setup(
         "dev": [
             "black>=21.9b0",
             "pre-commit>=2.15.0",
+        ],
         "docs": [
             "pytorch_sphinx_theme @ git+https://github.com/pytorch/pytorch_sphinx_theme.git#egg=pytorch_sphinx_theme",
             "sphinx-autodoc-typehints>=1.12.0",
