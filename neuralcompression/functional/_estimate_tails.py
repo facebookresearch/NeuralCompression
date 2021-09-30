@@ -7,7 +7,7 @@ def estimate_tails(
     func: typing.Callable[[torch.Tensor], torch.Tensor],
     target: float,
     shape: int,
-    device: typing.Optional[typing.Union[int, str, torch.device]] = None,
+    device: typing.Union[torch.device, str, None] = None,
     dtype: torch.dtype = torch.float32,
 ) -> torch.Tensor:
     """Estimates approximate tail quantiles.
