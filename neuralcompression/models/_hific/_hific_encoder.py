@@ -13,66 +13,66 @@ class HiFiCEncoder(torch.nn.Module):
     ):
         super(HiFiCEncoder, self).__init__()
 
-        filters = (60, 120, 240, 480, 960)
+        self.blocks = []
 
-        conv_kwargs = {
-            "padding": 0,
-            "padding_mode": "reflect",
-            "stride": 2,
-        }
+        in_channels = input_dimensions[0]
 
-        norm_kwargs = {
-            "affine": True,
-            "momentum": 0.1,
-        }
+        out_channels = None
 
-        self.block_0 = torch.nn.Sequential(
-            torch.nn.ReflectionPad2d(3),
-            torch.nn.Conv2d(input_dimensions[0], filters[0], (7, 7), (1, 1)),
-            _channel_norm_2d(filters[0], **norm_kwargs),
-            torch.nn.ReLU(),
-        )
+        for index, out_channels in enumerate((60, 120, 240, 480, 960)):
+            if index == 0:
+                block = torch.nn.Sequential(
+                    torch.nn.ReflectionPad2d(3),
+                    torch.nn.Conv2d(
+                        in_channels,
+                        out_channels,
+                        (7, 7),
+                        (1, 1)
+                    ),
+                    _channel_norm_2d(
+                        out_channels,
+                        affine=True,
+                        momentum=0.1,
+                    ),
+                    torch.nn.ReLU(),
+                )
+            else:
+                block = torch.nn.Sequential(
+                    torch.nn.ReflectionPad2d((0, 1, 1, 0)),
+                    torch.nn.Conv2d(
+                        in_channels,
+                        out_channels,
+                        (3, 3),
+                        (2, 2),
+                        padding=0,
+                        padding_mode="reflect",
+                    ),
+                    _channel_norm_2d(
+                        out_channels,
+                        affine=True,
+                        momentum=0.1
+                    ),
+                    torch.nn.ReLU(),
+                )
 
-        self.block_1 = torch.nn.Sequential(
-            torch.nn.ReflectionPad2d((0, 1, 1, 0)),
-            torch.nn.Conv2d(filters[0], filters[1], (3, 3), **conv_kwargs),
-            _channel_norm_2d(filters[1], **norm_kwargs),
-            torch.nn.ReLU(),
-        )
+            in_channels = out_channels
 
-        self.block_2 = torch.nn.Sequential(
-            torch.nn.ReflectionPad2d((0, 1, 1, 0)),
-            torch.nn.Conv2d(filters[1], filters[2], (3, 3), **conv_kwargs),
-            _channel_norm_2d(filters[2], **norm_kwargs),
-            torch.nn.ReLU(),
-        )
+            self.blocks += [block]
 
-        self.block_3 = torch.nn.Sequential(
-            torch.nn.ReflectionPad2d((0, 1, 1, 0)),
-            torch.nn.Conv2d(filters[2], filters[3], (3, 3), **conv_kwargs),
-            _channel_norm_2d(filters[3], **norm_kwargs),
-            torch.nn.ReLU(),
-        )
+        self.blocks += [
+            torch.nn.Sequential(
+                torch.nn.ReflectionPad2d(1),
+                torch.nn.Conv2d(
+                    out_channels,
+                    latent_features,
+                    (3, 3),
+                    (1, 1)
+                ),
+            )
+        ]
 
-        self.block_4 = torch.nn.Sequential(
-            torch.nn.ReflectionPad2d((0, 1, 1, 0)),
-            torch.nn.Conv2d(filters[3], filters[4], (3, 3), **conv_kwargs),
-            _channel_norm_2d(filters[4], **norm_kwargs),
-            torch.nn.ReLU(),
-        )
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        for block in self.blocks:
+            x = block(x)
 
-        self.encode = torch.nn.Sequential(
-            torch.nn.ReflectionPad2d(1),
-            torch.nn.Conv2d(filters[4], latent_features, (3, 3), (1, 1)),
-        )
-
-    def forward(self, x):
-        x = self.block_0(x)
-        x = self.block_1(x)
-        x = self.block_2(x)
-        x = self.block_3(x)
-        x = self.block_4(x)
-
-        encoded = self.encode(x)
-
-        return encoded
+        return x
