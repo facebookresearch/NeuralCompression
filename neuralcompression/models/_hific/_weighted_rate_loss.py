@@ -1,6 +1,6 @@
 import typing
 
-import numpy
+import numpy  # type: ignore
 
 
 _Schedule = typing.Dict[str, typing.List[typing.Union[int, float]]]
