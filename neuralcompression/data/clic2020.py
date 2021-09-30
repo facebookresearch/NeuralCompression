@@ -74,14 +74,7 @@ class CLIC2020(torch.utils.data.Dataset):
         if download:
             self.download()
 
-        self._paths = None
-
-    @property
-    def paths(self):
-        if self._paths:
-            return self._paths
-        else:
-            return [*self.root.joinpath(self.split).glob("*.png")]
+        self.paths = [*self.root.joinpath(self.split).glob("*.png")]
 
     def __getitem__(self, index: int) -> PIL.Image.Image:
         path = self.paths[index]
