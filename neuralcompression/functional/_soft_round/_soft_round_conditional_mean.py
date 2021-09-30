@@ -23,7 +23,7 @@ def soft_round_conditional_mean(x: torch.Tensor, alpha: float) -> torch.Tensor:
     > https://arxiv.org/abs/2006.09952
 
     Args:
-        x:
+        x: The input tensor.
         alpha: smoothness of the ``soft_round`` approximation
 
     Returns:
