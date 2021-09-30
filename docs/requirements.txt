@@ -1,5 +1,6 @@
 sphinx>=3.2.0
 pytorch-sphinx-theme>=0.0.19
 sphinxcontrib-katex
+sphinx-copybutton
 sphinx-autodoc-typehints
 pillow>=6.2.0
