@@ -17,6 +17,9 @@ def soft_round(x: torch.Tensor, alpha: float, eps: float = 1e-3) -> torch.Tensor
         x:
         alpha: smoothness of the approximation
         eps: threshold below which ``soft_round`` returns the identity
+
+    Returns:
+        The differentiable approximation of ``torch.round``.
     """
     maximum = torch.tensor(max(alpha, eps))
 

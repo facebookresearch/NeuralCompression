@@ -16,6 +16,9 @@ def soft_round_inverse(
         y:
         alpha: smoothness of the approximation
         eps: threshold below which ``soft_round`` returns the identity
+
+    Returns:
+        The inverse of ``soft_round``.
     """
     maximum = torch.tensor(max(alpha, eps))
 
