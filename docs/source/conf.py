@@ -15,7 +15,6 @@
 # sys.path.insert(0, os.path.abspath("."))
 
 import neuralcompression
-import pytorch_sphinx_theme
 
 # -- Project information -----------------------------------------------------
 
@@ -24,7 +23,7 @@ copyright = "2021, Facebook"
 author = "Facebook"
 
 # The full version, including alpha/beta/rc tags
-release = neuralcompression.__version__
+release = f"v{neuralcompression.__version__}"
 
 
 # -- General configuration ---------------------------------------------------
@@ -59,9 +58,8 @@ exclude_patterns = []
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_theme = "pytorch_sphinx_theme"
-html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
+
+html_theme = "sphinx_rtd_theme"
 
 html_theme_options = {
     "analytics_id": "",
@@ -69,14 +67,17 @@ html_theme_options = {
     "display_version": True,
     "logo_only": True,
     "navigation_with_keys": True,
-    "pytorch_project": "docs",
 }
-
-html_logo = "_static/img/pytorch-logo-dark.svg"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-htmlhelp_basename = "PyTorchdoc"
+# intersphinx maps
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable", None),
+    "torch": ("https://pytorch.org/docs/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+}
