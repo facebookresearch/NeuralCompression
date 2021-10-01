@@ -62,11 +62,11 @@ class _ResidualBlock(torch.nn.Module):
 
 class HiFiCGenerator(torch.nn.Module):
     def __init__(
-            self,
-            input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
-            batch_size: int = 8,
-            latent_features: int = 220,
-            n_residual_blocks: int = 9,
+        self,
+        input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
+        batch_size: int = 8,
+        latent_features: int = 220,
+        n_residual_blocks: int = 9,
     ):
         super(HiFiCGenerator, self).__init__()
 

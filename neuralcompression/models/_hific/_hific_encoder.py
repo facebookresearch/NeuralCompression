@@ -30,12 +30,7 @@ class HiFiCEncoder(torch.nn.Module):
             if index == 0:
                 block = torch.nn.Sequential(
                     torch.nn.ReflectionPad2d(3),
-                    torch.nn.Conv2d(
-                        in_channels,
-                        out_channels,
-                        (7, 7),
-                        (1, 1)
-                    ),
+                    torch.nn.Conv2d(in_channels, out_channels, (7, 7), (1, 1)),
                     _channel_norm_2d(
                         out_channels,
                         affine=True,
@@ -54,11 +49,7 @@ class HiFiCEncoder(torch.nn.Module):
                         padding=0,
                         padding_mode="reflect",
                     ),
-                    _channel_norm_2d(
-                        out_channels,
-                        affine=True,
-                        momentum=0.1
-                    ),
+                    _channel_norm_2d(out_channels, affine=True, momentum=0.1),
                     torch.nn.ReLU(),
                 )
 
@@ -69,12 +60,7 @@ class HiFiCEncoder(torch.nn.Module):
         self.blocks += [
             torch.nn.Sequential(
                 torch.nn.ReflectionPad2d(1),
-                torch.nn.Conv2d(
-                    out_channels,
-                    latent_features,
-                    (3, 3),
-                    (1, 1)
-                ),
+                torch.nn.Conv2d(out_channels, latent_features, (3, 3), (1, 1)),
             )
         ]
 

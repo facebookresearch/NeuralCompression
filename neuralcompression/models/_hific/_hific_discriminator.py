@@ -61,8 +61,8 @@ class HiFiCDiscriminator(torch.nn.Module):
     def forward(
         self, x: torch.Tensor, y: torch.Tensor
     ) -> typing.Tuple[torch.Tensor, torch.Tensor]:
-        predictions = self.convolutions(
-            torch.cat((x, self.input_sequence(y)), 1)
-        ).view(-1, 1)
+        predictions = self.convolutions(torch.cat((x, self.input_sequence(y)), 1)).view(
+            -1, 1
+        )
 
         return torch.sigmoid(predictions), predictions
