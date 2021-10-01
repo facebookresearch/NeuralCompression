@@ -34,13 +34,9 @@ class _ResidualBlock(torch.nn.Module):
             input_dimensions[1], input_dimensions[1], kernel_size, stride
         )
 
-        kwargs = {
-            "affine": True,
-            "momentum": 0.1,
-        }
+        self.norm_a = _channel_norm_2d(input_dimensions[1], affine=True, momentum=0.1)
 
-        self.norm_a = _channel_norm_2d(input_dimensions[1], **kwargs)
-        self.norm_b = _channel_norm_2d(input_dimensions[1], **kwargs)
+        self.norm_b = _channel_norm_2d(input_dimensions[1], affine=True, momentum=0.1)
 
     def forward(self, x):
         identity_map = x
@@ -107,8 +103,8 @@ class HiFiCGenerator(torch.nn.Module):
                     out_channels,
                     (3, 3),
                     (2, 2),
-                    output_padding=(1, 1),
-                    padding=(1, 1),
+                    (1, 1),
+                    (1, 1),
                 ),
                 _channel_norm_2d(
                     out_channels,
