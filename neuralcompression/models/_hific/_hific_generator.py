@@ -62,11 +62,11 @@ class _ResidualBlock(torch.nn.Module):
 
 class HiFiCGenerator(torch.nn.Module):
     def __init__(
-        self,
-        input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
-        batch_size: int = 8,
-        latent_features: int = 220,
-        n_residual_blocks: int = 9,
+            self,
+            input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
+            batch_size: int = 8,
+            latent_features: int = 220,
+            n_residual_blocks: int = 9,
     ):
         super(HiFiCGenerator, self).__init__()
 
@@ -74,22 +74,19 @@ class HiFiCGenerator(torch.nn.Module):
 
         filters = [960, 480, 240, 120, 60]
 
-        conv_kwargs = {
-            "output_padding": 1,
-            "padding": 1,
-            "stride": 2,
-        }
-
-        norm_kwargs = {
-            "affine": True,
-            "momentum": 0.1,
-        }
-
         self.block_0 = torch.nn.Sequential(
-            _channel_norm_2d(latent_features, **norm_kwargs),
+            _channel_norm_2d(
+                latent_features,
+                affine=True,
+                momentum=0.1,
+            ),
             torch.nn.ReflectionPad2d(1),
             torch.nn.Conv2d(latent_features, filters[0], (3, 3), (1, 1)),
-            _channel_norm_2d(filters[0], **norm_kwargs),
+            _channel_norm_2d(
+                filters[0],
+                affine=True,
+                momentum=0.1,
+            ),
         )
 
         for m in range(self.n_residual_blocks):
@@ -99,34 +96,38 @@ class HiFiCGenerator(torch.nn.Module):
 
             self.add_module(f"_ResidualBlock_{str(m)}", residual_block_m)
 
-        self.block_1 = torch.nn.Sequential(
-            torch.nn.ConvTranspose2d(filters[0], filters[1], (3, 3), **conv_kwargs),
-            _channel_norm_2d(filters[1], **norm_kwargs),
-            torch.nn.ReLU(),
-        )
+        self.blocks = []
 
-        self.block_2 = torch.nn.Sequential(
-            torch.nn.ConvTranspose2d(filters[1], filters[2], (3, 3), **conv_kwargs),
-            _channel_norm_2d(filters[2], **norm_kwargs),
-            torch.nn.ReLU(),
-        )
+        in_channels = filters[0]
 
-        self.block_3 = torch.nn.Sequential(
-            torch.nn.ConvTranspose2d(filters[2], filters[3], (3, 3), **conv_kwargs),
-            _channel_norm_2d(filters[3], **norm_kwargs),
-            torch.nn.ReLU(),
-        )
+        for out_channels in filters[1:]:
+            block = torch.nn.Sequential(
+                torch.nn.ConvTranspose2d(
+                    in_channels,
+                    out_channels,
+                    (3, 3),
+                    (2, 2),
+                    output_padding=(1, 1),
+                    padding=(1, 1),
+                ),
+                _channel_norm_2d(
+                    out_channels,
+                    affine=True,
+                    momentum=0.1,
+                ),
+                torch.nn.ReLU(),
+            )
 
-        self.block_4 = torch.nn.Sequential(
-            torch.nn.ConvTranspose2d(filters[3], filters[4], (3, 3), **conv_kwargs),
-            _channel_norm_2d(filters[4], **norm_kwargs),
-            torch.nn.ReLU(),
-        )
+            self.blocks += [block]
 
-        self.features = torch.nn.Sequential(
+            in_channels = out_channels
+
+        block = torch.nn.Sequential(
             torch.nn.ReflectionPad2d(3),
             torch.nn.Conv2d(filters[-1], 3, (7, 7), (1, 1)),
         )
+
+        self.blocks += [block]
 
     def forward(self, x):
         block_0 = self.block_0(x)
@@ -141,9 +142,7 @@ class HiFiCGenerator(torch.nn.Module):
 
         x += block_0
 
-        x = self.block_1(x)
-        x = self.block_2(x)
-        x = self.block_3(x)
-        x = self.block_4(x)
+        for block in self.blocks:
+            x = block(x)
 
-        return self.features(x)
+        return x
