@@ -67,4 +67,16 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: System :: Archiving :: Compression",
     ],
+    extras_require={
+        "dev": [
+            "black>=21.9b0",
+            "pre-commit>=2.15.0",
+        ],
+        "docs": [
+            "pytorch_sphinx_theme @ git+https://github.com/pytorch/pytorch_sphinx_theme.git#egg=pytorch_sphinx_theme",
+            "sphinx-autodoc-typehints>=1.12.0",
+            "sphinx-copybutton>=0.3.1",
+            "sphinx>=4.2.0",
+        ],
+    },
 )
