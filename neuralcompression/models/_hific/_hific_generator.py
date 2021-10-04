@@ -66,6 +66,7 @@ class HiFiCGenerator(torch.nn.Module):
         latent_features: number of bottleneck features
         n_residual_blocks: number of residual blocks
     """
+
     def __init__(
         self,
         input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),

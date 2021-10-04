@@ -20,6 +20,7 @@ class HiFiCDiscriminator(torch.nn.Module):
         image_dimensions: shape of the image tensor
         latent_features: number of bottleneck features
     """
+
     def __init__(
         self,
         image_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),

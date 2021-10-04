@@ -20,6 +20,7 @@ class HiFiCEncoder(torch.nn.Module):
         input_dimensions: shape of the input tensor
         latent_features: number of bottleneck features
     """
+
     def __init__(
         self,
         input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
