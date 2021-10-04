@@ -4,11 +4,12 @@ Copyright (c) Facebook, Inc. and its affiliates.
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
+
 import PIL.Image
 import pytest
 
 from neuralcompression.data import CLIC2020
-from tests.conftest import create_random_image
+from utils import create_random_image
 
 
 @pytest.fixture
