@@ -12,7 +12,7 @@ from tests.conftest import create_random_image
 
 
 @pytest.fixture
-def data(tmp_path) -> CLIC2020:
+def data(tmp_path):
     directory = tmp_path.joinpath("clic2020").joinpath("test")
 
     directory.mkdir(parents=True)
