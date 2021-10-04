@@ -13,6 +13,13 @@ from ._channel_norm_2d import _channel_norm_2d
 
 
 class HiFiCEncoder(torch.nn.Module):
+    """
+    High-Fidelity Generative Image Compression (HiFiC) encoder.
+
+    Args:
+        input_dimensions: shape of the input tensor
+        latent_features: number of bottleneck features
+    """
     def __init__(
         self,
         input_dimensions: typing.Tuple[int, int, int] = (3, 256, 256),
