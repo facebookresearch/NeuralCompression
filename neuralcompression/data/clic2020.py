@@ -68,7 +68,9 @@ class CLIC2020(torch.utils.data.Dataset):
         root: typing.Union[str, pathlib.Path],
         split: str = "train",
         download: bool = False,
-        transform: typing.Optional[typing.Callable[[PIL.Image.Image], torch.Tensor]] = None,
+        transform: typing.Optional[
+            typing.Callable[[PIL.Image.Image], torch.Tensor]
+        ] = None,
     ):
         self.root: pathlib.Path = pathlib.Path(root).joinpath("clic2020")
 
