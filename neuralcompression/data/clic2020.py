@@ -54,7 +54,7 @@ class CLIC2020(Dataset):
         "train": {
             "filename": "train.zip",
             "md5": "a6845cac88c3dd882246575f7a2fc5f9",
-            "url": os.path.join(
+            "url": join(
                 "https://data.vision.ee.ethz.ch/cvl/clic",
                 "professional_train_2020.zip",
             ),
