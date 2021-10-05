@@ -128,7 +128,7 @@ class HiFiC(torch.nn.Module):
             y = _pad_image(
                 y,
                 y.size()[2:],
-                2 ** self.prior.analysis_net.n_downsampling_layers,
+                2 ** self.prior.n_downsampling_layers,  # FIXME:
             )
 
         _, quantized_latent_features, _ = self.prior(y)
