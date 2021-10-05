@@ -99,16 +99,16 @@ class CLIC2020(torch.utils.data.Dataset):
         return len(self.paths)
 
     def download(self):
-        kwargs = {
-            "download_root": str(self.root),
-            "extract_root": str(self.root),
-            **self.splits[self.split],
-        }
+        extract_root = str(self.root)
 
         if self.split == "test":
-            kwargs["extract_root"] = self.root.joinpath("test")
+            extract_root = self.root.joinpath("test")
 
-        torchvision.datasets.utils.download_and_extract_archive(**kwargs)
+        torchvision.datasets.utils.download_and_extract_archive(
+            **self.splits[self.split],
+            download_root=str(self.root),
+            extract_root=extract_root,
+        )
 
         if self.split == "val":
             os.rename(self.root.joinpath("valid"), self.root.joinpath(self.split))
