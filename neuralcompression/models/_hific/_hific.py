@@ -110,7 +110,7 @@ class HiFiC(torch.nn.Module):
     ):
         losses = {}
 
-        if train_generator is True:
+        if train_generator:
             self.step_counter += 1
 
         image_dimensions = tuple(x.size()[1:])
