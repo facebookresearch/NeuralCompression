@@ -32,7 +32,7 @@ def data(tmp_path):
 
 class TestCLIC2020:
     def test___getitem__(self, data):
-        data, n = data
+        data, _ = data
 
         assert isinstance(data[0], PIL.Image.Image)
 
