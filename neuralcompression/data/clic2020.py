@@ -5,18 +5,23 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-import os
-import pathlib
-import shutil
-import typing
+from os import rename
+from os.path import join
+from pathlib import Path
+from shutil import rmtree
+from typing import Callable, Optional, Union
 
-import PIL.Image
-import torch.utils.data
-import torchvision.datasets.folder
-import torchvision.datasets.utils
+from PIL.Image import Image
+from torch import Tensor
+from torch.utils.data import Dataset
+from torchvision.datasets.folder import default_loader
+from torchvision.datasets.utils import (
+    download_and_extract_archive,
+    verify_str_arg,
+)
 
 
-class CLIC2020(torch.utils.data.Dataset):
+class CLIC2020(Dataset):
     """`Challenge on Learned Image Compression (CLIC) 2020
     <http://compression.cc/tasks/>`_ Dataset.
 
@@ -57,7 +62,7 @@ class CLIC2020(torch.utils.data.Dataset):
         "val": {
             "filename": "val.zip",
             "md5": "7111ee240435911db04dbc5f40d50272",
-            "url": os.path.join(
+            "url": join(
                 "https://data.vision.ee.ethz.ch/cvl/clic",
                 "professional_valid_2020.zip",
             ),
@@ -65,27 +70,23 @@ class CLIC2020(torch.utils.data.Dataset):
         "test": {
             "filename": "test.zip",
             "md5": "4476b708ea4c492505dd70061bebe202",
-            "url": os.path.join(
+            "url": join(
                 "https://storage.googleapis.com/clic2021_public",
                 "professional_test_2021.zip",
-            )
+            ),
         },
     }
 
     def __init__(
         self,
-        root: typing.Union[str, pathlib.Path],
+        root: Union[str, Path],
         split: str = "train",
         download: bool = False,
-        transform: typing.Optional[
-            typing.Callable[[PIL.Image.Image], torch.Tensor]
-        ] = None,
+        transform: Optional[Callable[[Image], Tensor]] = None,
     ):
-        self.root: pathlib.Path = pathlib.Path(root).joinpath("clic2020")
+        self.root: Path = Path(root).joinpath("clic2020")
 
-        self.split = torchvision.datasets.utils.verify_str_arg(
-            split, "split", ("train", "val", "test")
-        )
+        self.split = verify_str_arg(split, "split", ("train", "val", "test"))
 
         self.transform = transform
 
@@ -94,10 +95,10 @@ class CLIC2020(torch.utils.data.Dataset):
 
         self.paths = [*self.root.joinpath(self.split).glob("*.png")]
 
-    def __getitem__(self, index: int) -> PIL.Image.Image:
+    def __getitem__(self, index: int) -> Image:
         path = self.paths[index]
 
-        image = torchvision.datasets.folder.default_loader(path)
+        image = default_loader(path)
 
         if self.transform is not None:
             image = self.transform(image)
@@ -113,16 +114,16 @@ class CLIC2020(torch.utils.data.Dataset):
         if self.split == "test":
             extract_root = self.root.joinpath("test")
 
-        torchvision.datasets.utils.download_and_extract_archive(
+        download_and_extract_archive(
             **self.splits[self.split],
             download_root=str(self.root),
             extract_root=extract_root,
         )
 
         if self.split == "val":
-            os.rename(self.root.joinpath("valid"), self.root.joinpath(self.split))
+            rename(self.root.joinpath("valid"), self.root.joinpath(self.split))
 
         if self.split in {"train", "val"}:
-            shutil.rmtree(self.root.joinpath("__MACOSX"))
+            rmtree(self.root.joinpath("__MACOSX"))
         else:
-            shutil.rmtree(self.root.joinpath(self.split).joinpath("__MACOSX"))
+            rmtree(self.root.joinpath(self.split).joinpath("__MACOSX"))
