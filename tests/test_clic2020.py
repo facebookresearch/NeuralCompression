@@ -7,14 +7,14 @@ LICENSE file in the root directory of this source tree.
 
 from random import choice
 
-import PIL.Image
-import pytest
+from PIL.Image import Image
+from pytest import fixture
 
 from neuralcompression.data import CLIC2020
 from utils import create_random_image
 
 
-@pytest.fixture
+@fixture
 def data(tmp_path):
     directory = tmp_path.joinpath("clic2020").joinpath("test")
 
@@ -34,7 +34,7 @@ class TestCLIC2020:
     def test___getitem__(self, data):
         data, _ = data
 
-        assert isinstance(data[0], PIL.Image.Image)
+        assert isinstance(data[0], Image)
 
     def test___len__(self, data):
         data, n = data
