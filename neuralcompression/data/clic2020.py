@@ -49,17 +49,26 @@ class CLIC2020(torch.utils.data.Dataset):
         "train": {
             "filename": "train.zip",
             "md5": "a6845cac88c3dd882246575f7a2fc5f9",
-            "url": "https://data.vision.ee.ethz.ch/cvl/clic/professional_train_2020.zip",
+            "url": os.path.join(
+                "https://data.vision.ee.ethz.ch/cvl/clic",
+                "professional_train_2020.zip",
+            ),
         },
         "val": {
             "filename": "val.zip",
             "md5": "7111ee240435911db04dbc5f40d50272",
-            "url": "https://data.vision.ee.ethz.ch/cvl/clic/professional_valid_2020.zip",
+            "url": os.path.join(
+                "https://data.vision.ee.ethz.ch/cvl/clic",
+                "professional_valid_2020.zip",
+            ),
         },
         "test": {
             "filename": "test.zip",
             "md5": "4476b708ea4c492505dd70061bebe202",
-            "url": "https://storage.googleapis.com/clic2021_public/professional_test_2021.zip",
+            "url": os.path.join(
+                "https://storage.googleapis.com/clic2021_public",
+                "professional_test_2021.zip",
+            )
         },
     }
 
