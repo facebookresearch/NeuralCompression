@@ -5,26 +5,22 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from functools import partial
 from pathlib import Path
-from re import findall
 from time import sleep
-from typing import Callable, Dict, List, Optional, Type, Union
+from typing import Callable, List, Optional, Type, Union
 from urllib.request import urlopen, urlretrieve
 from zipfile import ZipFile
 
 from PIL.Image import Image
 from pytorchvideo.data.clip_sampling import ClipSampler
 from pytorchvideo.data.frame_video import FrameVideo
+from pytorchvideo.data.utils import MultiProcessSampler
 from torch import Tensor, clamp, linspace
-from torch.utils.data import Dataset, IterableDataset, RandomSampler, Sampler
+from torch.utils.data import IterableDataset, RandomSampler, Sampler
 from torchvision.datasets.utils import verify_str_arg
 from torchvision.transforms import ToTensor
 from tqdm import tqdm
-from pytorchvideo.data import make_clip_sampler
-from pytorchvideo.data.utils import MultiProcessSampler
 
 
 class CLIC2020Video(IterableDataset):
@@ -57,25 +53,22 @@ class CLIC2020Video(IterableDataset):
     url_root = "https://storage.googleapis.com/clic2021_public/txt_files"
 
     def __init__(
-            self,
-            root: Union[str, Path],
-            clip_sampler: ClipSampler,
-            split: str = "train",
-            download: bool = False,
-            transform: Optional[Callable[[Tensor], Tensor]] = None,
-            image_transform: Optional[Callable[[Image], Tensor]] = None,
-            video_sampler: Type[Sampler] = RandomSampler,
-            multithreaded_io: bool = False,
-            frames_per_clip: Optional[int] = None,
+        self,
+        root: Union[str, Path],
+        clip_sampler: ClipSampler,
+        split: str = "train",
+        download: bool = False,
+        transform: Optional[Callable[[Tensor], Tensor]] = None,
+        image_transform: Optional[Callable[[Image], Tensor]] = None,
+        video_sampler: Type[Sampler] = RandomSampler,
+        multithreaded_io: bool = False,
+        frames_per_clip: Optional[int] = None,
     ):
         self.root = Path(root)
 
         self.clip_sampler = clip_sampler
 
         self.split = verify_str_arg(split, "split", ("train", "val", "test"))
-
-        self.val_frames = self._create_data_dictionary("video_targets_valid.txt")
-        self.test_frames = self._create_data_dictionary("video_targets_test.txt")
 
         self.transform = transform
 
@@ -96,48 +89,20 @@ class CLIC2020Video(IterableDataset):
         if frames_per_clip:
             self.frames_per_clip = frames_per_clip
 
-            self.frame_filter = self._sample_clip_frames
+            self.frame_filter = self._sample_frames
 
         self._current_video = None
         self._current_video_clip = None
         self._next_clip_start_sec = 0.0
 
-    @property
-    def video_sampler(self) -> Sampler:
-        return self._video_sampler
-
-    def _sample_clip_frames(self, frame_indices: List[int]) -> List[int]:
-        n = len(frame_indices)
-
-        return [
-            frame_indices[index]
-            for index in (
-                clamp(
-                    linspace(
-                        0,
-                        n - 1,
-                        self.frames_per_clip,
-                    ),
-                    0,
-                    n - 1,
-                ).long()
-            )
+    def __getitem__(self, video_index: int) -> dict:
+        video_frame_paths = [
+            *self.root.joinpath(self._video_paths[video_index]).glob("*_y.png")
         ]
 
-    def __next__(self) -> dict:
-        if not self._video_sampler_iterator:
-            self._video_sampler_iterator = iter(MultiProcessSampler(self._video_sampler))
+        video = FrameVideo.from_frame_paths(video_frame_paths)
 
-        if self._current_video:
-            video, video_index = self._current_video
-        else:
-            video_index = next(self._video_sampler_iterator)
-
-            video_frame_paths = [*self.root.joinpath(self._video_paths[video_index]).glob("*_y.png")]
-
-            video = FrameVideo.from_frame_paths(video_frame_paths)
-
-            self._current_video = video, video_index
+        self._current_video = video, video_index
 
         clip_info = self.clip_sampler(self._next_clip_start_sec, video.duration, {})
 
@@ -166,6 +131,22 @@ class CLIC2020Video(IterableDataset):
         }
 
         return sample
+
+    def __iter__(self):
+        return self._video_sampler_iterator
+
+    def __next__(self) -> dict:
+        if not self._video_sampler_iterator:
+            self._video_sampler_iterator = iter(
+                MultiProcessSampler(self._video_sampler)
+            )
+
+        if self._current_video:
+            _, index = self._current_video
+        else:
+            index = next(self._video_sampler_iterator)
+
+        return self[index]
 
     def __len__(self) -> int:
         return len(self._video_paths)
@@ -203,22 +184,9 @@ class CLIC2020Video(IterableDataset):
 
                     progress.update()
 
-    def _create_data_dictionary(self, file: str) -> Dict:
-        with urlopen(f"{self.url_root}/{file}") as f:
-            names = f.read().decode("utf-8").splitlines()
+    def _sample_frames(self, frames: List[int]) -> List[int]:
+        n = len(frames)
 
-        frames = []
+        indicies = clamp(linspace(0, n - 1, self.frames_per_clip), 0, n - 1).long()
 
-        for name in names:
-            if name.endswith(".png"):
-                frames += [[*findall("(.+_.+-.+)_(.+)_[yuv].png", name)[0]]]
-
-        dictionary = defaultdict(list)
-
-        for k, *v in frames:
-            dictionary[k].append(v)
-
-        for k in dictionary:
-            dictionary[k] = sorted([*{*sum(dictionary[k], [])}])
-
-        return dict(dictionary)
+        return [frames[index] for index in indicies]
