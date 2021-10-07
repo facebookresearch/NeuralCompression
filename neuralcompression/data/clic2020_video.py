@@ -10,10 +10,11 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from re import findall
 from time import sleep
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, Optional, Union
 from urllib.request import urlopen, urlretrieve
 from zipfile import ZipFile
 
+from PIL.Image import Image
 from torch import Tensor, stack
 from torch.utils.data import Dataset
 from torchvision.datasets.folder import default_loader
@@ -44,15 +45,12 @@ class CLIC2020Video(Dataset):
         transform: A function/transform that takes in a
             PIL image and returns a transformed version.  E.g,
             ``transforms.RandomCrop``.
+        image_transform: A function/transform that takes in a
+            PIL image and returns a transformed version.  E.g,
+            ``transforms.RandomCrop``.
     """
 
-    URL = "https://storage.googleapis.com/clic2021_public/txt_files"
-
-    URLS_FILE = "video_urls.txt"
-    VAL_FRAMES_FILE = "video_targets_valid.txt"
-    TEST_FRAMES_FILE = "video_targets_test.txt"
-
-    videos: List[Path] = []
+    url_root = "https://storage.googleapis.com/clic2021_public/txt_files"
 
     def __init__(
         self,
@@ -60,15 +58,21 @@ class CLIC2020Video(Dataset):
         split: str = "train",
         download: bool = False,
         transform: Optional[Callable[[Tensor], Tensor]] = None,
+        image_transform: Optional[Callable[[Image], Tensor]] = None,
     ):
         self.root = Path(root)
 
         self.split = verify_str_arg(split, "split", ("train", "val", "test"))
 
-        self.val_frames = self._create_data_dictionary(self.VAL_FRAMES_FILE)
-        self.test_frames = self._create_data_dictionary(self.TEST_FRAMES_FILE)
+        self.val_frames = self._create_data_dictionary("video_targets_valid.txt")
+        self.test_frames = self._create_data_dictionary("video_targets_test.txt")
 
         self.transform = transform
+
+        if image_transform:
+            self.image_transform = image_transform
+        else:
+            self.image_transform = ToTensor()
 
         if download:
             self.download()
@@ -81,7 +85,7 @@ class CLIC2020Video(Dataset):
         frames = []
 
         for path in sorted([*path.glob("*_y.png")])[:16]:
-            frames += [ToTensor()(default_loader(path))]
+            frames += [self.image_transform(default_loader(path))]
 
         video = stack(frames)
 
@@ -96,11 +100,8 @@ class CLIC2020Video(Dataset):
     def download(self):
         self.root.mkdir(exist_ok=True, parents=True)
 
-        with urlopen(f"{self.URL}/video_urls.txt") as file:
+        with urlopen(f"{self.url_root}/video_urls.txt") as file:
             endpoints = file.read().decode("utf-8").splitlines()
-
-        # FIXME: remove after testing
-        endpoints = endpoints[:8]
 
         def f(endpoint: str):
             sleep(0.001)
@@ -130,7 +131,7 @@ class CLIC2020Video(Dataset):
                     progress.update()
 
     def _create_data_dictionary(self, file: str) -> Dict:
-        with urlopen(f"{self.URL}/{file}") as f:
+        with urlopen(f"{self.url_root}/{file}") as f:
             names = f.read().decode("utf-8").splitlines()
 
         frames = []
