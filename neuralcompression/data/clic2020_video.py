@@ -7,23 +7,27 @@ LICENSE file in the root directory of this source tree.
 
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from functools import partial
 from pathlib import Path
 from re import findall
 from time import sleep
-from typing import Callable, Dict, Optional, Union
+from typing import Callable, Dict, List, Optional, Type, Union
 from urllib.request import urlopen, urlretrieve
 from zipfile import ZipFile
 
 from PIL.Image import Image
-from torch import Tensor, stack
-from torch.utils.data import Dataset
-from torchvision.datasets.folder import default_loader
+from pytorchvideo.data.clip_sampling import ClipSampler
+from pytorchvideo.data.frame_video import FrameVideo
+from torch import Tensor, clamp, linspace
+from torch.utils.data import Dataset, IterableDataset, RandomSampler, Sampler
 from torchvision.datasets.utils import verify_str_arg
 from torchvision.transforms import ToTensor
 from tqdm import tqdm
+from pytorchvideo.data import make_clip_sampler
+from pytorchvideo.data.utils import MultiProcessSampler
 
 
-class CLIC2020Video(Dataset):
+class CLIC2020Video(IterableDataset):
     """`Challenge on Learned Image Compression (CLIC) 2020
     <http://compression.cc/tasks/>`_ Video Dataset.
 
@@ -36,15 +40,15 @@ class CLIC2020Video(Dataset):
                 <root>
                     └── [A-Za-z]_[720|1080|2160]P-[0-9a-z]{4}
                         └── *[0-9]{5}_[yuv].png
-        split: The dataset split to use. One of
-            {``train``, ``val``, ``test``}.
-            Defaults to ``train``.
-        download: If true, downloads the dataset from the
-            internet and puts it in root directory. If dataset is already
-            downloaded, it is not downloaded again.
-        transform: A function/transform that takes in a
-            PIL image and returns a transformed version.  E.g,
-            ``transforms.RandomCrop``.
+        split: The dataset split to use.
+            One of {``train``, ``val``, ``test``}. Defaults to ``train``.
+        download: If true, downloads the dataset from the internet and puts it
+            in the root directory. If the dataset is already downloaded, it is
+            not downloaded again.
+        transform: A callable that transforms a clip, e.g,
+            ``pytorchvideo.transforms.RandomResizedCrop``.
+        multithreaded_io: If true, performs input/output operations across
+            multiple threads.
         image_transform: A function/transform that takes in a
             PIL image and returns a transformed version.  E.g,
             ``transforms.RandomCrop``.
@@ -53,14 +57,20 @@ class CLIC2020Video(Dataset):
     url_root = "https://storage.googleapis.com/clic2021_public/txt_files"
 
     def __init__(
-        self,
-        root: Union[str, Path],
-        split: str = "train",
-        download: bool = False,
-        transform: Optional[Callable[[Tensor], Tensor]] = None,
-        image_transform: Optional[Callable[[Image], Tensor]] = None,
+            self,
+            root: Union[str, Path],
+            clip_sampler: ClipSampler,
+            split: str = "train",
+            download: bool = False,
+            transform: Optional[Callable[[Tensor], Tensor]] = None,
+            image_transform: Optional[Callable[[Image], Tensor]] = None,
+            video_sampler: Type[Sampler] = RandomSampler,
+            multithreaded_io: bool = False,
+            frames_per_clip: Optional[int] = None,
     ):
         self.root = Path(root)
+
+        self.clip_sampler = clip_sampler
 
         self.split = verify_str_arg(split, "split", ("train", "val", "test"))
 
@@ -77,25 +87,88 @@ class CLIC2020Video(Dataset):
         if download:
             self.download()
 
-        self.videos = [Path(path.name) for path in self.root.glob("*")]
+        self._video_paths = [Path(path.name) for path in self.root.glob("*")]
 
-    def __getitem__(self, index: int) -> Tensor:
-        path = self.root.joinpath(self.videos[index])
+        self._video_sampler = video_sampler(self._video_paths)
 
-        frames = []
+        self._video_sampler_iterator = None
 
-        for path in sorted([*path.glob("*_y.png")])[:16]:
-            frames += [self.image_transform(default_loader(path))]
+        if frames_per_clip:
+            self.frames_per_clip = frames_per_clip
 
-        video = stack(frames)
+            self.frame_filter = self._sample_clip_frames
 
-        if self.transform:
-            video = self.transform(video)
+        self._current_video = None
+        self._current_video_clip = None
+        self._next_clip_start_sec = 0.0
 
-        return video
+    @property
+    def video_sampler(self) -> Sampler:
+        return self._video_sampler
+
+    def _sample_clip_frames(self, frame_indices: List[int]) -> List[int]:
+        n = len(frame_indices)
+
+        return [
+            frame_indices[index]
+            for index in (
+                clamp(
+                    linspace(
+                        0,
+                        n - 1,
+                        self.frames_per_clip,
+                    ),
+                    0,
+                    n - 1,
+                ).long()
+            )
+        ]
+
+    def __next__(self) -> dict:
+        if not self._video_sampler_iterator:
+            self._video_sampler_iterator = iter(MultiProcessSampler(self._video_sampler))
+
+        if self._current_video:
+            video, video_index = self._current_video
+        else:
+            video_index = next(self._video_sampler_iterator)
+
+            video_frame_paths = [*self.root.joinpath(self._video_paths[video_index]).glob("*_y.png")]
+
+            video = FrameVideo.from_frame_paths(video_frame_paths)
+
+            self._current_video = video, video_index
+
+        clip_info = self.clip_sampler(self._next_clip_start_sec, video.duration, {})
+
+        if clip_info.aug_index == 0:
+            self._current_video_clip = video.get_clip(
+                clip_info.clip_start_sec,
+                clip_info.clip_end_sec,
+                self.frame_filter,
+            )
+
+        if clip_info.is_last_clip:
+            self._current_video = None
+
+            self._next_clip_start_sec = 0.0
+        else:
+            self._next_clip_start_sec = clip_info.clip_end_sec
+
+        sample = {
+            "aug_index": clip_info.aug_index,
+            "clip_index": clip_info.clip_index,
+            "label": None,
+            "video": self._current_video_clip["video"],
+            "video_index": video_index,
+            "video_label": None,
+            "video_name": str(self._video_paths[video_index]),
+        }
+
+        return sample
 
     def __len__(self) -> int:
-        return len(self.videos)
+        return len(self._video_paths)
 
     def download(self):
         self.root.mkdir(exist_ok=True, parents=True)
