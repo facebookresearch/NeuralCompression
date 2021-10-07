@@ -17,7 +17,6 @@ from pytorchvideo.data.frame_video import FrameVideo
 from pytorchvideo.data.utils import MultiProcessSampler
 from torch import Tensor, clamp, linspace
 from torch.utils.data import IterableDataset, RandomSampler, Sampler
-from torch.utils.data.dataset import T_co
 from torchvision.datasets.utils import verify_str_arg
 from tqdm import tqdm
 
