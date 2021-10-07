@@ -13,12 +13,12 @@ from time import sleep
 from typing import Callable, Dict, List, Optional, Union
 from urllib.request import urlopen, urlretrieve
 from zipfile import ZipFile
-from glob import glob
 
-from PIL.Image import Image
-from torch import Tensor
+from torch import Tensor, stack
 from torch.utils.data import Dataset
+from torchvision.datasets.folder import default_loader
 from torchvision.datasets.utils import verify_str_arg
+from torchvision.transforms import ToTensor
 from tqdm import tqdm
 
 
@@ -34,7 +34,7 @@ class CLIC2020Video(Dataset):
 
                 <root>
                     └── [A-Za-z]_[720|1080|2160]P-[0-9a-z]{4}
-                        └── *[0-9]{5}_[yuv].png
+                        └── [A-Za-z]_[720|1080|2160]P-[0-9a-z]{4}[0-9]{5}_[yuv].png
         split: The dataset split to use. One of
             {``train``, ``val``, ``test``}.
             Defaults to ``train``.
@@ -59,8 +59,7 @@ class CLIC2020Video(Dataset):
         root: Union[str, Path],
         split: str = "train",
         download: bool = False,
-        transform: Optional[Callable[[Image], Tensor]] = None,
-        max_workers: Optional[int] = None,
+        transform: Optional[Callable[[Tensor], Tensor]] = None,
     ):
         self.root = Path(root)
 
@@ -71,21 +70,25 @@ class CLIC2020Video(Dataset):
 
         self.transform = transform
 
-        self.max_workers = max_workers
-
         if download:
             self.download()
 
         self.videos = [Path(path.name) for path in self.root.glob("*")]
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> Tensor:
         path = self.root.joinpath(self.videos[index])
 
-        y_paths = path.glob("*_y.png")
-        u_paths = path.glob("*_u.png")
-        v_paths = path.glob("*_v.png")
+        frames = []
 
-        return [*path.glob("*.png")]
+        for path in sorted([*path.glob("*_y.png")])[:16]:
+            frames += [ToTensor()(default_loader(path))]
+
+        video = stack(frames)
+
+        if self.transform:
+            video = self.transform(video)
+
+        return video
 
     def __len__(self) -> int:
         return len(self.videos)
@@ -108,7 +111,7 @@ class CLIC2020Video(Dataset):
                 archive.extractall(self.root)
 
         with tqdm(total=len(endpoints)) as progress:
-            with ThreadPoolExecutor(self.max_workers) as executor:
+            with ThreadPoolExecutor() as executor:
                 futures = {
                     executor.submit(
                         f,
