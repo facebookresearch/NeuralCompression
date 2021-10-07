@@ -13,6 +13,8 @@ import urllib.request
 import os.path
 from pathlib import Path
 from typing import Callable, Optional, Union
+import concurrent.futures
+import time
 
 from PIL.Image import Image
 from torch import Tensor
@@ -53,6 +55,7 @@ class CLIC2020Video(Dataset):
             PIL image and returns a transformed version.  E.g,
             ``transforms.RandomCrop``.
     """
+
     URL = "https://storage.googleapis.com/clic2021_public/txt_files"
 
     URLS_FILE = "video_urls.txt"
@@ -60,13 +63,13 @@ class CLIC2020Video(Dataset):
     TEST_FRAMES_FILE = "video_targets_test.txt"
 
     def __init__(
-            self,
-            root: Union[str, Path],
-            split: str = "train",
-            download: bool = False,
-            transform: Optional[Callable[[Image], Tensor]] = None,
+        self,
+        root: Union[str, Path],
+        split: str = "train",
+        download: bool = False,
+        transform: Optional[Callable[[Image], Tensor]] = None,
     ):
-        self.root = Path(root).joinpath("clic2020").joinpath("video")
+        self.root = Path(root).joinpath("clic-2020-video")
 
         self.root.mkdir(exist_ok=True, parents=True)
 
@@ -93,11 +96,39 @@ class CLIC2020Video(Dataset):
         with urllib.request.urlopen(f"{self.URL}/video_urls.txt") as file:
             endpoints = file.read().decode("utf-8").splitlines()
 
-        for endpoint in tqdm.tqdm(endpoints[:2]):
+        # FIXME: remove after testing
+        endpoints = endpoints[:16]
+
+        def f(endpoint: str):
+            time.sleep(0.001)
+
             path, _ = urllib.request.urlretrieve(endpoint)
 
-            with zipfile.ZipFile(path, "r") as file:
-                file.extractall(self.root.joinpath("train"))
+            with zipfile.ZipFile(path, "r") as archive:
+                archive.extractall(self.root.joinpath("train"))
+
+        with tqdm.tqdm(total=len(endpoints)) as progress:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                futures = {
+                    executor.submit(f, endpoint): endpoint for endpoint in endpoints
+                }
+
+                completed = {}
+
+                for future in concurrent.futures.as_completed(futures):
+                    endpoint = futures[future]
+
+                    completed[endpoint] = future.result()
+
+                    progress.update()
+
+    def _download_and_extract(self, endpoint: str):
+        time.sleep(0.001)
+
+        path, _ = urllib.request.urlretrieve(endpoint)
+
+        with zipfile.ZipFile(path, "r") as file:
+            file.extractall(self.root.joinpath("train"))
 
     def _create_data_dictionary(self, file: str) -> typing.Dict:
         pattern = re.compile("(.+_.+-.+)_(.+)_[yuv].png")
@@ -120,10 +151,3 @@ class CLIC2020Video(Dataset):
             dictionary[k] = sorted([*{*sum(dictionary[k], [])}])
 
         return dict(dictionary)
-
-
-if __name__ == "__main__":
-    clic2020_video = CLIC2020Video(
-        "/Users/allengoodman/Documents/com/github/0x00b1/NeuralCompression",
-        download=True
-    )
