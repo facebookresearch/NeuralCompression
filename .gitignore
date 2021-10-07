@@ -148,3 +148,6 @@ lightning_logs/
 
 # JetBrains editors
 .idea/
+
+# macOS
+.DS_Store
