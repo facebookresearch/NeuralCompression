@@ -45,9 +45,6 @@ class CLIC2020Video(IterableDataset):
             ``pytorchvideo.transforms.RandomResizedCrop``.
         multithreaded_io: If true, performs input/output operations across
             multiple threads.
-        image_transform: A function/transform that takes in a
-            PIL image and returns a transformed version.  E.g,
-            ``transforms.RandomCrop``.
     """
 
     url_root = "https://storage.googleapis.com/clic2021_public/txt_files"
@@ -59,23 +56,17 @@ class CLIC2020Video(IterableDataset):
         split: str = "train",
         download: bool = False,
         transform: Optional[Callable[[Tensor], Tensor]] = None,
-        image_transform: Optional[Callable[[Image], Tensor]] = None,
         video_sampler: Type[Sampler] = RandomSampler,
         multithreaded_io: bool = False,
         frames_per_clip: Optional[int] = None,
     ):
         self.root = Path(root)
 
-        self.clip_sampler = clip_sampler
+        self._clip_sampler = clip_sampler
 
         self.split = verify_str_arg(split, "split", ("train", "val", "test"))
 
-        self.transform = transform
-
-        if image_transform:
-            self.image_transform = image_transform
-        else:
-            self.image_transform = ToTensor()
+        self._transform = transform
 
         if download:
             self.download()
@@ -87,9 +78,9 @@ class CLIC2020Video(IterableDataset):
         self._video_sampler_iterator = None
 
         if frames_per_clip:
-            self.frames_per_clip = frames_per_clip
+            self._frames_per_clip = frames_per_clip
 
-            self.frame_filter = self._sample_frames
+            self._frame_filter = self._sample_frames
 
         self._current_video = None
         self._current_video_clip = None
@@ -104,13 +95,13 @@ class CLIC2020Video(IterableDataset):
 
         self._current_video = video, video_index
 
-        clip_info = self.clip_sampler(self._next_clip_start_sec, video.duration, {})
+        clip_info = self._clip_sampler(self._next_clip_start_sec, video.duration, {})
 
         if clip_info.aug_index == 0:
             self._current_video_clip = video.get_clip(
                 clip_info.clip_start_sec,
                 clip_info.clip_end_sec,
-                self.frame_filter,
+                self._frame_filter,
             )
 
         if clip_info.is_last_clip:
@@ -133,13 +124,14 @@ class CLIC2020Video(IterableDataset):
         return sample
 
     def __iter__(self):
+        if not self._video_sampler_iterator:
+            self._video_sampler_iterator = iter(MultiProcessSampler(self._video_sampler))
+
         return self._video_sampler_iterator
 
     def __next__(self) -> dict:
         if not self._video_sampler_iterator:
-            self._video_sampler_iterator = iter(
-                MultiProcessSampler(self._video_sampler)
-            )
+            self._video_sampler_iterator = iter(MultiProcessSampler(self._video_sampler))
 
         if self._current_video:
             _, index = self._current_video
@@ -187,6 +179,6 @@ class CLIC2020Video(IterableDataset):
     def _sample_frames(self, frames: List[int]) -> List[int]:
         n = len(frames)
 
-        indicies = clamp(linspace(0, n - 1, self.frames_per_clip), 0, n - 1).long()
+        indicies = clamp(linspace(0, n - 1, self._frames_per_clip), 0, n - 1).long()
 
         return [frames[index] for index in indicies]
