@@ -10,9 +10,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from re import findall
 from time import sleep
-from typing import Callable, Dict, Optional, Union
+from typing import Callable, Dict, List, Optional, Union
 from urllib.request import urlopen, urlretrieve
 from zipfile import ZipFile
+from glob import glob
 
 from PIL.Image import Image
 from torch import Tensor
@@ -26,14 +27,14 @@ class CLIC2020Video(Dataset):
     <http://compression.cc/tasks/>`_ Video Dataset.
 
     Args:
-        root: Root directory where images are downloaded to.
+        root: Root directory where videos are downloaded to.
             Expects the following folder structure if ``download=False``:
 
             .. code::
 
                 <root>
                     └── [A-Za-z]_[720|1080|2160]P-[0-9a-z]{4}
-                        └── [A-Za-z]_[720|1080|2160]P-[0-9a-z]{4}[0-9]{5}_[yuv].png
+                        └── *[0-9]{5}_[yuv].png
         split: The dataset split to use. One of
             {``train``, ``val``, ``test``}.
             Defaults to ``train``.
@@ -51,6 +52,8 @@ class CLIC2020Video(Dataset):
     VAL_FRAMES_FILE = "video_targets_valid.txt"
     TEST_FRAMES_FILE = "video_targets_test.txt"
 
+    videos: List[Path] = []
+
     def __init__(
         self,
         root: Union[str, Path],
@@ -59,9 +62,7 @@ class CLIC2020Video(Dataset):
         transform: Optional[Callable[[Image], Tensor]] = None,
         max_workers: Optional[int] = None,
     ):
-        self.root = Path(root).joinpath("clic-2020-video")
-
-        self.root.mkdir(exist_ok=True, parents=True)
+        self.root = Path(root)
 
         self.split = verify_str_arg(split, "split", ("train", "val", "test"))
 
@@ -75,15 +76,22 @@ class CLIC2020Video(Dataset):
         if download:
             self.download()
 
-    def __getitem__(self, index: int) -> Image:
-        raise NotImplementedError
+        self.videos = [Path(path.name) for path in self.root.glob("*")]
+
+    def __getitem__(self, index: int):
+        path = self.root.joinpath(self.videos[index])
+
+        y_paths = path.glob("*_y.png")
+        u_paths = path.glob("*_u.png")
+        v_paths = path.glob("*_v.png")
+
+        return [*path.glob("*.png")]
 
     def __len__(self) -> int:
-        raise NotImplementedError
+        return len(self.videos)
 
     def download(self):
-        for split in ("train", "val", "test"):
-            self.root.joinpath(split).mkdir(exist_ok=True, parents=True)
+        self.root.mkdir(exist_ok=True, parents=True)
 
         with urlopen(f"{self.URL}/video_urls.txt") as file:
             endpoints = file.read().decode("utf-8").splitlines()
@@ -97,12 +105,16 @@ class CLIC2020Video(Dataset):
             path, _ = urlretrieve(endpoint)
 
             with ZipFile(path, "r") as archive:
-                archive.extractall(self.root.joinpath("train"))
+                archive.extractall(self.root)
 
         with tqdm(total=len(endpoints)) as progress:
             with ThreadPoolExecutor(self.max_workers) as executor:
                 futures = {
-                    executor.submit(f, endpoint): endpoint for endpoint in endpoints
+                    executor.submit(
+                        f,
+                        endpoint,
+                    ): endpoint
+                    for endpoint in endpoints
                 }
 
                 completed = {}
