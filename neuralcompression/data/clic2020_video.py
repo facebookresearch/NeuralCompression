@@ -5,23 +5,20 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-import re
-import json
-import collections
-import typing
-import urllib.request
-import os.path
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Callable, Optional, Union
-import concurrent.futures
-import time
+from re import findall
+from time import sleep
+from typing import Callable, Dict, Optional, Union
+from urllib.request import urlopen, urlretrieve
+from zipfile import ZipFile
 
 from PIL.Image import Image
 from torch import Tensor
 from torch.utils.data import Dataset
 from torchvision.datasets.utils import verify_str_arg
-import tqdm
-import zipfile
+from tqdm import tqdm
 
 
 class CLIC2020Video(Dataset):
@@ -68,6 +65,7 @@ class CLIC2020Video(Dataset):
         split: str = "train",
         download: bool = False,
         transform: Optional[Callable[[Image], Tensor]] = None,
+        max_workers: Optional[int] = None,
     ):
         self.root = Path(root).joinpath("clic-2020-video")
 
@@ -79,6 +77,8 @@ class CLIC2020Video(Dataset):
         self.test_frames = self._create_data_dictionary(self.TEST_FRAMES_FILE)
 
         self.transform = transform
+
+        self.max_workers = max_workers
 
         if download:
             self.download()
@@ -93,56 +93,46 @@ class CLIC2020Video(Dataset):
         for split in ("train", "val", "test"):
             self.root.joinpath(split).mkdir(exist_ok=True, parents=True)
 
-        with urllib.request.urlopen(f"{self.URL}/video_urls.txt") as file:
+        with urlopen(f"{self.URL}/video_urls.txt") as file:
             endpoints = file.read().decode("utf-8").splitlines()
 
         # FIXME: remove after testing
-        endpoints = endpoints[:16]
+        endpoints = endpoints[:8]
 
         def f(endpoint: str):
-            time.sleep(0.001)
+            sleep(0.001)
 
-            path, _ = urllib.request.urlretrieve(endpoint)
+            path, _ = urlretrieve(endpoint)
 
-            with zipfile.ZipFile(path, "r") as archive:
+            with ZipFile(path, "r") as archive:
                 archive.extractall(self.root.joinpath("train"))
 
-        with tqdm.tqdm(total=len(endpoints)) as progress:
-            with concurrent.futures.ThreadPoolExecutor() as executor:
+        with tqdm(total=len(endpoints)) as progress:
+            with ThreadPoolExecutor(self.max_workers) as executor:
                 futures = {
                     executor.submit(f, endpoint): endpoint for endpoint in endpoints
                 }
 
                 completed = {}
 
-                for future in concurrent.futures.as_completed(futures):
+                for future in as_completed(futures):
                     endpoint = futures[future]
 
                     completed[endpoint] = future.result()
 
                     progress.update()
 
-    def _download_and_extract(self, endpoint: str):
-        time.sleep(0.001)
-
-        path, _ = urllib.request.urlretrieve(endpoint)
-
-        with zipfile.ZipFile(path, "r") as file:
-            file.extractall(self.root.joinpath("train"))
-
-    def _create_data_dictionary(self, file: str) -> typing.Dict:
-        pattern = re.compile("(.+_.+-.+)_(.+)_[yuv].png")
-
-        with urllib.request.urlopen(f"{self.URL}/{file}") as f:
+    def _create_data_dictionary(self, file: str) -> Dict:
+        with urlopen(f"{self.URL}/{file}") as f:
             names = f.read().decode("utf-8").splitlines()
 
         frames = []
 
         for name in names:
             if name.endswith(".png"):
-                frames += [[*re.findall(pattern, name)[0]]]
+                frames += [[*findall("(.+_.+-.+)_(.+)_[yuv].png", name)[0]]]
 
-        dictionary = collections.defaultdict(list)
+        dictionary = defaultdict(list)
 
         for k, *v in frames:
             dictionary[k].append(v)
