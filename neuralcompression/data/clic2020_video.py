@@ -32,16 +32,9 @@ class CLIC2020Video(Dataset):
             .. code::
 
                 <root>
-                    └── clic-2020-video
-                        ├── test
-                        │   ├── [A-Za-z]_[720|1080|2160]P-[0-9a-z]{4}
-                        │   │   └── [0-9]{5}_[yuv].png
-                        ├── train
-                        │   ├── [A-Za-z]_[720|1080|2160]P-[0-9a-z]{4}
-                        │   │   └── [0-9]{5}_[yuv].png
-                        └── val
-                            └── [A-Za-z]_[720|1080|2160]P-[0-9a-z]{4}
-                                └── [0-9]{5}_[yuv].png
+                    └── [A-Za-z]_[720|1080|2160]P-[0-9a-z]{4}
+                        └── [A-Za-z]_[720|1080|2160]P-[0-9a-z]{4}[0-9]{5}_[yuv].png
+
         split: The dataset split to use. One of
             {``train``, ``val``, ``test``}.
             Defaults to ``train``.
