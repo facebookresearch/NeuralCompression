@@ -77,7 +77,8 @@ class CLIC2020Video(IterableDataset):
 
         if frames_per_clip:
             self._frame_filter = partial(
-                CLIC2020Video.sample_frames, frames_per_clip=frames_per_clip
+                self._sample_frames,
+                frames_per_clip=frames_per_clip,
             )
 
         if download:
@@ -189,7 +190,7 @@ class CLIC2020Video(IterableDataset):
                     progress.update()
 
     @staticmethod
-    def sample_frames(frames: List[int], frames_per_clip: int) -> List[int]:
+    def _sample_frames(frames: List[int], frames_per_clip: int) -> List[int]:
         n = len(frames)
 
         indicies = clamp(linspace(0, n - 1, frames_per_clip), 0, n - 1).long()
