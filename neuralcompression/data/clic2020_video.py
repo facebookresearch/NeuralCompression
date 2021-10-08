@@ -6,6 +6,7 @@ LICENSE file in the root directory of this source tree.
 """
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from functools import partial
 from pathlib import Path
 from time import sleep
 from typing import Callable, Dict, List, Optional, Tuple, Type, Union
@@ -50,6 +51,7 @@ class CLIC2020Video(IterableDataset):
     _current_video: Optional[Tuple[FrameVideo, int]] = None
     _current_video_clip: Optional[Dict[str, Optional[Tensor]]]
     _destination_root = "https://storage.googleapis.com/clic2021_public/txt_files"
+    _frame_filter = None
     _next_clip_start_sec: float = 0.0
 
     def __init__(
@@ -74,9 +76,7 @@ class CLIC2020Video(IterableDataset):
         self._multithreaded_io = multithreaded_io
 
         if frames_per_clip:
-            self._frames_per_clip = frames_per_clip
-
-            self._frame_filter = self._sample_frames
+            self._frame_filter = partial(CLIC2020Video.sample_frames, frames_per_clip=frames_per_clip)
 
         if download:
             self.download()
@@ -109,6 +109,8 @@ class CLIC2020Video(IterableDataset):
             video_frame_paths = [
                 *self._root.joinpath(self._video_paths[index]).glob("*_y.png")
             ]
+
+            self.foo = video_frame_paths
 
             video = FrameVideo.from_frame_paths(
                 video_frame_paths,
@@ -184,9 +186,10 @@ class CLIC2020Video(IterableDataset):
 
                     progress.update()
 
-    def _sample_frames(self, frames: List[int]) -> List[int]:
+    @staticmethod
+    def sample_frames(frames: List[int], frames_per_clip: int) -> List[int]:
         n = len(frames)
 
-        indicies = clamp(linspace(0, n - 1, self._frames_per_clip), 0, n - 1).long()
+        indicies = clamp(linspace(0, n - 1, frames_per_clip), 0, n - 1).long()
 
         return [frames[index] for index in indicies]
