@@ -46,6 +46,7 @@ class CLIC2020Video(IterableDataset):
             multiple threads.
         frames_per_clip:
     """
+
     _current_video: Optional[Tuple[FrameVideo, int]] = None
     _current_video_clip: Optional[Dict[str, Optional[Tensor]]]
     _destination_root = "https://storage.googleapis.com/clic2021_public/txt_files"
@@ -70,6 +71,13 @@ class CLIC2020Video(IterableDataset):
 
         self._transform = transform
 
+        self._multithreaded_io = multithreaded_io
+
+        if frames_per_clip:
+            self._frames_per_clip = frames_per_clip
+
+            self._frame_filter = self._sample_frames
+
         if download:
             self.download()
 
@@ -78,11 +86,6 @@ class CLIC2020Video(IterableDataset):
         self._video_sampler = video_sampler(self._video_paths)
 
         self._video_sampler_iterator = iter(MultiProcessSampler(self._video_sampler))
-
-        if frames_per_clip:
-            self._frames_per_clip = frames_per_clip
-
-            self._frame_filter = self._sample_frames
 
         self._next_clip_start_sec = 0.0
 
@@ -107,7 +110,10 @@ class CLIC2020Video(IterableDataset):
                 *self._root.joinpath(self._video_paths[index]).glob("*_y.png")
             ]
 
-            video = FrameVideo.from_frame_paths(video_frame_paths)
+            video = FrameVideo.from_frame_paths(
+                video_frame_paths,
+                multithreaded_io=self._multithreaded_io,
+            )
 
             self._current_video = video, index
 
