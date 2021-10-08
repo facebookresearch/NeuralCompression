@@ -76,7 +76,9 @@ class CLIC2020Video(IterableDataset):
         self._multithreaded_io = multithreaded_io
 
         if frames_per_clip:
-            self._frame_filter = partial(CLIC2020Video.sample_frames, frames_per_clip=frames_per_clip)
+            self._frame_filter = partial(
+                CLIC2020Video.sample_frames, frames_per_clip=frames_per_clip
+            )
 
         if download:
             self.download()
