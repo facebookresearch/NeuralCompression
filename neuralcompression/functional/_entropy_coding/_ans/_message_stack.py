@@ -1,8 +1,12 @@
 from typing import Callable, Optional, Tuple
 
-from torch import Tensor, any, cat, div, int64, remainder, sum, tensor
+from torch import Tensor, any, cat, div, full, int64, ravel, remainder, sum, tensor
 
 _MessageStack = Tuple[Tensor, Optional["_MessageStack"]]
+
+
+def _empty(shape: Tuple[int, ...]) -> _MessageStack:
+    return full(shape, 1 << 31), ()
 
 
 def _pop(
@@ -89,3 +93,18 @@ def _slice(
             break
 
     return cat(messages), stack
+
+
+def _to_tensor(message_stack: _MessageStack) -> Tensor:
+    message, stack = message_stack
+
+    message = ravel(message)
+
+    messages = [message >> 32, message]
+
+    while stack:
+        message, stack = stack
+
+        messages += [message]
+
+    return cat(messages)
