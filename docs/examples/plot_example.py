@@ -26,4 +26,4 @@ print("my variable is {}".format(myvariable))
 # In the built documentation, it will be rendered as rST after the code above!
 # This is also another code block.
 
-print('my variable plus 2 is {}'.format(myvariable + 2))
+print("my variable plus 2 is {}".format(myvariable + 2))
