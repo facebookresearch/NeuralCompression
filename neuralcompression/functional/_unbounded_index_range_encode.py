@@ -33,9 +33,9 @@ def unbounded_index_range_encode(
 
         cdf_y = cdf[cdf_index]
 
-        maximum = cdf_size[cdf_index] - 2
+        maximum = int(cdf_size[cdf_index] - 2)
 
-        v = data[i] - offset[cdf_index]
+        v = int(data[i] - offset[cdf_index])
 
         if v < 0:
             overflow = -2 * v - 1
