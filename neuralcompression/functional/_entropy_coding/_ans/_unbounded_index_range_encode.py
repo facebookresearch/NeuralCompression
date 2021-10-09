@@ -44,7 +44,7 @@ def unbounded_index_range_encode(
             must be less than or equal to ``precision``.
 
     Returns:
-        A range-coded scalar string and a prefix varint string.
+        A range-coded scalar string.
     """
     instructions = []
 
