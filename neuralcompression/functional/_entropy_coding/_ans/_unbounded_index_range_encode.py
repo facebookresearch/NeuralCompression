@@ -2,7 +2,7 @@ from typing import Callable, Tuple
 
 from torch import Tensor, arange, int32, int64
 
-from ._message_stack import _empty, _to_tensor, _push
+from ._message_stack import _empty, _push, _to_tensor
 
 
 def _cdf_to_f(cdf_y: Tensor) -> Callable[[int], Tuple[Tensor, Tensor]]:
