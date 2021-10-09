@@ -19,7 +19,7 @@ def unbounded_index_range_encode(
     cdf_size: Tensor,
     offset: Tensor,
     precision: int,
-    overflow_width: int = 4,
+    overflow_width: int,
 ) -> Tensor:
     """Range encodes unbounded integer data using an indexed probability table.
 
@@ -39,9 +39,9 @@ def unbounded_index_range_encode(
             should be in the half-open interval
             :math:`[offset_{i}, offset_{i} + m)`.
         precision: the number of bits for probability quantization, must be
-            :math:`\leq 16`.
+            less than or equal to 16.
         overflow_width: the bit width of the variable-length overflow code,
-            must be :math:`\leq precision`.
+            must be less than or equal to ``precision``.
 
     Returns:
         A range-coded scalar string and a prefix varint string.
