@@ -11,6 +11,7 @@ from ._soft_round import (
     soft_round_conditional_mean,
     soft_round_inverse,
 )
+from ._unbounded_index_range_encode import unbounded_index_range_encode
 from .complexity import count_flops
 from .distortion import (
     learned_perceptual_image_patch_similarity,
