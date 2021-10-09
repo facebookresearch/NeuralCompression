@@ -151,3 +151,6 @@ lightning_logs/
 
 # macOS
 .DS_Store
+
+# sphinx-gallery
+docs/source/examples
