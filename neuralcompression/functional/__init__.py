@@ -5,8 +5,8 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-from ._entropy_coding import unbounded_index_range_encode
 from ._estimate_tails import estimate_tails
+from ._range_coding import unbounded_index_range_encode
 from ._soft_round import (
     soft_round,
     soft_round_conditional_mean,

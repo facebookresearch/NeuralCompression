@@ -2,7 +2,11 @@ from typing import Callable, Tuple
 
 from torch import Tensor, arange, int32, int64
 
-from ._message_stack import _empty, _push, _to_tensor
+from ._message_stack import (
+    _empty_message_stack,
+    _message_stack_to_message,
+    _push_to_message_stack,
+)
 
 
 def _cdf_to_f(cdf_y: Tensor) -> Callable[[int], Tuple[Tensor, Tensor]]:
@@ -95,14 +99,18 @@ def unbounded_index_range_encode(
 
                 instructions += [(*f(v), True)]
 
-    message_stack = _empty(())
+    message_stack = _empty_message_stack(())
 
     for index in reversed(range(len(instructions))):
         start, frequency, overflowed = instructions[index]
 
         if overflowed:
-            message_stack = _push(message_stack, start, frequency, overflow_width)
+            message_stack = _push_to_message_stack(
+                message_stack, start, frequency, overflow_width
+            )
         else:
-            message_stack = _push(message_stack, start, frequency, precision)
+            message_stack = _push_to_message_stack(
+                message_stack, start, frequency, precision
+            )
 
-    return _to_tensor(message_stack)
+    return _message_stack_to_message(message_stack)
