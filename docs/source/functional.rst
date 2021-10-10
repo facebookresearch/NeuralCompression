@@ -11,3 +11,4 @@ neuralcompression.functional
 .. autofunction:: multiscale_structural_similarity
 .. autofunction:: optical_flow_to_color
 .. autofunction:: unbounded_index_range_decode
+.. autofunction:: unbounded_index_range_encode
