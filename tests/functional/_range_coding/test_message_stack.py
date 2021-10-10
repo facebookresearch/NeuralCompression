@@ -12,6 +12,7 @@ from neuralcompression.functional._range_coding._message_stack import (
     _empty_message_stack,
     _message_stack_to_message,
     _message_to_message_stack,
+    _partition_message_stack,
     _pop_from_message_stack,
     _push_to_message_stack,
 )
@@ -80,6 +81,25 @@ def test_message_to_message_stack():
     assert actual_message_stack == ()
 
 
+def test_partition_message_stack():
+    maximum = 1 << 31
+
+    message, _ = _empty_message_stack((1, 2))
+
+    message_stack = message, _empty_message_stack((1, 2))
+
+    actual_message, actual_message_stack = _partition_message_stack(
+        message_stack,
+        n=2,
+    )
+
+    expected_message = tensor([[maximum, maximum], [maximum, maximum]])
+
+    assert_close(actual_message, expected_message)
+
+    assert actual_message_stack == ()
+
+
 def test_pop_from_message_stack():
     message_stack = _empty_message_stack((1, 2))
 
@@ -116,7 +136,3 @@ def test_push_to_message_stack():
     )
 
     assert actual_message_stack == ()
-
-
-def test_slice_message_stack():
-    assert True

@@ -59,6 +59,39 @@ def _message_to_message_stack(message: Tensor) -> _MessageStack:
     return message[0] << 32 | message[1], (message[2:], ())
 
 
+def _partition_message_stack(
+    message_stack: _MessageStack,
+    n: int = 0,
+) -> _MessageStack:
+    """
+    Args:
+        message_stack:
+        n:
+
+    Returns:
+    """
+    if n == 0:
+        return message_stack
+
+    messages = []
+
+    while n > 0:
+        message, message_stack = message_stack
+
+        if n >= len(message):
+            messages += [message]
+
+            n -= len(message)
+        else:
+            messages += [message[:n]]
+
+            message_stack = message[n:], message_stack
+
+            break
+
+    return cat(messages), message_stack
+
+
 def _pop_from_message_stack(
     message_stack: _MessageStack,
     precision: int,
@@ -88,7 +121,7 @@ def _pop_from_message_stack(
         n = sum(indicies)
 
         if n > 0:
-            next_message, next_message_stack = _slice_message_stack(
+            next_message, next_message_stack = _partition_message_stack(
                 previous_message_stack, int(n)
             )
 
@@ -135,36 +168,3 @@ def _push_to_message_stack(
     remainders = remainder(message, frequencies)
 
     return (quotients << precision) + remainders + starting_indicies, message_stack
-
-
-def _slice_message_stack(
-    message_stack: _MessageStack,
-    n: int = 0,
-) -> _MessageStack:
-    """
-    Args:
-        message_stack:
-        n:
-
-    Returns:
-    """
-    if n == 0:
-        return message_stack
-
-    messages = []
-
-    while n > 0:
-        message, message_stack = message_stack
-
-        if n >= len(message):
-            messages += [message]
-
-            n -= len(message)
-        else:
-            messages += [message[:n]]
-
-            message_stack = message[n:], message_stack
-
-            break
-
-    return cat(messages), message_stack
