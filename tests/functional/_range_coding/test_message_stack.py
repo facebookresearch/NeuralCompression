@@ -12,6 +12,7 @@ from neuralcompression.functional._range_coding._message_stack import (
     _empty_message_stack,
     _message_stack_to_message,
     _message_to_message_stack,
+    _pop_from_message_stack,
 )
 
 
@@ -79,7 +80,19 @@ def test_message_to_message_stack():
 
 
 def test_pop_from_message_stack():
-    assert True
+    message_stack = _empty_message_stack((1, 2))
+
+    actual_interval_starting_indicies, _ = _pop_from_message_stack(
+        message_stack,
+        precision=16,
+    )
+
+    expected_interval_starting_indicies = tensor([[0, 0]])
+
+    assert_close(
+        actual_interval_starting_indicies,
+        expected_interval_starting_indicies,
+    )
 
 
 def test_push_to_message_stack():
