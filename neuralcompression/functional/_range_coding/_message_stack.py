@@ -13,10 +13,26 @@ _MessageStack = Tuple[Tensor, Optional["_MessageStack"]]
 
 
 def _empty_message_stack(shape: Tuple[int, ...]) -> _MessageStack:
+    """
+
+    Args:
+        shape:
+
+    Returns:
+        an empty ``_MessageStack``.
+    """
     return full(shape, 1 << 31), ()
 
 
 def _message_stack_to_message(message_stack: _MessageStack) -> Tensor:
+    """Transforms a ``_MessageStack`` into a message (i.e. a
+        ``pytorch.Tensor``).
+
+    Args:
+        message_stack:
+
+    Returns:
+    """
     message, message_stack = message_stack
 
     message = ravel(message)
@@ -32,6 +48,14 @@ def _message_stack_to_message(message_stack: _MessageStack) -> Tensor:
 
 
 def _message_to_message_stack(message: Tensor) -> _MessageStack:
+    """Transforms a message (i.e. a ``pytorch.Tensor``) into a
+        ``_MessageStack``.
+
+    Args:
+        message:
+
+    Returns:
+    """
     return message[0] << 32 | message[1], (message[2:], ())
 
 
@@ -39,6 +63,13 @@ def _pop_from_message_stack(
     message_stack: _MessageStack,
     precision: int,
 ) -> Tuple[Tensor, Callable[[Tensor, Tensor], _MessageStack]]:
+    """
+    Args:
+        message_stack:
+        precision:
+
+    Returns:
+    """
     previous_message, previous_message_stack = message_stack
 
     previous_message = previous_message.type(int64)
@@ -79,6 +110,15 @@ def _push_to_message_stack(
     frequencies: Tensor,
     precision: int,
 ) -> _MessageStack:
+    """
+    Args:
+        message_stack:
+        starting_indicies:
+        frequencies:
+        precision:
+
+    Returns:
+    """
     message, message_stack = message_stack
 
     assert message.shape == starting_indicies.shape == frequencies.shape
@@ -101,6 +141,13 @@ def _slice_message_stack(
     message_stack: _MessageStack,
     n: int = 0,
 ) -> _MessageStack:
+    """
+    Args:
+        message_stack:
+        n:
+
+    Returns:
+    """
     if n == 0:
         return message_stack
 
