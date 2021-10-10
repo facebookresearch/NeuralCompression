@@ -12,6 +12,7 @@ def upper_tail(distribution: Distribution, tail_mass: float) -> Tensor:
         _upper_tail = distribution.icdf(1 - tail_mass / 2)
     except (AttributeError, NotImplementedError):
         try:
+
             def _logsf(x: Tensor) -> Tensor:
                 return logsf(x, distribution)
 
