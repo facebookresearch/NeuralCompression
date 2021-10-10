@@ -3,8 +3,8 @@ from math import log
 from torch import Tensor
 from torch.distributions import Distribution
 
-from _estimate_tails import estimate_tails
-from _logsf import logsf
+from ._estimate_tails import estimate_tails
+from ._logsf import logsf
 
 
 def upper_tail(distribution: Distribution, tail_mass: float) -> Tensor:
