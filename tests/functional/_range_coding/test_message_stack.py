@@ -10,6 +10,7 @@ from torch.testing import assert_close
 
 from neuralcompression.functional._range_coding._message_stack import (
     _empty_message_stack,
+    _message_stack_to_message,
 )
 
 
@@ -39,7 +40,15 @@ def test_empty_message_stack():
 
 
 def test_message_stack_to_message():
-    assert True
+    maximum = 1 << 31
+
+    message_stack = _empty_message_stack((1, 2))
+
+    actual_message = _message_stack_to_message(message_stack)
+
+    expected_message = tensor([0, 0, maximum, maximum])
+
+    assert_close(actual_message, expected_message)
 
 
 def test_message_to_message_stack():
