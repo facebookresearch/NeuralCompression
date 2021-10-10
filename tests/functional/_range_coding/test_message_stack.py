@@ -5,7 +5,7 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-from torch import tensor
+from torch import all, int32, int64, ones, randint, tensor
 from torch.testing import assert_close
 
 from neuralcompression.functional._range_coding._message_stack import (
@@ -44,41 +44,60 @@ def test_empty_message_stack():
 
 
 def test_message_stack_to_message():
-    maximum = 1 << 31
+    message_stack_a = _empty_message_stack((7, 3))
 
-    message_stack = _empty_message_stack((1, 2))
+    for bit in randint(1 << 12, size=(100,) + (7, 3)):
+        message_stack_a = _push_to_message_stack(
+            message_stack_a,
+            bit,
+            ones((7, 3), dtype=int32),
+            12,
+        )
 
-    actual_message = _message_stack_to_message(message_stack)
+    message_a = _message_stack_to_message(message_stack_a)
 
-    expected_message = tensor([0, 0, maximum, maximum])
+    assert message_a.dtype is int64
 
-    assert_close(actual_message, expected_message)
+    message_stack_b = _message_to_message_stack(message_a, (7, 3))
+
+    assert_close(message_stack_a[0], message_stack_b[0])
+
+    message_b = _message_stack_to_message(message_stack_b)
+
+    assert_close(message_a, message_b)
 
 
 def test_message_to_message_stack():
-    maximum = 1 << 31
+    message_stack = _empty_message_stack((8, 7))
 
-    message = tensor([0, 0, maximum, maximum])
+    starting_indicies = randint(0, 256, size=(1000,) + (8, 7))
 
-    actual_message_stack = _message_to_message_stack(message)
+    frequencies = randint(1, 256, size=(1000,) + (8, 7)) % (256 - starting_indicies)
 
-    actual_message_stack_message, _ = actual_message_stack
+    frequencies[frequencies == 0] = 1
 
-    expected_message = tensor(0)
+    for start, frequency in zip(starting_indicies, frequencies):
+        message_stack = _push_to_message_stack(
+            message_stack,
+            start,
+            frequency,
+            8,
+        )
 
-    assert_close(actual_message_stack_message, expected_message)
+    encoded = _message_stack_to_message(message_stack)
 
-    _, actual_message_stack = actual_message_stack
+    assert encoded.dtype == int64
 
-    actual_message_stack_message, _ = actual_message_stack
+    message_stack = _message_to_message_stack(encoded, (8, 7))
 
-    expected_message = tensor([maximum, maximum])
+    for start, frequency in reversed(list(zip(starting_indicies, frequencies))):
+        cf, pop = _pop_from_message_stack(message_stack, 8)
 
-    assert_close(actual_message_stack_message, expected_message)
+        assert all(start <= cf) and all(cf < start + frequency)
 
-    _, actual_message_stack = actual_message_stack
+        message_stack = pop(start, frequency)
 
-    assert actual_message_stack == ()
+    assert all(message_stack[0] == _empty_message_stack((8, 7))[0])
 
 
 def test_partition_message_stack():

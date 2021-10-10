@@ -5,78 +5,65 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-from typing import Callable, Optional, Tuple
+from typing import cast, Callable, Optional, Tuple
 
-from torch import Tensor, any, cat, div, full, int64, ravel, remainder, sum, tensor
+from torch import (
+    Tensor,
+    any,
+    cat,
+    div,
+    full,
+    int64,
+    prod,
+    ravel,
+    remainder,
+    reshape,
+    sum,
+    tensor,
+)
 
-_MessageStack = Tuple[Tensor, Optional["_MessageStack"]]
+_MessageStack = Tuple[Tensor, Optional["_MessageStack"]]  # type: ignore
 
 
 def _empty_message_stack(shape: Tuple[int, ...]) -> _MessageStack:
-    """
-
-    Args:
-        shape:
-
-    Returns:
-        an empty ``_MessageStack``.
-    """
     return full(shape, 1 << 31), ()
 
 
 def _message_stack_to_message(message_stack: _MessageStack) -> Tensor:
-    """Transforms a ``_MessageStack`` into a message (i.e. a
-        ``pytorch.Tensor``).
-
-    Args:
-        message_stack:
-
-    Returns:
-    """
-    message, message_stack = message_stack
+    message, message_stack = message_stack  # type: ignore
 
     message = ravel(message)
 
     messages = [message >> 32, message]
 
     while message_stack:
-        message, message_stack = message_stack
+        message, message_stack = message_stack  # type: ignore
 
         messages += [message]
 
     return cat(messages)
 
 
-def _message_to_message_stack(message: Tensor) -> _MessageStack:
-    """Transforms a message (i.e. a ``pytorch.Tensor``) into a
-        ``_MessageStack``.
+def _message_to_message_stack(message: Tensor, shape: Tuple[int, ...]) -> _MessageStack:
+    size = int(prod(tensor(shape)))
 
-    Args:
-        message:
-
-    Returns:
-    """
-    return message[0] << 32 | message[1], (message[2:], ())
+    return (
+        reshape(message[:size] << 32 | message[size : 2 * size], shape),
+        (message[2 * size :], ()),
+    )
 
 
 def _partition_message_stack(
     message_stack: _MessageStack,
     n: int = 0,
 ) -> _MessageStack:
-    """
-    Args:
-        message_stack:
-        n:
-
-    Returns:
-    """
     if n == 0:
         return message_stack
 
     messages = []
 
     while n > 0:
-        message, message_stack = message_stack
+        message, message_stack = message_stack  # type: ignore
 
         if n >= len(message):
             messages += [message]
@@ -96,13 +83,6 @@ def _pop_from_message_stack(
     message_stack: _MessageStack,
     precision: int,
 ) -> Tuple[Tensor, Callable[[Tensor, Tensor], _MessageStack]]:
-    """
-    Args:
-        message_stack:
-        precision:
-
-    Returns:
-    """
     previous_message, previous_message_stack = message_stack
 
     previous_message = previous_message.type(int64)
@@ -122,7 +102,8 @@ def _pop_from_message_stack(
 
         if n > 0:
             next_message, next_message_stack = _partition_message_stack(
-                previous_message_stack, int(n)
+                cast(_MessageStack, previous_message_stack),
+                int(n),
             )
 
             try:
@@ -143,16 +124,7 @@ def _push_to_message_stack(
     frequencies: Tensor,
     precision: int,
 ) -> _MessageStack:
-    """
-    Args:
-        message_stack:
-        starting_indicies:
-        frequencies:
-        precision:
-
-    Returns:
-    """
-    message, message_stack = message_stack
+    message, message_stack = message_stack  # type: ignore
 
     assert message.shape == starting_indicies.shape == frequencies.shape
 
