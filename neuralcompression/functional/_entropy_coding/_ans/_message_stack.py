@@ -95,6 +95,10 @@ def _slice(
     return cat(messages), stack
 
 
+def _to_message_stack(x: Tensor) -> _MessageStack:
+    return x[0] << 32 | x[1], (x[2:], ())
+
+
 def _to_tensor(message_stack: _MessageStack) -> Tensor:
     message, stack = message_stack
 
