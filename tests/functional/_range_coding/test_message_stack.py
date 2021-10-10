@@ -13,6 +13,7 @@ from neuralcompression.functional._range_coding._message_stack import (
     _message_stack_to_message,
     _message_to_message_stack,
     _pop_from_message_stack,
+    _push_to_message_stack,
 )
 
 
@@ -96,7 +97,25 @@ def test_pop_from_message_stack():
 
 
 def test_push_to_message_stack():
-    assert True
+    quantized = 140737488355328
+
+    message_stack = _empty_message_stack((1, 2))
+
+    actual_message, actual_message_stack = _push_to_message_stack(
+        message_stack,
+        tensor([[0, 0]]),
+        tensor([[1, 1]]),
+        precision=16,
+    )
+
+    expected_message = tensor([[quantized, quantized]])
+
+    assert_close(
+        actual_message,
+        expected_message,
+    )
+
+    assert actual_message_stack == ()
 
 
 def test_slice_message_stack():
