@@ -72,7 +72,9 @@ def test_message_to_message_stack():
 
     starting_indicies = torch.randint(0, 256, size=(1000,) + (8, 7))
 
-    frequencies = torch.randint(1, 256, size=(1000,) + (8, 7)) % (256 - starting_indicies)
+    frequencies = torch.randint(1, 256, size=(1000,) + (8, 7)) % (
+        256 - starting_indicies
+    )
 
     frequencies[frequencies == 0] = 1
 

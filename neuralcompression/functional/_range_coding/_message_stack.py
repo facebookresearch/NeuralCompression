@@ -37,7 +37,7 @@ def _message_to_message_stack(message: Tensor, shape: Tuple[int, ...]) -> _Messa
     size = int(torch.prod(torch.tensor(shape)))
 
     return (
-        torch.reshape(message[:size] << 32 | message[size: 2 * size], shape),
+        torch.reshape(message[:size] << 32 | message[size : 2 * size], shape),
         (message[2 * size :], ()),
     )
 
@@ -96,7 +96,9 @@ def _pop_from_message_stack(
             )
 
             try:
-                messages[indicies] = torch.tensor(messages[indicies] << 32) | next_message
+                messages[indicies] = (
+                    torch.tensor(messages[indicies] << 32) | next_message
+                )
             except TypeError:
                 messages = torch.tensor(messages << 32) | next_message
         else:
