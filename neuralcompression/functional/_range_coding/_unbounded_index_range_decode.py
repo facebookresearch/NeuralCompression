@@ -1,8 +1,12 @@
 from collections import namedtuple
 
-from torch import Tensor, arange, empty, flatten, int32, int64, searchsorted
-
-from ._message_stack import _pop, _push, _to_message_stack
+import torch
+from torch import Tensor
+from ._message_stack import (
+    _message_to_message_stack,
+    _push_to_message_stack,
+    _pop_from_message_stack,
+)
 from ._unbounded_index_range_encode import _cdf_to_encode
 
 Codec = namedtuple("Codec", ["pop", "push"])
@@ -12,21 +16,21 @@ def _cdf_to_decode(cdf_y, cdf_y_length):
     cdf_y = cdf_y[:cdf_y_length]
 
     def f(cum_freq):
-        return searchsorted(cdf_y, cum_freq, right=True) - 1
+        return torch.searchsorted(cdf_y, cum_freq, right=True) - 1
 
     return f
 
 
 def _codec(encode, decode, precision):
     def pop(message):
-        encoded, f = _pop(message, precision)
+        encoded, f = _pop_from_message_stack(message, precision)
 
         decoded = decode(encoded)
 
         return f(*encode(decoded)), decoded
 
     def push(message, symbol):
-        return _push(message, *encode(symbol), precision)
+        return _push_to_message_stack(message, *encode(symbol), precision)
 
     return Codec(pop, push)
 
@@ -39,7 +43,7 @@ def unbounded_index_range_decode(
     offset: Tensor,
     precision: int,
     overflow_width: int,
-):
+) -> Tensor:
     """Range decodes encoded data using an indexed probability table.
 
     Args:
@@ -54,13 +58,13 @@ def unbounded_index_range_decode(
     Returns:
         The decoded data.
     """
-    message_stack = _to_message_stack(data)
+    message_stack = _message_to_message_stack(data, data.shape)
 
-    decoded = flatten(empty(index.shape))
+    decoded = torch.flatten(torch.empty(index.shape))
 
-    index = index.to(int32).flatten()
+    index = index.to(torch.int32).flatten()
 
-    overflow_cdf = arange((1 << overflow_width) + 1, dtype=int64)
+    overflow_cdf = torch.arange((1 << overflow_width) + 1, dtype=torch.int64)
 
     overflow_pop, overflow_push = _codec(
         _cdf_to_encode(overflow_cdf),
