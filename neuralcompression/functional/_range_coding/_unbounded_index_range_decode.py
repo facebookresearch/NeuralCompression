@@ -47,13 +47,24 @@ def unbounded_index_range_decode(
     """Range decodes encoded data using an indexed probability table.
 
     Args:
-        data:
-        index:
-        cdf:
-        cdf_size:
-        offset:
-        precision:
-        overflow_width:
+        data: the values to be encoded.
+        index: for each value in ``data``, the corresponding value in ``index``
+            determines which row in ``cdf`` should be used to encode the value
+            in ``data``. ``index`` also determines which element in ``offset``
+            determines the integer interval ``cdf`` applies to. Naturally, the
+            elements of ``index`` should be in the half-open interval
+            [0, cdf.shape[0]).
+        cdf: a 2D tensor where each row contains a CDF.
+        cdf_size: a 1D tensor whose length should be the same as the number of
+            rows of ``cdf``. The values in ``cdf_size`` denote the length of
+            the CDF vector in the corresponding row of ``cdf``.
+        offset: all the regular data values associated with :math:`index = i`
+            should be in the half-open interval
+            :math:`[offset_{i}, offset_{i} + m)`.
+        precision: the number of bits for probability quantization, must be
+            less than or equal to 16.
+        overflow_width: the bit width of the variable-length overflow code,
+            must be less than or equal to ``precision``.
 
     Returns:
         The decoded data.
