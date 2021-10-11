@@ -1,23 +1,23 @@
-from torch import tensor
+import torch
+import torch.testing
 from torch.distributions import Cauchy, Normal
-from torch.testing import assert_close
 
 from neuralcompression.functional import upper_tail
 
 
 def test_upper_tail():
-    assert_close(
+    torch.testing.assert_close(
         upper_tail(
-            Cauchy(tensor([0.0]), tensor([1.0])),
+            Cauchy(torch.tensor([0.0]), torch.tensor([1.0])),
             0.5,
         ),
-        tensor([1.0]),
+        torch.tensor([1.0]),
     )
 
-    assert_close(
+    torch.testing.assert_close(
         upper_tail(
-            Normal(tensor([0.0]), tensor([1.0])),
+            Normal(torch.tensor([0.0]), torch.tensor([1.0])),
             0.5,
         ),
-        tensor([0.6745]),
+        torch.tensor([0.6745]),
     )
