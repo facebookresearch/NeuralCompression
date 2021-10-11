@@ -5,7 +5,8 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-from torch import Tensor, cumsum, int64, round, zeros
+import torch
+from torch import Tensor
 
 
 def pmf_to_quantized_cdf(pmf: Tensor, precision: int) -> Tensor:
@@ -32,11 +33,11 @@ def pmf_to_quantized_cdf(pmf: Tensor, precision: int) -> Tensor:
     Returns:
         The quantized CDF.
     """
-    cdf = zeros(pmf.shape[0] + 1)
+    cdf = torch.zeros(pmf.shape[0] + 1)
 
-    cdf[1:] = cumsum(pmf, dim=0)
+    cdf[1:] = torch.cumsum(pmf, dim=0)
 
-    cdf = round(cdf * (1 << precision) / cdf[-1]).to(int64)
+    cdf = torch.round(cdf * (1 << precision) / cdf[-1]).to(torch.int64)
 
     for j in range(cdf.size(0) - 1):
         if cdf[j] == cdf[j + 1]:
