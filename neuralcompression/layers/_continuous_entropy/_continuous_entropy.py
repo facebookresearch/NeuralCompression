@@ -37,20 +37,26 @@ class _ContinuousEntropy(Module, metaclass=ABCMeta):
         pass
 
     @staticmethod
-    def quantize(x: Tensor, offsets: Optional[Tensor] = None) -> Tensor:
-        if offsets:
-            x -= offsets
+    def quantize(
+        x: Tensor,
+        quantization_offsets: Optional[Tensor] = None,
+    ) -> Tensor:
+        if quantization_offsets:
+            x -= quantization_offsets
 
         x += torch.floor(x + 0.5) - x
 
-        if offsets:
-            return x + offsets
+        if quantization_offsets:
+            return x + quantization_offsets
 
         return x
 
     @staticmethod
-    def reconstruct(x: Tensor, offsets: Optional[Tensor] = None):
-        if offsets:
-            return x + offsets
+    def reconstruct(
+        x: Tensor,
+        quantization_offsets: Optional[Tensor] = None,
+    ):
+        if quantization_offsets:
+            return x + quantization_offsets
 
         return x
