@@ -5,34 +5,23 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-from typing import cast, Callable, Optional, Tuple
+import typing
+from typing import Callable, Optional, Tuple
 
-from torch import (
-    Tensor,
-    any,
-    cat,
-    div,
-    full,
-    int64,
-    prod,
-    ravel,
-    remainder,
-    reshape,
-    sum,
-    tensor,
-)
+import torch
+from torch import Tensor
 
 _MessageStack = Tuple[Tensor, Optional["_MessageStack"]]  # type: ignore
 
 
 def _empty_message_stack(shape: Tuple[int, ...]) -> _MessageStack:
-    return full(shape, 1 << 31), ()
+    return torch.full(shape, 1 << 31), ()
 
 
 def _message_stack_to_message(message_stack: _MessageStack) -> Tensor:
     message, message_stack = message_stack  # type: ignore
 
-    message = ravel(message)
+    message = torch.ravel(message)
 
     messages = [message >> 32, message]
 
@@ -41,14 +30,14 @@ def _message_stack_to_message(message_stack: _MessageStack) -> Tensor:
 
         messages += [message]
 
-    return cat(messages)
+    return torch.cat(messages)
 
 
 def _message_to_message_stack(message: Tensor, shape: Tuple[int, ...]) -> _MessageStack:
-    size = int(prod(tensor(shape)))
+    size = int(torch.prod(torch.tensor(shape)))
 
     return (
-        reshape(message[:size] << 32 | message[size : 2 * size], shape),
+        torch.reshape(message[:size] << 32 | message[size : 2 * size], shape),
         (message[2 * size :], ()),
     )
 
@@ -76,7 +65,7 @@ def _partition_message_stack(
 
             break
 
-    return cat(messages), message_stack
+    return torch.cat(messages), message_stack
 
 
 def _pop_from_message_stack(
@@ -85,7 +74,7 @@ def _pop_from_message_stack(
 ) -> Tuple[Tensor, Callable[[Tensor, Tensor], _MessageStack]]:
     previous_message, previous_message_stack = message_stack
 
-    previous_message = previous_message.type(int64)
+    previous_message = previous_message.type(torch.int64)
 
     interval_starting_indicies = previous_message & (1 << precision) - 1
 
@@ -98,18 +87,20 @@ def _pop_from_message_stack(
 
         indicies = messages < (1 << 31)
 
-        n = sum(indicies)
+        n = torch.sum(indicies)
 
         if n > 0:
             next_message, next_message_stack = _partition_message_stack(
-                cast(_MessageStack, previous_message_stack),
+                typing.cast(_MessageStack, previous_message_stack),
                 int(n),
             )
 
             try:
-                messages[indicies] = tensor(messages[indicies] << 32) | next_message
+                messages[indicies] = (
+                    torch.tensor(messages[indicies] << 32) | next_message
+                )
             except TypeError:
-                messages = tensor(messages << 32) | next_message
+                messages = torch.tensor(messages << 32) | next_message
         else:
             next_message_stack = previous_message_stack
 
@@ -130,13 +121,13 @@ def _push_to_message_stack(
 
     indicies = message >= (((1 << 31) >> precision) << 32) * frequencies
 
-    if any(indicies) > 0:
+    if torch.any(indicies) > 0:
         message_stack = message[indicies], message_stack
 
         message[indicies] >>= 32
 
-    quotients = div(message, frequencies, rounding_mode="floor")
+    quotients = torch.div(message, frequencies, rounding_mode="floor")
 
-    remainders = remainder(message, frequencies)
+    remainders = torch.remainder(message, frequencies)
 
     return (quotients << precision) + remainders + starting_indicies, message_stack
