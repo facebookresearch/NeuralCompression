@@ -30,7 +30,7 @@ def data(tmp_path):
     return CLIC2020Image(tmp_path, split="test"), n
 
 
-class TestCLIC2020:
+class TestCLIC2020Image:
     def test___getitem__(self, data):
         data, _ = data
 
