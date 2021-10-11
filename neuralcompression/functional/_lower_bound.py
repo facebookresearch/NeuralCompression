@@ -1,4 +1,5 @@
-from torch import Tensor, clamp, logical_or
+import torch
+from torch import Tensor
 from torch.autograd import Function
 
 
@@ -17,12 +18,12 @@ class _LowerBound(Function):
 
         ctx.mask = tensor.ge(lower_bound)
 
-        return clamp(tensor, lower_bound)
+        return torch.clamp(tensor, lower_bound)
 
     @staticmethod
     def backward(ctx, grad_output: Tensor):
         if ctx.gradient == "identity_if_towards":
-            grad_output *= logical_or(ctx.mask, grad_output.lt(0.0))
+            grad_output *= torch.logical_or(ctx.mask, grad_output.lt(0.0))
 
         if ctx.gradient == "disconnected":
             grad_output *= ctx.mask
