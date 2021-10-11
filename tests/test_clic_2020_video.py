@@ -11,7 +11,7 @@ import pytest
 import pytorchvideo.data.clip_sampling
 
 from neuralcompression.data import CLIC2020Video
-from tests.utils import create_random_image
+from utils import create_random_image
 
 
 @pytest.fixture
