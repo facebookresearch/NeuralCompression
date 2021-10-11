@@ -11,7 +11,7 @@ import pytest
 from PIL.Image import Image
 
 from neuralcompression.data import CLIC2020Image
-from tests.utils import create_random_image
+from utils import create_random_image
 
 
 @pytest.fixture
