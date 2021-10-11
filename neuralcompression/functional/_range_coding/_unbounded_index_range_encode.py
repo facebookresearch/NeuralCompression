@@ -1,8 +1,13 @@
 from typing import Callable, Tuple
 
-from torch import Tensor, arange, int32, int64
+import torch
+from torch import Tensor
 
-from ._message_stack import _empty, _push, _to_tensor
+from ._message_stack import (
+    _empty_message_stack,
+    _message_stack_to_message,
+    _push_to_message_stack,
+)
 
 
 def _cdf_to_encode(cdf_y: Tensor) -> Callable[[int], Tuple[Tensor, Tensor]]:
@@ -48,10 +53,10 @@ def unbounded_index_range_encode(
     """
     instructions = []
 
-    data = data.to(int32).flatten()
-    index = index.to(int32).flatten()
+    data = data.to(torch.int32).flatten()
+    index = index.to(torch.int32).flatten()
 
-    f = _cdf_to_encode(arange((1 << overflow_width) + 1, dtype=int64))
+    f = _cdf_to_encode(torch.arange((1 << overflow_width) + 1, dtype=torch.int64))
 
     for i in range(len(index)):
         cdf_index = index[i]
@@ -95,14 +100,18 @@ def unbounded_index_range_encode(
 
                 instructions += [(*f(v), True)]
 
-    message_stack = _empty(())
+    message_stack = _empty_message_stack(())
 
     for index in reversed(range(len(instructions))):
         start, frequency, overflowed = instructions[index]
 
         if overflowed:
-            message_stack = _push(message_stack, start, frequency, overflow_width)
+            message_stack = _push_to_message_stack(
+                message_stack, start, frequency, overflow_width
+            )
         else:
-            message_stack = _push(message_stack, start, frequency, precision)
+            message_stack = _push_to_message_stack(
+                message_stack, start, frequency, precision
+            )
 
-    return _to_tensor(message_stack)
+    return _message_stack_to_message(message_stack)
