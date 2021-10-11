@@ -1,6 +1,7 @@
 from typing import Callable, Tuple
 
-from torch import Tensor, arange, int32, int64
+import torch
+from torch import Tensor
 
 from ._message_stack import (
     _empty_message_stack,
@@ -52,10 +53,10 @@ def unbounded_index_range_encode(
     """
     instructions = []
 
-    data = data.to(int32).flatten()
-    index = index.to(int32).flatten()
+    data = data.to(torch.int32).flatten()
+    index = index.to(torch.int32).flatten()
 
-    f = _cdf_to_f(arange((1 << overflow_width) + 1, dtype=int64))
+    f = _cdf_to_f(torch.arange((1 << overflow_width) + 1, dtype=torch.int64))
 
     for i in range(len(index)):
         cdf_index = index[i]
