@@ -9,6 +9,7 @@ from ._estimate_tails import estimate_tails
 from ._log_sf import log_sf
 from ._log_cdf import log_cdf
 from ._log_ndtr import log_ndtr
+from ._lower_tail import lower_tail
 from ._ndtr import ndtr
 from ._soft_round import (
     soft_round,
@@ -16,6 +17,7 @@ from ._soft_round import (
     soft_round_inverse,
 )
 from ._sf import sf
+from ._upper_tail import upper_tail
 from .complexity import count_flops
 from .distortion import (
     learned_perceptual_image_patch_similarity,

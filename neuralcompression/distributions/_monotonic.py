@@ -1,12 +1,19 @@
+"""
+Copyright (c) Facebook, Inc. and its affiliates.
+
+This source code is licensed under the MIT license found in the
+LICENSE file in the root directory of this source tree.
+"""
+
 import abc
 from abc import ABCMeta
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 from torch import Size, Tensor
 from torch.distributions import Distribution
 from torch.distributions.constraints import Constraint
 
-from ..functional import upper_tail
+from ..functional import lower_tail, upper_tail
 
 
 class Monotonic(Distribution, metaclass=ABCMeta):
@@ -81,16 +88,16 @@ class Monotonic(Distribution, metaclass=ABCMeta):
     def log_prob(self, value: Tensor) -> Tensor:
         raise NotImplementedError
 
-    # def lower_tail(self, tail_mass: float) -> Tensor:
-    #     if not self._invertible:
-    #         raise NotImplementedError
-    #
-    #     return self.transform(
-    #         lower_tail(
-    #             self._distribution,
-    #             tail_mass,
-    #         )
-    #     )
+    def lower_tail(self, tail_mass: float) -> Tensor:
+        if not self._invertible:
+            raise NotImplementedError
+
+        return self.transform(
+            lower_tail(
+                self._distribution,
+                tail_mass,
+            )
+        )
 
     def rsample(self, sample_shape: Size = Size()) -> Tensor:
         return self._distribution.rsample(sample_shape)
