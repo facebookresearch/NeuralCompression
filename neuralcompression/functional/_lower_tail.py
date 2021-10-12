@@ -4,7 +4,7 @@ from torch import Tensor
 from torch.distributions import Distribution
 
 from ._estimate_tails import estimate_tails
-from ._logcdf import logcdf
+from ._log_cdf import log_cdf
 
 
 def lower_tail(distribution: Distribution, tail_mass: float) -> Tensor:
@@ -14,7 +14,7 @@ def lower_tail(distribution: Distribution, tail_mass: float) -> Tensor:
         try:
 
             def _logcdf(x: Tensor) -> Tensor:
-                return logcdf(x, distribution)
+                return log_cdf(x, distribution)
 
             _lower_tail = estimate_tails(
                 _logcdf,
