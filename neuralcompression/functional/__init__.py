@@ -6,7 +6,7 @@ LICENSE file in the root directory of this source tree.
 """
 
 from ._estimate_tails import estimate_tails
-from ._log_sf import logsf
+from ._log_sf import log_sf
 from ._log_cdf import log_cdf
 from ._log_ndtr import log_ndtr
 from ._ndtr import ndtr

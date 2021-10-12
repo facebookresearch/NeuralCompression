@@ -9,7 +9,7 @@ from torch import Tensor, log1p, no_grad
 from torch.distributions import Distribution
 
 
-def logsf(
+def log_sf(
     value: Tensor,
     distribution: Distribution,
 ):
