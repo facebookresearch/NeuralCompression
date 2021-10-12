@@ -5,13 +5,14 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-from random import choice
-
+import numpy
 from PIL.Image import Image
 from pytest import fixture
 
 from neuralcompression.data import CLIC2020
 from utils import create_random_image
+
+rng = numpy.random.default_rng(2021)
 
 
 @fixture
@@ -20,7 +21,7 @@ def data(tmp_path):
 
     directory.mkdir(parents=True)
 
-    n = choice(range(16))
+    n = int(rng.integers(1, 16, (1,)))
 
     for index in range(n):
         path = directory.joinpath(f"{index}.png")
