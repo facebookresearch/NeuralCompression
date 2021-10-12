@@ -12,11 +12,11 @@ from pytest import fixture
 from neuralcompression.data import CLIC2020
 from utils import create_random_image
 
-rng = numpy.random.default_rng(2021)
-
 
 @fixture
 def data(tmp_path):
+    rng = numpy.random.default_rng(2021)
+
     directory = tmp_path.joinpath("clic2020").joinpath("test")
 
     directory.mkdir(parents=True)
