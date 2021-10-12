@@ -1,3 +1,10 @@
+"""
+Copyright (c) Facebook, Inc. and its affiliates.
+
+This source code is licensed under the MIT license found in the
+LICENSE file in the root directory of this source tree.
+"""
+
 import math
 
 import torch
@@ -23,6 +30,15 @@ def _log_ndtr_asymptotic_series(x: Tensor, series_order: int = 3) -> Tensor:
 
 
 def log_ndtr(x: Tensor) -> Tensor:
+    """Logarithm of Normal cumulative distribution function (CDF).
+
+    Args:
+        x:
+
+    Returns:
+        the log of the area under the standard Normal probability density
+            function (PDF), integrated from minus infinity to ``x``.
+    """
     if x.dtype == torch.float32:
         m, n = -10.0, 5.0
     elif x.dtype == torch.float64:
