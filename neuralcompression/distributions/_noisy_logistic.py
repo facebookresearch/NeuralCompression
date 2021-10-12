@@ -17,6 +17,16 @@ from ._uniform_noise import UniformNoise
 
 
 class NoisyLogistic(UniformNoise):
+    """Logistic distribution with additive independent and identically
+        distributed (i.i.d.) uniform noise.
+
+    The method is described in Appendix 6.2. of:
+
+    > “Variational Image Compression with a Scale Hyperprior”
+    > Johannes Ballé, David Minnen, Saurabh Singh, Sung Jin Hwang,
+        Nick Johnston
+    > https://arxiv.org/abs/1802.01436
+    """
     def __init__(self, **kwargs):
         distribution = TransformedDistribution(
             Uniform(0, 1),

@@ -7,13 +7,24 @@ LICENSE file in the root directory of this source tree.
 
 import torch
 from torch import Tensor
+from torch.distributions import Distribution
 
 from ._monotonic import Monotonic
 from ..functional import lower_tail, upper_tail
 
 
 class Round(Monotonic):
+    """Adapts a continuous distribution via an ascending monotonic function and
+        rounding.
+
+    Args:
+        distribution: A `torch.distributions.Distribution` object representing
+            a continuous-valued random variable.
+    """
     _invertible = False
+
+    def __init__(self, distribution: Distribution):
+        super(Round, self).__init__(distribution)
 
     def inverse_transform(self, value: Tensor) -> Tensor:
         return torch.ceil(value) - 0.5

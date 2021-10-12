@@ -5,7 +5,7 @@ from torch import Tensor
 from torch.distributions import Distribution
 
 from ._estimate_tails import estimate_tails
-from ._logsf import logsf
+from ._log_sf import log_sf
 
 
 def upper_tail(distribution: Distribution, tail_mass: float) -> Tensor:
@@ -15,7 +15,7 @@ def upper_tail(distribution: Distribution, tail_mass: float) -> Tensor:
         try:
 
             def _logsf(x: Tensor) -> Tensor:
-                return logsf(x, distribution)
+                return log_sf(x, distribution)
 
             _upper_tail = estimate_tails(
                 _logsf,
