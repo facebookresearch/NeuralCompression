@@ -10,7 +10,7 @@ from torch.distributions import Distribution
 
 
 def logsf(
-    x: Tensor,
+    value: Tensor,
     distribution: Distribution,
 ):
     """Log of the survival function of ``x`` for ``distribution``.
@@ -18,7 +18,7 @@ def logsf(
     The log of the survival function is defined as :math:`1 - CDF`.
 
     Args:
-        x:
+        value:
         distribution: a parameterizable probability distribution from
             ``torch.distributions``, e.g. ``torch.distributions.Categorical``
             or ``torch.distributions.Normal``.
@@ -27,4 +27,4 @@ def logsf(
         Log of the survival function.
     """
     with no_grad():
-        return log1p(distribution.cdf(x))
+        return log1p(distribution.cdf(value))

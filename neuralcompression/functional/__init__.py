@@ -6,7 +6,8 @@ LICENSE file in the root directory of this source tree.
 """
 
 from ._estimate_tails import estimate_tails
-from ._logsf import logsf
+from ._log_sf import logsf
+from ._ndtr import ndtr
 from ._soft_round import (
     soft_round,
     soft_round_conditional_mean,
