@@ -5,18 +5,31 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-import typing
+from typing import Callable
 
-import torch
+from torch import (
+    Tensor,
+    cuda,
+    finfo,
+    float32,
+    int32,
+    logical_or,
+    no_grad,
+    ones,
+    ones_like,
+    sqrt,
+    square,
+    where,
+    zeros,
+)
 
 
 def estimate_tails(
-    func: typing.Callable[[torch.Tensor], torch.Tensor],
+    func: Callable[[Tensor], Tensor],
     target: float,
     shape: int,
-    device: typing.Union[torch.device, str, None] = None,
-    dtype: torch.dtype = torch.float32,
-) -> torch.Tensor:
+    **kwargs,
+) -> Tensor:
     """Estimates approximate tail quantiles.
 
     This runs a simple Adam iteration to determine tail quantiles. The
@@ -39,43 +52,49 @@ def estimate_tails(
             survival function, or similar
         target: desired target value
         shape: shape representing ``x``
-        device: PyTorch device
-        dtype: PyTorch ``dtype`` of the computation and the return value
 
     Returns:
-        the solution, ``x``
+        the approximate tail quantiles
     """
-    if not device:
-        if torch.cuda.is_available():
-            device = "cuda"
+    if "device" not in kwargs:
+        if cuda.is_available():
+            kwargs["device"] = "cuda"
         else:
-            device = "cpu"
+            kwargs["device"] = "cpu"
 
-    eps = torch.finfo(torch.float32).eps
+    if "dtype" not in kwargs:
+        kwargs["dtype"] = float32
 
-    counts = torch.zeros(shape, dtype=torch.int32)
+    eps = finfo(float32).eps
 
-    tails = torch.zeros(shape, device=device, dtype=dtype, requires_grad=True)
+    counts = zeros(shape, dtype=int32)
 
-    mean = torch.zeros(shape, dtype=dtype)
+    tails = zeros(
+        shape,
+        device=kwargs["device"],
+        dtype=kwargs["dtype"],
+        requires_grad=True,
+    )
 
-    variance = torch.ones(shape, dtype=dtype)
+    mean = zeros(shape, dtype=kwargs["dtype"])
 
-    while torch.min(counts) < 100:
-        abs(func(tails) - target).backward(torch.ones_like(tails))
+    variance = ones(shape, dtype=kwargs["dtype"])
+
+    while min(counts) < 100:
+        abs(func(tails) - target).backward(ones_like(tails))
 
         gradient = tails.grad.cpu()
 
-        with torch.no_grad():
+        with no_grad():
             mean = 0.9 * mean + (1.0 - 0.9) * gradient
 
-            variance = 0.99 * variance + (1.0 - 0.99) * torch.square(gradient)
+            variance = 0.99 * variance + (1.0 - 0.99) * square(gradient)
 
-            tails -= (1e-2 * mean / (torch.sqrt(variance) + eps)).to(device)
+            tails -= (1e-2 * mean / (sqrt(variance) + eps)).to(kwargs["device"])
 
-        condition = torch.logical_or(counts > 0, gradient.cpu() * tails.cpu() > 0)
+        condition = logical_or(counts > 0, gradient.cpu() * tails.cpu() > 0)
 
-        counts = torch.where(condition, counts + 1, counts)
+        counts = where(condition, counts + 1, counts)
 
         tails.grad.zero_()
 
