@@ -14,3 +14,4 @@ neuralcompression.functional
 .. autofunction:: multiscale_structural_similarity
 .. autofunction:: ndtr
 .. autofunction:: optical_flow_to_color
+.. autofunction:: sf
