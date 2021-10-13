@@ -6,10 +6,10 @@ LICENSE file in the root directory of this source tree.
 """
 
 import numpy
-import torch
-from torch.distributions import Normal
-import torch.testing
 import scipy.stats
+import torch
+import torch.testing
+from torch.distributions import Normal
 
 from neuralcompression.functional import sf
 

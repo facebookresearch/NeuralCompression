@@ -24,6 +24,8 @@ def log_sf(
     Returns:
     """
     if isinstance(distribution, Normal):
-        return log_ndtr(-x)
+        standardized = torch.div((x - distribution.loc), distribution.scale)
+
+        return log_ndtr(-standardized)
 
     return torch.log1p(distribution.cdf(-x))
