@@ -27,6 +27,7 @@ class SoftRound(Monotonic):
             a continuous-valued random variable.
         alpha: smoothness of the approximation.
     """
+
     def __init__(self, distribution: Distribution, alpha: float):
         super(SoftRound, self).__init__(distribution)
 

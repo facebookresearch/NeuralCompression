@@ -30,6 +30,7 @@ class UniformNoise(Distribution, metaclass=ABCMeta):
         distribution: A `torch.distributions.Distribution` object representing
             a continuous-valued random variable.
     """
+
     def __init__(self, distribution: Distribution, **kwargs):
         super(UniformNoise, self).__init__(**kwargs)
 

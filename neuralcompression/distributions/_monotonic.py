@@ -29,6 +29,7 @@ class Monotonic(Distribution, metaclass=ABCMeta):
         distribution: A `torch.distributions.Distribution` object representing
             a continuous-valued random variable.
     """
+
     _invertible: bool = False
 
     def __init__(self, distribution: Distribution, **kwargs):

@@ -21,6 +21,7 @@ class Round(Monotonic):
         distribution: A `torch.distributions.Distribution` object representing
             a continuous-valued random variable.
     """
+
     _invertible = False
 
     def __init__(self, distribution: Distribution):

@@ -27,6 +27,7 @@ class NoisyLogistic(UniformNoise):
         Nick Johnston
     > https://arxiv.org/abs/1802.01436
     """
+
     def __init__(self, **kwargs):
         distribution = TransformedDistribution(
             Uniform(0, 1),

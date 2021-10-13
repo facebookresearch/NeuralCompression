@@ -22,6 +22,7 @@ class NoisyNormal(UniformNoise):
         Nick Johnston
     > https://arxiv.org/abs/1802.01436
     """
+
     def __init__(self, **kwargs):
         distribution = Normal(**kwargs)
 
