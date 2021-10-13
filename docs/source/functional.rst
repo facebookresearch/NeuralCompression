@@ -11,7 +11,9 @@ neuralcompression.functional
 .. autofunction:: log_cdf
 .. autofunction:: log_ndtr
 .. autofunction:: log_sf
+.. autofunction:: lower_tail
 .. autofunction:: multiscale_structural_similarity
 .. autofunction:: ndtr
 .. autofunction:: optical_flow_to_color
 .. autofunction:: sf
+.. autofunction:: upper_tail
