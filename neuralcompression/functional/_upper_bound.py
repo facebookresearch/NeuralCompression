@@ -4,7 +4,7 @@ import torch
 from torch.autograd import Function
 
 
-class _LowerBound(Function):
+class _UpperBound(Function):
     @staticmethod
     def forward(ctx: Any, *args: Any, **kwargs: Any) -> Any:
         gradients = ("disconnected", "identity", "identity_if_towards")
@@ -14,7 +14,7 @@ class _LowerBound(Function):
         else:
             raise ValueError
 
-        ctx.mask = kwargs["tensor"].ge(kwargs["bound"])
+        ctx.mask = kwargs["tensor"].le(kwargs["bound"])
 
         return torch.clamp(kwargs["tensor"], kwargs["bound"])
 
@@ -23,7 +23,7 @@ class _LowerBound(Function):
         grad_output = grad_outputs[0]
 
         if ctx.gradient == "identity_if_towards":
-            grad_output *= torch.logical_or(ctx.mask, grad_output.lt(0.0))
+            grad_output *= torch.logical_or(ctx.mask, grad_output.gt(0.0))
 
         if ctx.gradient == "disconnected":
             grad_output *= ctx.mask
