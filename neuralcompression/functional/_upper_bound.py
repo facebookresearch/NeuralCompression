@@ -5,8 +5,46 @@ from torch import Tensor
 from torch.autograd import Function
 
 
-def upper_bound(tensor: Tensor, bound: float, gradient: str) -> Tensor:
-    return _UpperBound.apply(tensor, bound, gradient)
+def upper_bound(
+    x: Tensor,
+    bound: float,
+    gradient: str = "identity_if_towards",
+) -> Tensor:
+    """``torch.minimum`` with a gradient for ``x`` > ``bound``.
+
+    This function is semantically equivalent to ``torch.minimum`` except the
+        behavior of the gradient with respect to ``x`` for input values that
+        reach the ``bound`` depends on the ``gradient`` option:
+
+        * ``disconnected``, the returned gradient is zero for values that reach
+            the bound. This behavior is identical to the behavior of
+            ``torch.minimum``.
+
+        * ``identity``, the gradient is unconditionally replaced with the
+            identity function.
+
+        * ``identity_if_towards``, the gradient is replaced with the identity
+            function, but only if applying gradient descent would push the
+            values of inputs towards the bound. For gradient values that push
+            away from the bound, the returned gradient is still zero.
+
+    In the latter two cases, ``identity`` and ``identity_if_towards``, no
+        gradient is returned for ``bound``. Also, the implementation of
+        ``identity_if_towards`` assumes the shape of ``x`` is the same as the
+        shape of the output (i.e. it won’t work reliably for all possible
+        broadcasting scenarios).
+
+    Args:
+        x: the input tensor.
+        bound: upper bound for ``x``.
+        gradient: The dataset split to use. One of
+            {``disconnected``, ``identity``, ``identity_if_towards``}.
+            Defaults to ``identity_if_towards``.
+
+    Returns:
+        the output tensor.
+    """
+    return _UpperBound.apply(x, bound, gradient)
 
 
 class _UpperBound(Function):
@@ -19,9 +57,9 @@ class _UpperBound(Function):
         else:
             raise ValueError
 
-        ctx.mask = kwargs["tensor"].le(kwargs["bound"])
+        ctx.mask = kwargs["x"].le(kwargs["bound"])
 
-        return torch.clamp(kwargs["tensor"], kwargs["bound"])
+        return torch.clamp(kwargs["x"], kwargs["bound"])
 
     @staticmethod
     def backward(ctx: Any, *grad_outputs: Any) -> Any:

@@ -9,5 +9,7 @@ neuralcompression.functional
 .. autofunction:: information_content
 .. autofunction:: learned_perceptual_image_patch_similarity,
 .. autofunction:: lower_bound
+.. autofunction:: lower_bound
 .. autofunction:: multiscale_structural_similarity
 .. autofunction:: optical_flow_to_color
+.. autofunction:: upper_bound
