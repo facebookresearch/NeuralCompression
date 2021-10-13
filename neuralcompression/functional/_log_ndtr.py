@@ -30,10 +30,10 @@ def _log_ndtr_asymptotic_series(x: Tensor, series_order: int = 3) -> Tensor:
 
 
 def log_ndtr(x: Tensor) -> Tensor:
-    """Logarithm of Normal cumulative distribution function (CDF).
+    """Logarithm of the normal cumulative distribution function (CDF).
 
     Args:
-        x:
+        x: the input tensor.
 
     Returns:
         the log of the area under the standard Normal probability density

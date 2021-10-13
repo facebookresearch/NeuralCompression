@@ -12,7 +12,7 @@ from torch import Tensor
 
 
 def ndtr(x: Tensor) -> Tensor:
-    """Normal cumulative distribution function (CDF).
+    """The normal cumulative distribution function (CDF).
 
     Args:
         x:
