@@ -17,18 +17,18 @@ from ..functional import lower_tail, upper_tail
 
 class UniformNoise(Distribution, metaclass=ABCMeta):
     """Adapts a continuous distribution via an additive identically distributed
-        (i.i.d.) uniform noise.
+    (i.i.d.) uniform noise.
 
     The method is described in Appendix 6.2. of:
 
-    > “Variational Image Compression with a Scale Hyperprior”
-    > Johannes Ballé, David Minnen, Saurabh Singh, Sung Jin Hwang,
+        | “Variational Image Compression with a Scale Hyperprior”
+        | Johannes Ballé, David Minnen, Saurabh Singh, Sung Jin Hwang,
         Nick Johnston
-    > https://arxiv.org/abs/1802.01436
+        | https://arxiv.org/abs/1802.01436
 
     Args:
-        distribution: A `torch.distributions.Distribution` object representing
-            a continuous-valued random variable.
+        distribution: an object representing a continuous-valued random
+            variable.
     """
 
     def __init__(self, distribution: Distribution, **kwargs):

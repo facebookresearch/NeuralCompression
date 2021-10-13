@@ -21,13 +21,13 @@ class Monotonic(Distribution, metaclass=ABCMeta):
 
     The method is described in Appendix E. of:
 
-    > “Universally Quantized Neural Compression”
-    > Eirikur Agustsson, Lucas Theis
-    > https://arxiv.org/abs/2006.09952
+        | “Universally Quantized Neural Compression”
+        | Eirikur Agustsson, Lucas Theis
+        | https://arxiv.org/abs/2006.09952
 
     Args:
-        distribution: A `torch.distributions.Distribution` object representing
-            a continuous-valued random variable.
+        distribution: an object representing a continuous-valued random
+            variable.
     """
 
     _invertible: bool = False
