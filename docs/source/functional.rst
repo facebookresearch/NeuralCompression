@@ -16,4 +16,6 @@ neuralcompression.functional
 .. autofunction:: ndtr
 .. autofunction:: optical_flow_to_color
 .. autofunction:: sf
+.. autofunction:: unbounded_index_range_decode
+.. autofunction:: unbounded_index_range_encode
 .. autofunction:: upper_tail
