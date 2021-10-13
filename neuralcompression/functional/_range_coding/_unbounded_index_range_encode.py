@@ -10,7 +10,7 @@ from ._message_stack import (
 )
 
 
-def _cdf_to_f(cdf_y: Tensor) -> Callable[[int], Tuple[Tensor, Tensor]]:
+def _cdf_to_encode(cdf_y: Tensor) -> Callable[[int], Tuple[Tensor, Tensor]]:
     def f(x: int) -> Tuple[Tensor, Tensor]:
         return cdf_y[x], cdf_y[int(x + 1)] - cdf_y[x]
 
@@ -56,7 +56,7 @@ def unbounded_index_range_encode(
     data = data.to(torch.int32).flatten()
     index = index.to(torch.int32).flatten()
 
-    f = _cdf_to_f(torch.arange((1 << overflow_width) + 1, dtype=torch.int64))
+    f = _cdf_to_encode(torch.arange((1 << overflow_width) + 1, dtype=torch.int64))
 
     for i in range(len(index)):
         cdf_index = index[i]
@@ -78,7 +78,7 @@ def unbounded_index_range_encode(
         else:
             overflow = 0
 
-        instructions += [(*_cdf_to_f(cdf_y)(v), False)]
+        instructions += [(*_cdf_to_encode(cdf_y)(v), False)]
 
         if v == maximum:
             widths = 0

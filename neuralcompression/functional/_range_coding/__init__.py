@@ -1,1 +1,2 @@
+from ._unbounded_index_range_decode import unbounded_index_range_decode
 from ._unbounded_index_range_encode import unbounded_index_range_encode
