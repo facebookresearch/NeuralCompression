@@ -102,8 +102,8 @@ def unbounded_index_range_encode(
 
     message_stack = _empty_message_stack(())
 
-    for index in reversed(range(len(instructions))):
-        start, frequency, overflowed = instructions[index]
+    for instructions_index in reversed(range(len(instructions))):
+        start, frequency, overflowed = instructions[instructions_index]
 
         if overflowed:
             message_stack = _push_to_message_stack(
