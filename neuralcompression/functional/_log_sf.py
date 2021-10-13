@@ -9,7 +9,7 @@ import torch
 from torch import Tensor
 from torch.distributions import Distribution, Normal
 
-from neuralcompression.functional import log_ndtr
+from ._log_ndtr import log_ndtr
 
 
 def log_sf(
