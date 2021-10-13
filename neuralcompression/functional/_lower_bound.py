@@ -1,7 +1,12 @@
 from typing import Any
 
 import torch
+from torch import Tensor
 from torch.autograd import Function
+
+
+def lower_bound(tensor: Tensor, bound: float, gradient: str) -> Tensor:
+    return _LowerBound.apply(tensor, bound, gradient)
 
 
 class _LowerBound(Function):
