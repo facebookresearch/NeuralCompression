@@ -19,7 +19,7 @@ def ndtr(x: Tensor) -> Tensor:
 
     Returns:
         the area under the standard Normal probability density function (PDF),
-            integrated from minus infinity to ``x``.
+        integrated from minus infinity to ``x``.
     """
     x *= math.sqrt(0.5)
 

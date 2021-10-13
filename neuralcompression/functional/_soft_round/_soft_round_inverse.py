@@ -13,11 +13,11 @@ def soft_round_inverse(
 ) -> torch.Tensor:
     """Inverse of ``soft_round``.
 
-    This operation is described in Sec. 4.1. in the paper:
+    The method is described in Section 4.1. of:
 
-    > "Universally Quantized Neural Compression"<br />
-    > Eirikur Agustsson & Lucas Theis<br />
-    > https://arxiv.org/abs/2006.09952
+        | “Universally Quantized Neural Compression”
+        | Eirikur Agustsson, Lucas Theis
+        | https://arxiv.org/abs/2006.09952
 
     Args:
         y:

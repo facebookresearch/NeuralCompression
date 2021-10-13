@@ -14,17 +14,17 @@ from ..functional import soft_round, soft_round_inverse
 
 class SoftRound(Monotonic):
     """Adapts a continuous distribution via an ascending monotonic function and
-        differentiable rounding.
+    differentiable rounding.
 
     The method is described in Section 4.1. of:
 
-    > “Universally Quantized Neural Compression”
-    > Eirikur Agustsson, Lucas Theis
-    > https://arxiv.org/abs/2006.09952
+        | “Universally Quantized Neural Compression”
+        | Eirikur Agustsson, Lucas Theis
+        | https://arxiv.org/abs/2006.09952
 
     Args:
-        distribution: A `torch.distributions.Distribution` object representing
-            a continuous-valued random variable.
+        distribution: an object representing a continuous-valued random
+            variable.
         alpha: smoothness of the approximation.
     """
 

@@ -15,19 +15,17 @@ def soft_round_conditional_mean(x: torch.Tensor, alpha: float) -> torch.Tensor:
 
     Computes:
 
-    .. math::
+            g(z) = E[Y | s(Y) + U = z]
 
-    g(z) = E[Y | s(Y) + U = z]
+    where :math:`s` is the soft-rounding function, :math:`U` is uniform between
+    :math:`-0.5` and :math:`0.5` and :math:`Y` is considered uniform when
+    truncated to the interval :math:`[z-0.5, z+0.5]`.
 
-        where :math:`s` is the soft-rounding function, :math:`U` is uniform
-        between :math:`-0.5` and :math:`0.5` and :math:`Y` is considered
-        uniform when truncated to the interval :math:`[z-0.5, z+0.5]`.
+    The method is described in Section 4.1. of:
 
-    This operation is described in Sec. 4.1. in the paper:
-
-    > "Universally Quantized Neural Compression"<br />
-    > Eirikur Agustsson & Lucas Theis<br />
-    > https://arxiv.org/abs/2006.09952
+        | “Universally Quantized Neural Compression”
+        | Eirikur Agustsson, Lucas Theis
+        | https://arxiv.org/abs/2006.09952
 
     Args:
         x: The input tensor.

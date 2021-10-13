@@ -15,11 +15,11 @@ from ..functional import lower_tail, upper_tail
 
 class Round(Monotonic):
     """Adapts a continuous distribution via an ascending monotonic function and
-        rounding.
+    rounding.
 
     Args:
-        distribution: A `torch.distributions.Distribution` object representing
-            a continuous-valued random variable.
+        distribution: an object representing a continuous-valued random
+            variable.
     """
 
     _invertible = False

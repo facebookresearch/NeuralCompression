@@ -24,7 +24,7 @@ def log_cdf(
 
     Returns:
         the log of the area under the distribution’s probability density
-            function (PDF), integrated from minus infinity to ``x``.
+        function (PDF), integrated from minus infinity to ``x``.
     """
     if isinstance(distribution, Normal):
         return log_ndtr(x)

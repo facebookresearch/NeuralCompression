@@ -12,13 +12,13 @@ def soft_round(x: torch.Tensor, alpha: float, eps: float = 1e-3) -> torch.Tensor
     """Differentiable approximation of ``torch.round``.
 
     A larger ``alpha`` correspond to a closer approximation of ``round``. If
-        ``alpha`` is close to zero, this function reduces to the identity.
+    ``alpha`` is close to zero, this function reduces to the identity.
 
-    This operation is described in Sec. 4.1. in the paper:
+    The method is described in Section 4.1. of:
 
-    > "Universally Quantized Neural Compression"<br />
-    > Eirikur Agustsson & Lucas Theis<br />
-    > https://arxiv.org/abs/2006.09952
+        | “Universally Quantized Neural Compression”
+        | Eirikur Agustsson, Lucas Theis
+        | https://arxiv.org/abs/2006.09952
 
     Args:
         x: The input tensor.

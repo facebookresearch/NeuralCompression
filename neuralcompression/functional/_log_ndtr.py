@@ -37,7 +37,7 @@ def log_ndtr(x: Tensor) -> Tensor:
 
     Returns:
         the log of the area under the standard Normal probability density
-            function (PDF), integrated from minus infinity to ``x``.
+        function (PDF), integrated from minus infinity to ``x``.
     """
     if x.dtype == torch.float32:
         m, n = -10.0, 5.0

@@ -58,3 +58,10 @@ Survival function
 
 .. autofunction:: sf
 .. autofunction:: log_sf
+
+Rounding
+--------
+
+.. autofunction:: soft_round
+.. autofunction:: soft_round_conditional_mean
+.. autofunction:: soft_round_inverse
