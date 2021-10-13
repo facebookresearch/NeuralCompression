@@ -19,9 +19,9 @@ class _ContinuousEntropy(Module, metaclass=ABCMeta):
 
         self.distribution = distribution
 
-        self.tail_mass = tail_mass
-
         self.precision = precision
+
+        self.tail_mass = tail_mass
 
     @property
     @abc.abstractmethod
