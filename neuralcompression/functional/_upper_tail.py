@@ -30,6 +30,7 @@ def upper_tail(distribution: Distribution, tail_mass: float) -> Tensor:
         _upper_tail = distribution.icdf(torch.tensor([1 - tail_mass / 2]))
     except (AttributeError, NotImplementedError):
         try:
+
             def _log_sf(x: Tensor) -> Tensor:
                 return log_sf(x, distribution)
 
