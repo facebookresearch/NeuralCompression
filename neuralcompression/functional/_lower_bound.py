@@ -1,27 +1,27 @@
+from typing import Any
+
 import torch
-from torch import Tensor
 from torch.autograd import Function
 
 
 class _LowerBound(Function):
     @staticmethod
-    def forward(
-        ctx,
-        tensor: Tensor,
-        lower_bound: int,
-        gradient: str = "identity_if_towards",
-    ) -> Tensor:
-        if gradient in ("disconnected", "identity", "identity_if_towards"):
-            ctx.gradient = gradient
+    def forward(ctx: Any, *args: Any, **kwargs: Any) -> Any:
+        gradients = ("disconnected", "identity", "identity_if_towards")
+
+        if kwargs["gradient"] in gradients:
+            ctx.gradient = kwargs["gradient"]
         else:
             raise ValueError
 
-        ctx.mask = tensor.ge(lower_bound)
+        ctx.mask = kwargs["tensor"].ge(lower_bound)
 
-        return torch.clamp(tensor, lower_bound)
+        return torch.clamp(kwargs["tensor"], lower_bound)
 
     @staticmethod
-    def backward(ctx, grad_output: Tensor):
+    def backward(ctx: Any, *grad_outputs: Any) -> Any:
+        grad_output = grad_outputs[0]
+
         if ctx.gradient == "identity_if_towards":
             grad_output *= torch.logical_or(ctx.mask, grad_output.lt(0.0))
 
