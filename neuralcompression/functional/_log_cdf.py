@@ -27,8 +27,6 @@ def log_cdf(
             function (PDF), integrated from minus infinity to ``x``.
     """
     if isinstance(distribution, Normal):
-        standardized = (x - distribution.loc) / distribution.scale
-
-        return log_ndtr(standardized)
+        return log_ndtr(x)
 
     return torch.log(distribution.cdf(x))
