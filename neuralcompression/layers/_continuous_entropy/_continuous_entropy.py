@@ -21,15 +21,12 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
         self,
         distribution: Distribution,
         precision: int = 16,
-        tail_mass: float = 2 ** (-8),
     ):
         super(ContinuousEntropy, self).__init__()
 
         self._distribution = distribution
 
         self._precision = precision
-
-        self._tail_mass = tail_mass
 
         self.register_buffer("_cdf", IntTensor())
         self.register_buffer("_cdf_size", IntTensor())
@@ -71,55 +68,48 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
         indexes: IntTensor,
         quantization_offsets: Optional[Tensor] = None,
         dtype: torch.dtype = torch.float,
-        **kwargs,
     ):
         decompressed = self._cdf.new_empty(indexes.size())
 
-        for index, encoded in enumerate(data):
-            decoded = unbounded_index_range_decode(
-                encoded,
-                indexes[index],
-                self._cdf,
-                self._cdf_size,
-                self._offset,
-                self._precision,
-                self._overflow_width,
-            )
-
-            decoded = torch.tensor(
-                decoded,
+        for index, _ in enumerate(data):
+            decompressed[index] = torch.tensor(
+                unbounded_index_range_decode(
+                    data[index],
+                    indexes[index],
+                    self._cdf,
+                    self._cdf_size,
+                    self._offset,
+                    self._precision,
+                    self._overflow_width,
+                ),
                 decompressed.dtype,
                 decompressed.device,
-            )
+            ).reshape(decompressed[index].size())
 
-            decompressed[index] = decoded.reshape(decompressed[index].size())
-
-        decompressed = self.reconstruct(
+        return self.reconstruct(
             decompressed,
             quantization_offsets,
             dtype,
         )
-
-        return decompressed
 
     @staticmethod
     def quantize(
         x: Tensor,
         quantization_offsets: Optional[Tensor] = None,
     ) -> IntTensor:
-        quantized = x.clone()
+        x = x.clone()
 
         if quantization_offsets:
-            quantized -= quantization_offsets
+            x -= quantization_offsets
 
-        return torch.round(quantized).to(torch.int32)
+        return torch.round(x).to(torch.int32)
 
     @staticmethod
     def reconstruct(
         x: Tensor,
         quantization_offsets: Optional[Tensor] = None,
         dtype: torch.dtype = torch.float,
-    ):
+    ) -> Tensor:
         if quantization_offsets:
             return x.to(quantization_offsets.dtype) + quantization_offsets
         else:
