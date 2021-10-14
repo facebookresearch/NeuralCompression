@@ -12,7 +12,7 @@ jobs:
         with:
           python-version: "3.8"
       - name: Install build dependencies
-        run: pip install -U setuptools wheel build
+        run: pip install -U build setuptools wheel
       - name: Build package
         run: python -m build .
       - name: Publish package
