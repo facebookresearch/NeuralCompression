@@ -1,0 +1,2 @@
+from ._continuous_entropy import ContinuousEntropy
+from ._continuous_indexed_entropy import ContinuousIndexedEntropy

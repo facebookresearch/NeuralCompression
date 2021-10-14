@@ -8,14 +8,14 @@ from torch.distributions import Distribution
 from torch.nn import Module
 
 
-class _ContinuousEntropy(Module, metaclass=ABCMeta):
+class ContinuousEntropy(Module, metaclass=ABCMeta):
     def __init__(
         self,
         distribution: Distribution,
         precision: int = 16,
         tail_mass: float = 2 ** (-8),
     ):
-        super(_ContinuousEntropy, self).__init__()
+        super(ContinuousEntropy, self).__init__()
 
         self.distribution = distribution
 
