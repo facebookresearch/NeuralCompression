@@ -7,10 +7,11 @@ neuralcompression.functional
 .. autofunction:: dense_image_warp
 .. autofunction:: hsv2rgb
 .. autofunction:: information_content
-.. autofunction:: learned_perceptual_image_patch_similarity,
+.. autofunction:: learned_perceptual_image_patch_similarity
 .. autofunction:: log_cdf
 .. autofunction:: log_ndtr
 .. autofunction:: log_sf
+.. autofunction:: lower_bound
 .. autofunction:: lower_tail
 .. autofunction:: multiscale_structural_similarity
 .. autofunction:: ndtr
@@ -18,4 +19,5 @@ neuralcompression.functional
 .. autofunction:: sf
 .. autofunction:: unbounded_index_range_decode
 .. autofunction:: unbounded_index_range_encode
+.. autofunction:: upper_bound
 .. autofunction:: upper_tail

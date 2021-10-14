@@ -16,12 +16,14 @@ from ._range_coding import (
     unbounded_index_range_encode,
 )
 from ._sf import sf
+from ._lower_bound import lower_bound
 from ._soft_round import (
     soft_round,
     soft_round_conditional_mean,
     soft_round_inverse,
 )
 from ._upper_tail import upper_tail
+from ._upper_bound import upper_bound
 from .complexity import count_flops
 from .distortion import (
     learned_perceptual_image_patch_similarity,
