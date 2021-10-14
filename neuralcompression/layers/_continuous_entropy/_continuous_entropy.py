@@ -1,6 +1,6 @@
 import abc
 from abc import ABCMeta
-from typing import Optional
+from typing import Optional, Tuple
 
 import torch
 from torch import Tensor
@@ -9,6 +9,8 @@ from torch.nn import Module
 
 
 class ContinuousEntropy(Module, metaclass=ABCMeta):
+    _overflow_width: int = 4
+
     def __init__(
         self,
         distribution: Distribution,
@@ -17,15 +19,15 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
     ):
         super(ContinuousEntropy, self).__init__()
 
-        self.distribution = distribution
+        self._distribution = distribution
 
-        self.precision = precision
+        self._precision = precision
 
-        self.tail_mass = tail_mass
+        self._tail_mass = tail_mass
 
     @property
     @abc.abstractmethod
-    def probability_tables(self):
+    def probability_tables(self) -> Tuple[Tensor, Tensor, Tensor]:
         pass
 
     @abc.abstractmethod
