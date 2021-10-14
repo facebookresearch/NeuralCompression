@@ -1,3 +1,10 @@
+"""
+Copyright (c) Facebook, Inc. and its affiliates.
+
+This source code is licensed under the MIT license found in the
+LICENSE file in the root directory of this source tree.
+"""
+
 import abc
 from abc import ABCMeta
 from typing import Optional, Tuple
@@ -47,8 +54,8 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
 
         compressed = []
 
-        for index in range(data.size(0)):
-            encoded = unbounded_index_range_encode(
+        for index in range(data.size()):
+            compressed += [(unbounded_index_range_encode(
                 data,
                 indexes,
                 self._cdf,
@@ -56,9 +63,7 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
                 self._offset,
                 self._precision,
                 self._overflow_width,
-            )
-
-            compressed += [encoded]
+            ))]
 
         return compressed
 
