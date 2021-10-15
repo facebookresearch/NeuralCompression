@@ -15,3 +15,11 @@ repos:
     rev: v1.2.6
     hooks:
     -   id: import-linter
+-   repo: https://github.com/seddonym/import-linter
+    rev: v1.2.6
+    hooks:
+    -   id: import-linter
+-   repo: https://github.com/pycqa/isort
+    rev: 5.9.3
+    hooks:
+    -   id: isort
