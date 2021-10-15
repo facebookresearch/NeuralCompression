@@ -6,6 +6,9 @@ requires = [
     "wheel>=0.37.0",
 ]
 
+[tool.black]
+target-version = ["py38", "py39"]
+
 [tool.isort]
 profile = "black"
 
@@ -22,6 +25,3 @@ module = [
     "tqdm.*",
 ]
 ignore_missing_imports = true
-
-[tool.black]
-target-version = ["py36", "py37", "py38"]
