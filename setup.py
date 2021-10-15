@@ -4,10 +4,12 @@ Copyright (c) Facebook, Inc. and its affiliates.
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
+
 import os
 import re
 
-from setuptools import find_packages, setup
+import setuptools
+import skbuild
 
 # from https://github.com/facebookresearch/ClassyVision/blob/master/setup.py
 # get version string from module
@@ -37,7 +39,7 @@ install_requires = [
     "fvcore>=0.1.5",
 ]
 
-setup(
+skbuild.setup(
     name="neuralcompression",
     version=version,
     description="A collection of tools for neural compression enthusiasts.",
@@ -51,7 +53,7 @@ setup(
     python_requires=">=3.6",
     setup_requires=["wheel"],
     install_requires=install_requires,
-    packages=find_packages(
+    packages=setuptools.find_packages(
         exclude=[
             "tests",
             "projects",
