@@ -1,0 +1,4 @@
+include *.md
+include LICENSE
+include pyproject.toml
+include setup.py
