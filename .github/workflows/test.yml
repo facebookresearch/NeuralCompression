@@ -1,0 +1,20 @@
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install --editable ".[test]"
+      - run: tox
+    strategy:
+      matrix:
+        python-version: [ 3.8, 3.9 ]
+name: test
+on:
+  pull_request:
+    branches:
+      - main
