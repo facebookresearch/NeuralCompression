@@ -25,7 +25,7 @@ with open(
 
 
 setuptools.setup(
-    version=version,
+    # version=version,
     project_urls={
         "Source": "https://github.com/facebookresearch/NeuralCompression",
     },
@@ -49,4 +49,5 @@ setuptools.setup(
         ),
     ],
     cmdclass={"build_ext": BuildExtension},
+    use_scm_version={"write_to": "neuralcompression/_version.py"},
 )
