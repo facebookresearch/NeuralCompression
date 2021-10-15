@@ -7,10 +7,6 @@ repos:
     rev: 4.0.1
     hooks:
     -   id: flake8
--   repo: https://github.com/asottile/pyupgrade
-    rev: v2.29.0
-    hooks:
-    -   id: pyupgrade
 -   repo: https://github.com/seddonym/import-linter
     rev: v1.2.6
     hooks:
@@ -20,3 +16,8 @@ repos:
     rev: 5.9.3
     hooks:
     -   id: isort
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v2.29.0
+    hooks:
+    -   id: pyupgrade
+
