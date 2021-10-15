@@ -1,7 +1,6 @@
 jobs:
   docs:
     runs-on: ubuntu-latest
-    if: github.repository == "facebookresearch/NeuralCompression"
     steps:
       - uses: actions/checkout@main
         with:
