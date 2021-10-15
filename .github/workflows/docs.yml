@@ -1,0 +1,25 @@
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    if: github.repository == "facebookresearch/NeuralCompression"
+    steps:
+      - uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+          path: main
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install --editable ".[docs]"
+        working-directory: main
+      - run: make html
+        working-directory: main/docs
+name: docs
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
