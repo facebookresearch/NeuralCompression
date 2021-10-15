@@ -3,3 +3,15 @@ repos:
     rev: 21.9b0
     hooks:
     -   id: black
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+    -   id: flake8
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v2.29.0
+    hooks:
+    -   id: pyupgrade
+-   repo: https://github.com/seddonym/import-linter
+    rev: v1.2.6
+    hooks:
+    -   id: import-linter

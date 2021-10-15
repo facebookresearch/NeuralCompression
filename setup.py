@@ -4,10 +4,13 @@ Copyright (c) Facebook, Inc. and its affiliates.
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
+
 import os
 import re
+from pathlib import Path
 
-from setuptools import find_packages, setup
+import setuptools
+from torch.utils.cpp_extension import BuildExtension, CppExtension
 
 # from https://github.com/facebookresearch/ClassyVision/blob/master/setup.py
 # get version string from module
@@ -20,63 +23,30 @@ with open(
     version = readval.group(1)
     print("-- Building version " + version)
 
-with open("README.md", encoding="utf8") as f:
-    readme = f.read()
 
-# alphabetical order
-install_requires = [
-    "compressai>=1.1.4",
-    "jax>=0.2.12",
-    "jaxlib>=0.1.65",
-    "lpips>=0.1.3",
-    "torch>=1.8.1",
-    "torchmetrics>=0.3.2",
-    "torchvision>=0.9.1",
-    "tqdm>=4.61.0",
-    "torchmetrics>=0.3.2",
-    "fvcore>=0.1.5",
-]
-
-setup(
-    name="neuralcompression",
+setuptools.setup(
     version=version,
-    description="A collection of tools for neural compression enthusiasts.",
-    long_description_content_type="text/markdown",
-    long_description=readme,
-    author="Facebook AI Research",
-    license="MIT",
     project_urls={
         "Source": "https://github.com/facebookresearch/NeuralCompression",
     },
-    python_requires=">=3.6",
-    setup_requires=["wheel"],
-    install_requires=install_requires,
-    packages=find_packages(
+    packages=setuptools.find_packages(
         exclude=[
             "tests",
             "projects",
         ]
     ),
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",
-        "Topic :: Scientific/Engineering :: Artificial Intelligence",
-        "Topic :: System :: Archiving :: Compression",
+    ext_modules=[
+        CppExtension(
+            "neuralcompression.ext._foo",
+            [
+                str(
+                    Path(__file__).resolve().parent
+                    / "neuralcompression"
+                    / "ext"
+                    / "foo_py.cc"
+                )
+            ],
+        ),
     ],
-    extras_require={
-        "dev": [
-            "black>=21.9b0",
-            "pre-commit>=2.15.0",
-        ],
-        "docs": [
-            "pytorch_sphinx_theme @ git+https://github.com/pytorch/pytorch_sphinx_theme.git#egg=pytorch_sphinx_theme",
-            "sphinx-autodoc-typehints>=1.12.0",
-            "sphinx-copybutton>=0.3.1",
-            "sphinx>=4.2.0",
-        ],
-    },
+    cmdclass={"build_ext": BuildExtension},
 )
