@@ -10,3 +10,4 @@ neuralcompression.functional
 .. autofunction:: hsv2rgb
 .. autofunction:: optical_flow_to_color
 .. autofunction:: dense_image_warp
+.. autofunction:: ndtr
