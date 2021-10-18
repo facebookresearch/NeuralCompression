@@ -36,7 +36,7 @@ def pmf_to_quantized_cdf(pmf: Tensor, precision: int) -> Tensor:
     """
     if torch.all(pmf <= 0.0).item():
         message = """
-        `pmf` has a non-finite or negative member. Please check for numerical 
+        `pmf` has a non-finite or negative member. Please check for numerical
         problems in the probability computation."
         """
 
