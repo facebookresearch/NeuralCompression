@@ -14,6 +14,7 @@ from ._soft_round import (
     soft_round_conditional_mean,
     soft_round_inverse,
 )
+from ._survival_function import survival_function
 from .complexity import count_flops
 from .distortion import (
     learned_perceptual_image_patch_similarity,
