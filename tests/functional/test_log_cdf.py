@@ -6,9 +6,10 @@ LICENSE file in the root directory of this source tree.
 
 import numpy.random
 import scipy.special
+import scipy.stats
 import torch
 import torch.testing
-from torch.distributions import Normal
+from torch.distributions import Normal, Uniform
 
 from neuralcompression.functional import log_cdf
 
@@ -25,4 +26,13 @@ def test_log_cdf():
     torch.testing.assert_close(
         actual,
         torch.tensor(scipy.special.log_ndtr(x), dtype=torch.float),
+    )
+
+    actual = log_cdf(torch.tensor(x, dtype=torch.float), Uniform(0.0, 1.0))
+
+    assert torch.isfinite(actual).all()
+
+    torch.testing.assert_close(
+        actual,
+        torch.tensor(scipy.stats.uniform.logcdf(x), dtype=torch.float),
     )
