@@ -34,6 +34,13 @@ def pmf_to_quantized_cdf(pmf: Tensor, precision: int) -> Tensor:
     Returns:
         the quantized CDF.
     """
+    if precision < 0 or precision > 16:
+        message = """
+        `precision` must be greater than 0 and less than or equal to 16.
+        """
+
+        raise ValueError(message)
+
     cdf = neuralcompression.ext.pmf_to_quantized_cdf(pmf.tolist(), precision)
 
     return torch.tensor(cdf)
