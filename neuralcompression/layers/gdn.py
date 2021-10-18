@@ -9,7 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
-from ..functional import lower_bound
+import neuralcompression.functional as ncF
 
 
 class SimplifiedGDN(nn.Module):
@@ -53,8 +53,8 @@ class SimplifiedGDN(nn.Module):
             ``image`` after normalization.
         """
         # threshold for numerical stability while keeping backprop
-        self.gamma.data = lower_bound(self.gamma.data, 0)
-        self.beta.data = lower_bound(self.beta.data, self.beta_min)
+        self.gamma.data = ncF.lower_bound(self.gamma.data, 0)
+        self.beta.data = ncF.lower_bound(self.beta.data, self.beta_min)
 
         return image / F.conv2d(torch.abs(image), self.gamma, self.beta)
 
@@ -100,7 +100,7 @@ class SimplifiedInverseGDN(nn.Module):
             ``image`` after inverse normalization.
         """
         # threshold for numerical stability while keeping backprop
-        self.gamma.data = lower_bound(self.gamma.data, 0)
-        self.beta.data = lower_bound(self.beta.data, self.beta_min)
+        self.gamma.data = ncF.lower_bound(self.gamma.data, 0)
+        self.beta.data = ncF.lower_bound(self.beta.data, self.beta_min)
 
         return image * F.conv2d(torch.abs(image), self.gamma, self.beta)
