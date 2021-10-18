@@ -16,13 +16,13 @@ from neuralcompression.functional import log_cdf
 def test_log_cdf():
     rng = numpy.random.default_rng(0xFEEEFEEE)
 
-    x = rng.random((32,))
+    x = rng.random((32,), dtype=numpy.float)
 
-    actual = log_cdf(torch.tensor(x), Normal(0.0, 1.0))
+    actual = log_cdf(torch.tensor(x, dtype=torch.float), Normal(0.0, 1.0))
 
     assert torch.isfinite(actual).all()
 
     torch.testing.assert_close(
         actual,
-        torch.tensor(scipy.special.log_ndtr(x)),
+        torch.tensor(scipy.special.log_ndtr(x), dtype=torch.float),
     )
