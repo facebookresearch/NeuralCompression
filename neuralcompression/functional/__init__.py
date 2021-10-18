@@ -6,6 +6,7 @@ LICENSE file in the root directory of this source tree.
 """
 
 from ._estimate_tails import estimate_tails
+from ._ndtr import ndtr
 from ._quantization_offset import quantization_offset
 from ._soft_round import (
     soft_round,
