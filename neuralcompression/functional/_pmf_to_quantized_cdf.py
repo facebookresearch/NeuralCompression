@@ -29,7 +29,7 @@ def pmf_to_quantized_cdf(pmf: Tensor, precision: int) -> Tensor:
             The PMF is **not** normalized by this op. The user is responsible
             for normalizing the PMF, if necessary.
         precision: the number of bits for probability quantization, must be
-        less than or equal to 16.
+        greater than 0 and less than or equal to 16.
 
     Returns:
         the quantized CDF.
