@@ -6,6 +6,7 @@ LICENSE file in the root directory of this source tree.
 """
 
 from ._estimate_tails import estimate_tails
+from ._log_ndtr import log_ndtr
 from ._ndtr import ndtr
 from ._pmf_to_quantized_cdf import pmf_to_quantized_cdf
 from ._quantization_offset import quantization_offset
