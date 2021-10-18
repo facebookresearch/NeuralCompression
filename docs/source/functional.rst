@@ -13,3 +13,4 @@ neuralcompression.functional
 .. autofunction:: quantization_offset
 .. autofunction:: ndtr
 .. autofunction:: log_ndtr
+.. autofunction:: log_cdf
