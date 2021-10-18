@@ -3,6 +3,13 @@ neuralcompression.layers
 
 .. currentmodule:: neuralcompression.layers
 
+NonNegativeParameter
+~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: NonNegativeParameter
+  :members: __getitem__
+  :special-members:
+
 SimplifiedGDN
 ~~~~~~~~~~~~~
 
