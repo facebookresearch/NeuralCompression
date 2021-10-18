@@ -17,11 +17,11 @@ def test_log_ndtr():
 
     x = rng.random((32,), dtype=numpy.float)
 
-    actual = log_ndtr(torch.tensor(x))
+    actual = log_ndtr(torch.tensor(x, dtype=torch.float))
 
     assert torch.isfinite(actual).all()
 
     torch.testing.assert_close(
         actual,
-        torch.tensor(scipy.special.log_ndtr(x)),
+        torch.tensor(scipy.special.log_ndtr(x), dtype=torch.float),
     )
