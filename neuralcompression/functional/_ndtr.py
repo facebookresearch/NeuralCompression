@@ -21,9 +21,7 @@ def ndtr(x: Tensor) -> Tensor:
         the area under the standard Normal probability density function (PDF),
             integrated from negative infinity to ``x``.
     """
-    x = x.to(torch.float)
-
-    x *= math.sqrt(0.5)
+    x = x.to(torch.float) * math.sqrt(0.5)
 
     y = 0.5 * torch.erfc(abs(x))
 
