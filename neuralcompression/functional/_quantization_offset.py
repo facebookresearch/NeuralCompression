@@ -40,7 +40,7 @@ def quantization_offset(distribution: Distribution) -> Tensor:
     """
     try:
         offset = distribution.mean
-    except NotImplementedError:
+    except AttributeError:
         offset = 0
 
     with torch.no_grad():
