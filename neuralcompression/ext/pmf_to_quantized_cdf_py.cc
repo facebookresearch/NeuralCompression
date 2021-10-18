@@ -7,23 +7,31 @@
 #include <string>
 #include <vector>
 
-std::vector<uint32_t> pmf_to_quantized_cdf(const std::vector<float> &pmf, int precision) {
-  for (float p : pmf) if (p < 0 || !std::isfinite(p)) throw std::domain_error("");
+std::vector<uint32_t> pmf_to_quantized_cdf(const std::vector<float> &pmf,
+                                           int precision) {
+  for (float p : pmf)
+    if (p < 0 || !std::isfinite(p))
+      throw std::domain_error("");
 
   std::vector<uint32_t> cdf(pmf.size() + 1);
 
   cdf[0] = 0;
 
-  std::transform(pmf.begin(), pmf.end(), cdf.begin() + 1, [=](float p) { return std::round(p * (1 << precision)); });
+  std::transform(pmf.begin(), pmf.end(), cdf.begin() + 1,
+                 [=](float p) { return std::round(p * (1 << precision)); });
 
   const uint32_t total = std::accumulate(cdf.begin(), cdf.end(), 0);
 
-  if (total == 0) throw std::domain_error("");
+  if (total == 0)
+    throw std::domain_error("");
 
-  std::transform(cdf.begin(), cdf.end(), cdf.begin(), [precision, total](uint32_t p) { return ((static_cast<uint64_t>(1 << precision) * p) / total); });
+  std::transform(cdf.begin(), cdf.end(), cdf.begin(),
+                 [precision, total](uint32_t p) {
+                   return ((static_cast<uint64_t>(1 << precision) * p) / total);
+                 });
 
   std::partial_sum(cdf.begin(), cdf.end(), cdf.begin());
-  
+
   cdf.back() = 1 << precision;
 
   for (int i = 0; i < static_cast<int>(cdf.size() - 1); ++i) {
@@ -58,7 +66,7 @@ std::vector<uint32_t> pmf_to_quantized_cdf(const std::vector<float> &pmf, int pr
   }
 
   assert(cdf[0] == 0);
-  
+
   assert(cdf.back() == (1 << precision));
 
   for (int i = 0; i < static_cast<int>(cdf.size()) - 1; ++i) {
