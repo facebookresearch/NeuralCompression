@@ -34,8 +34,23 @@ def pmf_to_quantized_cdf(pmf: Tensor, precision: int) -> Tensor:
     Returns:
         the quantized CDF.
     """
-    if precision < 0 or precision > 16:
-        message = """
+    if torch.all(pmf <= 0.0).item():
+        message = f"""
+        `pmf` has a non-finite or negative member. Please check for numerical 
+        problems in the probability computation."
+        """
+
+        raise ValueError(message)
+
+    if pmf.shape[-1] < 2:
+        message = f"""
+        `pmf` shape should be at least two in last axis.
+        """
+
+        raise ValueError(message)
+
+    if precision < 1 or precision > 16:
+        message = f"""
         `precision` must be greater than 0 and less than or equal to 16.
         """
 

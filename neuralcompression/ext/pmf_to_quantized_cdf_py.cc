@@ -9,10 +9,6 @@
 
 std::vector<uint32_t> pmf_to_quantized_cdf(const std::vector<float> &pmf,
                                            int precision) {
-  for (float p : pmf)
-    if (p < 0 || !std::isfinite(p))
-      throw std::domain_error("");
-
   std::vector<uint32_t> cdf(pmf.size() + 1);
 
   cdf[0] = 0;

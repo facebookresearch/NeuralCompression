@@ -20,6 +20,6 @@ def test_pmf_to_quantized_cdf():
         pmf_to_quantized_cdf(torch.tensor([0.0]), 17)
 
     torch.testing.assert_close(
-        pmf_to_quantized_cdf(torch.tensor([0.01, 0.1, 0.0, 1.0]), 16),
-        torch.tensor([0, 589, 6493, 6494, 65536]),
+        pmf_to_quantized_cdf(torch.tensor([1, 2, 3]), 8),
+        torch.tensor([0, 42, 127, 256]),
     )
