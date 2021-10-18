@@ -14,3 +14,4 @@ neuralcompression.functional
 .. autofunction:: ndtr
 .. autofunction:: survival_function
 .. autofunction:: log_ndtr
+.. autofunction:: log_cdf
