@@ -12,3 +12,4 @@ neuralcompression.functional
 .. autofunction:: dense_image_warp
 .. autofunction:: quantization_offset
 .. autofunction:: ndtr
+.. autofunction:: pmf_to_quantized_cdf
