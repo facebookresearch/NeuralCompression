@@ -43,5 +43,4 @@ def upper_tail(distribution: Distribution, tail_mass: float) -> Tensor:
 
             raise NotImplementedError(error)
 
-    with torch.no_grad():
-        return x
+    return x.detach()
