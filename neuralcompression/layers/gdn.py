@@ -9,7 +9,26 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
-import neuralcompression.functional as ncF
+
+class _ClampMin(torch.autograd.Function):
+    """Based on https://github.com/jorge-pessoa/pytorch-gdn (MIT License)."""
+
+    @staticmethod
+    def forward(ctx, data, min):
+        ctx.save_for_backward(data, torch.tensor(min))
+
+        return data.clamp(min=min)
+
+    @staticmethod
+    def backward(ctx, grad):
+        data, min = ctx.saved_tensors
+
+        return grad * ((data >= min) | (grad < 0.0))
+
+
+def _clamp_min(image: Tensor, min: float) -> Tensor:
+    """Min clamping but preserving gradients."""
+    return _ClampMin.apply(image, min)
 
 
 class SimplifiedGDN(nn.Module):
@@ -53,8 +72,8 @@ class SimplifiedGDN(nn.Module):
             ``image`` after normalization.
         """
         # threshold for numerical stability while keeping backprop
-        self.gamma.data = ncF.lower_bound(self.gamma.data, 0)
-        self.beta.data = ncF.lower_bound(self.beta.data, self.beta_min)
+        self.gamma.data = _clamp_min(self.gamma.data, 0)
+        self.beta.data = _clamp_min(self.beta.data, self.beta_min)
 
         return image / F.conv2d(torch.abs(image), self.gamma, self.beta)
 
@@ -100,7 +119,7 @@ class SimplifiedInverseGDN(nn.Module):
             ``image`` after inverse normalization.
         """
         # threshold for numerical stability while keeping backprop
-        self.gamma.data = ncF.lower_bound(self.gamma.data, 0)
-        self.beta.data = ncF.lower_bound(self.beta.data, self.beta_min)
+        self.gamma.data = _clamp_min(self.gamma.data, 0)
+        self.beta.data = _clamp_min(self.beta.data, self.beta_min)
 
         return image * F.conv2d(torch.abs(image), self.gamma, self.beta)
