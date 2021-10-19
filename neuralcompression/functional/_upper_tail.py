@@ -28,7 +28,7 @@ def upper_tail(distribution: Distribution, tail_mass: float) -> Tensor:
 
     Args:
         distribution: an object representing a continuous-valued random
-        variable.
+            variable.
         tail_mass: desired probability mass for the tails.
 
     Returns:
