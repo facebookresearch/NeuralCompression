@@ -1,4 +1,9 @@
-import numpy
+"""
+Copyright (c) Facebook, Inc. and its affiliates.
+This source code is licensed under the MIT license found in the
+LICENSE file in the root directory of this source tree.
+"""
+
 import torch
 import torch.testing
 
@@ -6,44 +11,24 @@ from neuralcompression.functional import lower_bound
 
 
 def test_lower_bound():
-    rng = numpy.random.default_rng(0xFEEEFEEE)
+    x = torch.rand(16, requires_grad=True)
 
-    x = torch.tensor(rng.random((4,)), dtype=torch.float, requires_grad=True)
+    bound = torch.rand(1)
 
-    (bound,) = rng.random(1)
+    torch.testing.assert_allclose(
+        lower_bound(x, bound),
+        torch.max(x, bound),
+    )
 
-    y = lower_bound(x, bound, gradient="disconnected")
+    bound = torch.rand(1)
 
-    torch.testing.assert_equal(y, torch.clamp_max(x, bound))
-
-    y.backward(x)
-
-    assert x.grad is not None
-
-    torch.testing.assert_equal(x.grad, (x >= bound) * x)
-
-    x = torch.tensor(rng.random((4,)), dtype=torch.float, requires_grad=True)
-
-    (bound,) = rng.random(1)
-
-    y = lower_bound(x, bound, gradient="identity")
-
-    torch.testing.assert_equal(y, torch.clamp_max(x, bound))
+    y = lower_bound(x, bound)
 
     y.backward(x)
 
     assert x.grad is not None
 
-    x = torch.tensor(rng.random((4,)), dtype=torch.float, requires_grad=True)
-
-    (bound,) = rng.random(1)
-
-    y = lower_bound(x, bound, gradient="identity_if_towards")
-
-    torch.testing.assert_equal(y, torch.clamp_max(x, bound))
-
-    y.backward(x)
-
-    assert x.grad is not None
-
-    torch.testing.assert_equal(x.grad, (x >= bound) * x)
+    torch.testing.assert_allclose(
+        x.grad,
+        (x >= bound) * x,
+    )
