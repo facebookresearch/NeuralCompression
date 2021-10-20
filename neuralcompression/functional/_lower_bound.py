@@ -1,51 +1,53 @@
 """
 Copyright (c) Facebook, Inc. and its affiliates.
-
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
+from typing import Union
+
 import torch
+import torch.nn
 from torch import Tensor
+from torch.autograd import Function
 
 
-class _LowerBound(torch.autograd.Function):
+class _LowerBound(Function):
     @staticmethod
-    def forward(ctx, *args):
-        x, bound, gradient = args
-
-        gradients = ("disconnected", "identity", "identity_if_towards")
-
-        if gradient not in gradients:
-            raise ValueError
-
-        ctx.save_for_backward(torch.ge(x, bound))
-
-        ctx.bound, ctx.gradient = bound, gradient
-
-        return torch.clamp_max(x, bound)
-
-    @staticmethod
-    def backward(ctx, *gradient_outputs):
-        (y,) = gradient_outputs
+    def backward(ctx, *grad_outputs):
+        (grad_output,) = grad_outputs
 
         (x,) = ctx.saved_tensors
 
         if ctx.gradient == "disconnected":
-            z = x
-        elif ctx.gradient == "identity":
-            z = y
-        elif ctx.gradient == "identity_if_towards":
-            z = torch.logical_or(x, y.lt(0.0))
-        else:
+            return x
+
+        if ctx.gradient == "identity":
+            return grad_output
+
+        return ((x >= ctx.bound) | (grad_output < 0)) * grad_output, None, None
+
+    @staticmethod
+    def forward(ctx, *args):
+        x, bound, gradient = args
+
+        if gradient not in ("disconnected", "identity", "identity_if_towards"):
             raise ValueError
 
-        return (y * z).type(y.dtype), None, None
+        bound = torch.tensor([bound], dtype=x.dtype)
+
+        ctx.bound = bound
+
+        ctx.gradient = gradient
+
+        ctx.save_for_backward(x)
+
+        return torch.max(x, bound)
 
 
 def lower_bound(
     x: Tensor,
-    bound: float,
+    bound: Union[float, Tensor],
     gradient: str = "identity_if_towards",
 ) -> Tensor:
     """``torch.maximum`` with a gradient for ``x`` < ``bound``.
