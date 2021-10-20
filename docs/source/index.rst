@@ -14,6 +14,7 @@ for data compression.
    :caption: Package Reference
 
    data
+   distributions
    entropy_coders
    functional
    layers
