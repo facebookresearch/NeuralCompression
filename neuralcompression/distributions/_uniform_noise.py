@@ -5,7 +5,6 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-from abc import ABCMeta
 from typing import Any, Dict, Optional
 
 import torch
@@ -16,7 +15,7 @@ from torch.distributions.constraints import Constraint
 import neuralcompression.functional as ncf
 
 
-class UniformNoise(Distribution, metaclass=ABCMeta):
+class UniformNoise(Distribution):
     r"""Adapts a continuous distribution via additive identically distributed
         (i.i.d.) uniform noise.
 
