@@ -12,7 +12,7 @@ from torch import Size, Tensor
 from torch.distributions import Distribution, Uniform
 from torch.distributions.constraints import Constraint
 
-import neuralcompression.functional as ncf
+import neuralcompression.functional as ncF
 
 
 class UniformNoise(Distribution):
@@ -64,7 +64,7 @@ class UniformNoise(Distribution):
 
     @property
     def quantization_offset(self) -> Tensor:
-        return ncf.quantization_offset(self._distribution)
+        return ncF.quantization_offset(self._distribution)
 
     @property
     def support(self) -> Optional[Any]:
@@ -90,7 +90,7 @@ class UniformNoise(Distribution):
         return self._distribution.icdf(value)
 
     def log_cdf(self, value: Tensor) -> Tensor:
-        return ncf.log_cdf(value, self._distribution)
+        return ncF.log_cdf(value, self._distribution)
 
     def log_prob(self, value: Tensor) -> Tensor:
         log_survival_function_positive = self.log_survival_function(value + 0.5)
@@ -116,10 +116,10 @@ class UniformNoise(Distribution):
         return torch.log1p(-torch.exp(b - a)) + a
 
     def log_survival_function(self, value: Tensor) -> Tensor:
-        return ncf.log_survival_function(value, self._distribution)
+        return ncF.log_survival_function(value, self._distribution)
 
     def lower_tail(self, tail_mass: float) -> Tensor:
-        return ncf.lower_tail(self._distribution, tail_mass)
+        return ncF.lower_tail(self._distribution, tail_mass)
 
     def prob(self, value: Tensor) -> Tensor:
         survival_function_positive = self.survival_function(value + 0.5)
@@ -141,7 +141,7 @@ class UniformNoise(Distribution):
         return a + b
 
     def survival_function(self, value: Tensor) -> Tensor:
-        return ncf.survival_function(value, self._distribution)
+        return ncF.survival_function(value, self._distribution)
 
     def upper_tail(self, tail_mass: float) -> Tensor:
-        return ncf.upper_tail(self._distribution, tail_mass)
+        return ncF.upper_tail(self._distribution, tail_mass)
