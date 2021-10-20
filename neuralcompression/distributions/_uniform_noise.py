@@ -20,17 +20,17 @@ class UniformNoise(Distribution):
         (i.i.d.) uniform noise.
 
     For a ``distribution``, ``UniformNoise`` models ``distribution`` after the
-        addition of independent uniform noise. Effectively, the base density
-        function is convolved with a box kernel of width one. The resulting
-        density can be efficiently evaluated via the relation:
+    addition of independent uniform noise. Effectively, the base density
+    function is convolved with a box kernel of width one. The resulting density
+    can be efficiently evaluated via the relation:
 
     .. math::
         p_{\widetilde{y}}(\widetilde{y}) =
             c(\widetilde{y} + \frac{1}{2}) - c(\widetilde{y} - \frac{1}{2})
 
     where :math:`p` and :math:`\widetilde{y}` are the base density and the
-        unit-width uniform density, respectively, and :math:`c` is the
-        cumulative distribution function (CDF) of :math:`p`.
+    unit-width uniform density, respectively, and :math:`c` is the cumulative
+    distribution function (CDF) of :math:`p`.
 
     The method is described in Appendix 6.2. of:
 
