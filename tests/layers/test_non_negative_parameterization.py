@@ -8,55 +8,48 @@ LICENSE file in the root directory of this source tree.
 import torch
 import torch.testing
 
-from neuralcompression.layers import NonNegativeParameterization
+from _non_negative_parameterization import NonNegativeParameterization
 
 
-class TestNonNegativeParameter:
+class TestNonNegativeParameterization:
     def test___init__(self):
-        x = torch.rand((4,))
+        x = torch.rand((1, 8, 8, 8)) * 2 - 1
 
-        non_negative_parameter = NonNegativeParameter(x)
+        parameterization = NonNegativeParameterization(x)
 
-        assert non_negative_parameter.initial_value.shape == x.shape
+        assert parameterization.initial_value.shape == x.shape
 
-        torch.testing.assert_close(
-            non_negative_parameter.initial_value,
+        assert torch.allclose(
+            parameterization.initial_value,
             torch.sqrt(torch.max(x, x - x)),
+            atol=2 ** -18,
         )
 
-    def test_parameterize(self):
-        x = torch.rand((4,))
+        for _ in range(10):
+            minimum = torch.rand(1)
 
-        non_negative_parameter = NonNegativeParameter(
-            shape=x.shape,
-            dtype=torch.float,
-        )
+            x = torch.rand((1, 8, 8, 8)) * 2 - 1
 
-        parameterized = non_negative_parameter.parameterize(x)
+            non_negative_parameterization = NonNegativeParameterization(
+                minimum=minimum.item(),
+                shape=x.shape,
+            )
 
-        assert parameterized.shape == x.shape
+            reparameterized = non_negative_parameterization(x)
 
-        torch.testing.assert_equal(
-            parameterized,
-            torch.sqrt(torch.max(x, x - x)),
-        )
+            assert reparameterized.shape == x.shape
+
+            assert torch.allclose(reparameterized.min(), minimum)
 
     def test_forward(self):
-        x = torch.tensor([0.1, 0.2, 0.3, 0.4, 0.5])
+        x = torch.rand((1, 8, 8, 8)) * 2 - 1
 
-        minimum = 0.2
-
-        non_negative_parameter = NonNegativeParameter(
-            minimum=minimum,
+        parameterization = NonNegativeParameterization(
             shape=x.shape,
-            dtype=torch.float,
         )
 
-        reparameterized = non_negative_parameter(x)
+        reparameterized = parameterization(x)
 
         assert reparameterized.shape == x.shape
 
-        torch.testing.assert_close(
-            float(reparameterized.min()),
-            0.01,
-        )
+        assert reparameterized.min() >= 0
