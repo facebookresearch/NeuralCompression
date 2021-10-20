@@ -10,14 +10,8 @@ import torch.testing
 from torch import Size
 from torch.distributions import Normal
 
+import neuralcompression.functional as ncf
 from neuralcompression.distributions import UniformNoise
-from neuralcompression.functional import (
-    survival_function,
-    log_cdf,
-    log_survival_function,
-    upper_tail,
-    lower_tail,
-)
 
 
 class TestUniformNoise:
@@ -60,7 +54,7 @@ class TestUniformNoise:
     def test_log_cdf(self):
         torch.testing.assert_equal(
             UniformNoise(self.distribution).log_cdf(self.x),
-            log_cdf(self.x, self.distribution),
+            ncf.log_cdf(self.x, self.distribution),
         )
 
     def test_log_prob(self):
@@ -72,13 +66,13 @@ class TestUniformNoise:
     def test_log_survival_function(self):
         torch.testing.assert_equal(
             UniformNoise(self.distribution).log_survival_function(self.x),
-            log_survival_function(self.x, self.distribution),
+            ncf.log_survival_function(self.x, self.distribution),
         )
 
     def test_lower_tail(self):
         torch.testing.assert_equal(
             UniformNoise(self.distribution).lower_tail(1.0),
-            lower_tail(self.distribution, 1.0),
+            ncf.lower_tail(self.distribution, 1.0),
         )
 
     def test_mean(self):
@@ -111,13 +105,13 @@ class TestUniformNoise:
     def test_survival_function(self):
         torch.testing.assert_equal(
             UniformNoise(self.distribution).survival_function(self.x),
-            survival_function(self.x, self.distribution),
+            ncf.survival_function(self.x, self.distribution),
         )
 
     def test_upper_tail(self):
         torch.testing.assert_equal(
             UniformNoise(self.distribution).upper_tail(1.0),
-            upper_tail(self.distribution, 1.0),
+            ncf.upper_tail(self.distribution, 1.0),
         )
 
     def test_variance(self):
