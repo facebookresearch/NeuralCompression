@@ -8,7 +8,7 @@ LICENSE file in the root directory of this source tree.
 import torch
 import torch.testing
 
-from _non_negative_parameterization import NonNegativeParameterization
+from neuralcompression.layers import NonNegativeParameterization
 
 
 class TestNonNegativeParameterization:
