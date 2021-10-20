@@ -12,7 +12,7 @@ import torch.nn
 
 from torch import Tensor
 
-from _lower_bound import lower_bound
+import neuralcompression.functional as ncF
 
 
 class NonNegativeParameterization(torch.nn.Module):
@@ -58,4 +58,4 @@ class NonNegativeParameterization(torch.nn.Module):
             )
 
     def forward(self, x: Tensor) -> Tensor:
-        return lower_bound(x, self.bound) ** 2 - self._pedestal
+        return ncF.lower_bound(x, self.bound) ** 2 - self._pedestal
