@@ -10,9 +10,10 @@ from abc import ABCMeta
 from typing import Optional, Tuple
 
 import torch
+from compressai.entropy_models.entropy_models import pmf_to_quantized_cdf
 from torch import IntTensor, Size, Tensor
 from torch.distributions import Distribution, Laplace
-from torch.nn import Module
+from torch.nn import Module, functional as F
 
 import neuralcompression.functional as ncF
 
@@ -55,11 +56,11 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
         prior_shape: The batch shape of the prior, i.e. dimensions which are
             not assumed identically distributed (i.i.d.). Must be provided when
             ``prior`` is omitted.
-        cdf: If provided, used for range coding rather than the probability
+        cdfs: If provided, used for range coding rather than the probability
             tables built from the prior.
-        cdf_offset: Must be provided alongside ``cdf``.
-        cdf_size: Must be provided alongside ``cdf``.
-        maximum_cdf_size: The maximum ``cdf_size``. When provided, an empty
+        cdf_offsets: Must be provided alongside ``cdfs``.
+        cdf_sizes: Must be provided alongside ``cdfs``.
+        maximum_cdf_size: The maximum ``cdf_sizes``. When provided, an empty
             range coding table is created, which can then be restored. Requires
             ``comprsssion`` to be ``True`` and ``stateless`` to be ``False``.
         laplace_tail_mass: If positive, augments the prior with a Laplace
@@ -76,9 +77,9 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
         range_coding_precision: int = 12,
         prior_dtype: Optional[torch.dtype] = None,
         prior_shape: Optional[Tuple[int, ...]] = None,
-        cdf: Optional[IntTensor] = None,
-        cdf_offset: Optional[IntTensor] = None,
-        cdf_size: Optional[IntTensor] = None,
+        cdfs: Optional[IntTensor] = None,
+        cdf_offsets: Optional[IntTensor] = None,
+        cdf_sizes: Optional[IntTensor] = None,
         maximum_cdf_size: Optional[int] = None,
         laplace_tail_mass: float = 0.0,
     ):
@@ -114,26 +115,25 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
             self._prior_shape = prior.batch_shape
 
         if self.compression:
-            if not (cdf is None) == (cdf_offset is None) == (cdf_size is None):
+            if not (cdfs is None) == (cdf_offsets is None) == (cdf_sizes is None):
                 error_message = """
                 either all or none of the cumulative distribution function 
-                (CDF) arguments (`cdf`, `cdf_offset`, `cdf_size`, and 
+                (CDF) arguments (`cdfs`, `cdf_offsets`, `cdf_sizes`, and 
                 `maximum_cdf_size`) must be provided                
                 """
 
                 raise ValueError(error_message)
 
-            if (prior is None) + (maximum_cdf_size is None) + (cdf is None) != 2:
+            if (prior is None) + (maximum_cdf_size is None) + (cdfs is None) != 2:
                 error_message = """
-                when `compression` is `True`, exactly one of `prior`, `cdf`, or 
-                `maximum_cdf_size` must be provided. 
+                when `compression` is `True`, exactly one of `prior`, `cdfs`, 
+                or `maximum_cdf_size` must be provided. 
                 """
 
                 raise ValueError(error_message)
 
             if prior is not None:
-                # TODO(@0x00b1): pre-compute probability tables
-                pass
+                cdfs, cdf_sizes, cdf_offsets = self._precompute_probability_table()
             elif maximum_cdf_size is not None:
                 if self.stateless:
                     error_message = """
@@ -149,36 +149,36 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
                     dtype=torch.int32,
                 )
 
-                cdf = zeros
+                cdfs = zeros
 
-                cdf_offset = zeros[:, 0]
-                cdf_size = zeros[:, 0]
+                cdf_offsets = zeros[:, 0]
+                cdf_sizes = zeros[:, 0]
 
-            self._cdf = cdf
+            self._cdfs = cdfs
 
-            self._cdf_offset = cdf_offset
+            self._cdf_offsets = cdf_offsets
 
-            self._cdf_size = cdf_size
+            self._cdf_sizes = cdf_sizes
 
             if not self.stateless:
-                if self._cdf is not None:
-                    self._cdf = self.cdf.detach()
+                if self.cdfs is not None:
+                    self._cdfs = self.cdfs.detach()
 
-                if self._cdf_offset is not None:
-                    self._cdf_offset = self.cdf_offset.detach()
+                if self.cdf_offsets is not None:
+                    self._cdf_offsets = self.cdf_offsets.detach()
 
-                if self._cdf_size is not None:
-                    self._cdf_size = self.cdf_size.detach()
+                if self.cdf_offsets is not None:
+                    self._cdf_sizes = self.cdf_sizes.detach()
         else:
             if not (
-                cdf is None
-                and cdf_offset is None
-                and cdf_size is None
+                cdfs is None
+                and cdf_offsets is None
+                and cdf_sizes is None
                 and maximum_cdf_size is None
             ):
                 error_message = """
-                cumulative distribution function (CDF) arguments (`cdf`, 
-                `cdf_offset`, `cdf_size`, and `maximum_cdf_size`) cannot be 
+                cumulative distribution function (CDF) arguments (`cdfs`, 
+                `cdf_offsets`, `cdf_sizes`, and `maximum_cdf_size`) cannot be 
                 provided when `compression` is `False`
                 """
 
@@ -190,22 +190,22 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
         self._laplace_tail_mass = laplace_tail_mass
 
     @property
-    def cdf(self):
+    def cdfs(self):
         self._check_compression()
 
-        return torch.tensor(self._cdf)
+        return torch.tensor(self._cdfs)
 
     @property
-    def cdf_offset(self):
+    def cdf_offsets(self):
         self._check_compression()
 
-        return torch.tensor(self._cdf_offset)
+        return torch.tensor(self._cdf_offsets)
 
     @property
-    def cdf_size(self):
+    def cdf_sizes(self):
         self._check_compression()
 
-        return torch.tensor(self._cdf_size)
+        return torch.tensor(self._cdf_sizes)
 
     @property
     def coding_rank(self):
@@ -292,7 +292,7 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
 
             raise RuntimeError(error_message)
 
-    def _precompute(self):
+    def _precompute_probability_table(self):
         quantization_offset = ncF.quantization_offset(self.prior)
 
         lower_tail = ncF.lower_tail(
@@ -315,12 +315,12 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
 
         pmf_m = minimum.to(self.prior_dtype) + quantization_offset
 
-        pmf_size = maximum - minimum + 1
+        pmf_sizes = maximum - minimum + 1
 
-        maximum_pdf_size = torch.max(pmf_size)
+        maximum_pmf_size = torch.max(pmf_sizes)
 
         samples = torch.arange(
-            maximum_pdf_size.to(self.prior_dtype),
+            maximum_pmf_size.to(self.prior_dtype),
         ).to(self.prior_dtype)
 
         samples = torch.reshape(
@@ -330,29 +330,51 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
 
         samples = samples + pmf_m
 
-        pmf = torch.exp(self.prior.log_prob(samples))
-
-        pmf = torch.reshape(
-            pmf,
-            [maximum_pdf_size, -1],
+        pmfs = torch.reshape(
+            torch.exp(self.prior.log_prob(samples)),
+            [maximum_pmf_size, -1],
         )
 
-        pmf = torch.squeeze(pmf)
+        pmfs = torch.squeeze(pmfs)
 
-        pmf_size = torch.broadcast_to(
-            pmf_size,
+        pmf_sizes = torch.broadcast_to(
+            pmf_sizes,
             self.context_shape,
         )
 
-        pmf_size = torch.reshape(pmf_size, [-1])
+        pmf_sizes = torch.reshape(pmf_sizes, [-1])
 
-        cdf_size = pmf_size + 2
+        cdf_sizes = pmf_sizes + 2
 
-        cdf_offset = torch.broadcast_to(
+        cdf_offsets = torch.broadcast_to(
             minimum,
             self.context_shape,
         )
 
-        cdf_offset = torch.reshape(cdf_offset, [-1])
+        cdf_offsets = torch.reshape(cdf_offsets, [-1])
 
-        pass
+        cdfs = torch.zeros(
+            (len(pmf_sizes), maximum_pmf_size + 2),
+            dtype=torch.int32,
+        )
+
+        for index, (pmf, pmf_size) in enumerate(zip(pmfs, pmf_sizes)):
+            pmf = pmf[:pmf_size]
+
+            overflow = torch.clamp_min(
+                1.0 - torch.sum(pmf, 0, keepdim=True),
+                0.0,
+            )
+
+            pmf = torch.cat((pmf, overflow), 0)
+
+            quantized_cdf = pmf_to_quantized_cdf(
+                pmf,
+                self.range_coder_precision,
+            )
+
+            pad = (0, maximum_pmf_size - pmf_size)
+
+            cdfs[index] = F.pad(quantized_cdf, pad, mode="constant", value=0)
+
+        return cdfs, cdf_offsets, cdf_sizes
