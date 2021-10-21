@@ -16,8 +16,7 @@ import neuralcompression.functional as ncF
 
 
 class NonNegativeParameterization(torch.nn.Module):
-    """Non-negative parameter as required by generalized divisive normalization
-        (GDN) transformations.
+    """Non-negative parameterization.
 
     The parameter is subjected to an invertible transformation that slows down
     the learning rate for small values.
