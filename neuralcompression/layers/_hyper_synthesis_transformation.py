@@ -13,7 +13,7 @@ class HyperSynthesisTransformation(Module):
     def __init__(self, m: int, n: int):
         super(HyperSynthesisTransformation, self).__init__()
 
-        self._modules = Sequential(
+        self.model = Sequential(
             ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
             ReLU(inplace=True),
             ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
@@ -23,4 +23,4 @@ class HyperSynthesisTransformation(Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        return self._modules(x)
+        return self.model(x)
