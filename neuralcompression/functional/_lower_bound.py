@@ -3,13 +3,21 @@ Copyright (c) Facebook, Inc. and its affiliates.
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
-
+import enum
+from enum import IntEnum
 from typing import Union
 
 import torch
 import torch.nn
 from torch import Tensor
 from torch.autograd import Function
+
+
+@enum.unique
+class _LowerBoundGradient(IntEnum):
+    disconnected = 0
+    identity = 1
+    identity_if_towards = 2
 
 
 class _LowerBound(Function):
@@ -19,10 +27,12 @@ class _LowerBound(Function):
 
         (x,) = ctx.saved_tensors
 
-        if ctx.gradient == "disconnected":
+        gradient = int(ctx.gradient)
+
+        if gradient == _LowerBoundGradient.disconnected:
             return x
 
-        if ctx.gradient == "identity":
+        if gradient == _LowerBoundGradient.identity:
             return grad_output
 
         return ((x >= ctx.bound) | (grad_output < 0)) * grad_output, None, None
@@ -38,7 +48,10 @@ class _LowerBound(Function):
 
         ctx.bound = bound
 
-        ctx.gradient = gradient
+        ctx.gradient = torch.tensor(
+            _LowerBoundGradient[gradient].value,
+            dtype=torch.uint8,
+        )
 
         ctx.save_for_backward(x)
 
