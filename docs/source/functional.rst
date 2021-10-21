@@ -19,3 +19,4 @@ neuralcompression.functional
 .. autofunction:: lower_tail
 .. autofunction:: lower_bound
 .. autofunction:: upper_bound
+.. autofunction:: log_expm1
