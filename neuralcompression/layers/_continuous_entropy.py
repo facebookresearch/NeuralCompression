@@ -268,22 +268,6 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
     def tail_mass(self):
         return self._tail_mass
 
-    @abc.abstractmethod
-    def compress(self, *args, **kwargs) -> Tensor:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def decompress(self, *args, **kwargs) -> Tensor:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def quantize(self, *args, **kwargs) -> Tensor:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def reconstruct(self, *args, **kwargs) -> Tensor:
-        raise NotImplementedError
-
     def _check_compression(self):
         if not self.compression:
             error_message = """
