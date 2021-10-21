@@ -24,6 +24,11 @@ def test_lower_bound():
 
     y = lower_bound(x, bound)
 
+    torch.testing.assert_equal(
+        y,
+        torch.max(x, bound),
+    )
+
     y.backward(x)
 
     assert x.grad is not None
