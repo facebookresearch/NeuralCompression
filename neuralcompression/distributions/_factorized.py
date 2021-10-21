@@ -8,12 +8,9 @@ LICENSE file in the root directory of this source tree.
 from typing import Any, Dict, Optional, Tuple
 
 import torch
-from torch.nn import Parameter
 from torch import Size, Tensor
 from torch.distributions import Distribution
 from torch.distributions.constraints import Constraint
-
-import neuralcompression.functional as ncf
 
 
 class Factorized(Distribution):
@@ -32,26 +29,6 @@ class Factorized(Distribution):
         self._init_scale = init_scale
 
         self._dtype = dtype
-
-        # Create parameters
-        filters = (1,) + self._num_filters + (1,)
-        scale = self.init_scale ** (1 / (len(self.filters) + 1))
-        channels = self.channels
-
-        for i in range(len(self._num_filters) + 1):
-            init = np.log(np.expm1(1 / scale / filters[i + 1]))
-            matrix = torch.Tensor(channels, filters[i + 1], filters[i])
-            matrix.data.fill_(init)
-            self.register_parameter(f"_matrix{i:d}", Parameter(matrix))
-
-            bias = torch.Tensor(channels, filters[i + 1], 1)
-            nn.init.uniform_(bias, -0.5, 0.5)
-            self.register_parameter(f"_bias{i:d}", Parameter(bias))
-
-            if i < len(self.filters):
-                factor = torch.Tensor(channels, filters[i + 1], 1)
-                nn.init.zeros_(factor)
-                self.register_parameter(f"_factor{i:d}", Parameter(factor))
 
     @property
     def arg_constraints(self) -> Dict[str, Constraint]:
