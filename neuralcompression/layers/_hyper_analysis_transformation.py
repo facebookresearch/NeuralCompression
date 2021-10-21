@@ -14,11 +14,11 @@ class HyperAnalysisTransformation(Module):
         super(HyperAnalysisTransformation, self).__init__()
 
         self._modules = Sequential(
-            Conv2d(m, n, (3,), (1,), 2),
+            Conv2d(m, n, (3, 3), (1, 2), 2),
             ReLU(inplace=True),
-            Conv2d(n, n, (5,), (2,), 2),
+            Conv2d(n, n, (5, 5), (2, 2), 2),
             ReLU(inplace=True),
-            Conv2d(n, n, (5,), (2,), 2),
+            Conv2d(n, n, (5, 5), (2, 2), 2),
         )
 
     def forward(self, x: Tensor) -> Tensor:
