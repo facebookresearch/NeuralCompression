@@ -40,6 +40,9 @@ class NonNegativeParameterization(torch.nn.Module):
             numerical precision issues.
         shape: shape of the initial value of the kernel, ignored unless
             ``initial_value`` is ``None``.
+        lower_bound_gradient: The gradient to use for the ``lower_bound``
+            operation. One of {``disconnected``, ``identity``,
+            ``identity_if_towards``}. Defaults to ``identity_if_towards``.
     """
 
     initial_value: Optional[Tensor]
@@ -51,14 +54,17 @@ class NonNegativeParameterization(torch.nn.Module):
         minimum: float = 0.0,
         offset: float = 2 ** -18,
         shape: Optional[Tuple[int]] = None,
+        lower_bound_gradient: str = "identity_if_towards",
     ):
         super(NonNegativeParameterization, self).__init__()
 
-        self.minimum = minimum
+        self._minimum = minimum
 
-        self.offset = offset
+        self._offset = offset
 
-        self.bound = (self.minimum + self.offset ** 2) ** 0.5
+        self._lower_bound_gradient = lower_bound_gradient
+
+        self._bound = (self._minimum + self._offset ** 2) ** 0.5
 
         if initial_value is None:
             if shape is None:
@@ -72,7 +78,7 @@ class NonNegativeParameterization(torch.nn.Module):
 
         self.register_buffer(
             "_pedestal",
-            torch.tensor([(self.offset ** 2)], dtype=initial_value.dtype),
+            torch.tensor([(self._offset ** 2)], dtype=initial_value.dtype),
         )
 
         if initial_value is not None:
@@ -84,4 +90,10 @@ class NonNegativeParameterization(torch.nn.Module):
             )
 
     def forward(self, x: Tensor) -> Tensor:
-        return ncF.lower_bound(x, self.bound) ** 2 - self._pedestal
+        lower_bound = ncF.lower_bound(
+            x,
+            self._bound,
+            self._lower_bound_gradient,
+        )
+
+        return lower_bound ** 2 - self._pedestal

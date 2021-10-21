@@ -77,9 +77,8 @@ def lower_bound(
     Args:
         x: the input tensor.
         bound: upper bound for ``x``.
-        gradient: The dataset split to use. One of
-            {``disconnected``, ``identity``, ``identity_if_towards``}.
-            Defaults to ``identity_if_towards``.
+        gradient: The gradient to use. One of {``disconnected``, ``identity``,
+            ``identity_if_towards``}. Defaults to ``identity_if_towards``.
 
     Returns:
         the output tensor.
