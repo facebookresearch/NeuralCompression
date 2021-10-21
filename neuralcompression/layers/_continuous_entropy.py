@@ -14,6 +14,8 @@ from torch import IntTensor, Size, Tensor
 from torch.distributions import Distribution, Laplace
 from torch.nn import Module
 
+import neuralcompression.functional as ncF
+
 
 class ContinuousEntropy(Module, metaclass=ABCMeta):
     """Abstract base class (ABC) for implementing continuous entropy layers.
@@ -289,3 +291,68 @@ class ContinuousEntropy(Module, metaclass=ABCMeta):
             """
 
             raise RuntimeError(error_message)
+
+    def _precompute(self):
+        quantization_offset = ncF.quantization_offset(self.prior)
+
+        lower_tail = ncF.lower_tail(
+            self.prior,
+            self.tail_mass,
+        )
+
+        upper_tail = ncF.upper_tail(
+            self.prior,
+            self.tail_mass,
+        )
+
+        minimum = torch.floor(
+            lower_tail - quantization_offset,
+        ).to(torch.int32)
+
+        maximum = torch.ceil(
+            upper_tail - quantization_offset,
+        ).to(torch.int32)
+
+        pmf_m = minimum.to(self.prior_dtype) + quantization_offset
+
+        pmf_size = maximum - minimum + 1
+
+        maximum_pdf_size = torch.max(pmf_size)
+
+        samples = torch.arange(
+            maximum_pdf_size.to(self.prior_dtype),
+        ).to(self.prior_dtype)
+
+        samples = torch.reshape(
+            samples,
+            [-1] + len(self.context_shape) * [1],
+        )
+
+        samples = samples + pmf_m
+
+        pmf = torch.exp(self.prior.log_prob(samples))
+
+        pmf = torch.reshape(
+            pmf,
+            [maximum_pdf_size, -1],
+        )
+
+        pmf = torch.squeeze(pmf)
+
+        pmf_size = torch.broadcast_to(
+            pmf_size,
+            self.context_shape,
+        )
+
+        pmf_size = torch.reshape(pmf_size, [-1])
+
+        cdf_size = pmf_size + 2
+
+        cdf_offset = torch.broadcast_to(
+            minimum,
+            self.context_shape,
+        )
+
+        cdf_offset = torch.reshape(cdf_offset, [-1])
+
+        pass
