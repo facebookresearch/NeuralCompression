@@ -13,7 +13,7 @@ class HyperAnalysisTransformation(Module):
     def __init__(self, m: int, n: int):
         super(HyperAnalysisTransformation, self).__init__()
 
-        self._modules = Sequential(
+        self.models = Sequential(
             Conv2d(m, n, (3, 3), (1, 2), 2),
             ReLU(inplace=True),
             Conv2d(n, n, (5, 5), (2, 2), 2),
@@ -22,4 +22,4 @@ class HyperAnalysisTransformation(Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        return self._modules(x)
+        return self.models(x)
