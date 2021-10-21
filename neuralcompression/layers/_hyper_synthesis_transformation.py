@@ -7,11 +7,11 @@ class HyperSynthesisTransformation(Module):
         super(HyperSynthesisTransformation, self).__init__()
 
         self._modules = Sequential(
-            ConvTranspose2d(n, n, (5, 5), (2,), (2,), (1,)),
+            ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
             ReLU(inplace=True),
-            ConvTranspose2d(n, n, (5, 5), (2,), (2,), (1,)),
+            ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
             ReLU(inplace=True),
-            Conv2d(n, m, (3, 3), (1,), 1),
+            Conv2d(n, m, (3, 3), (1, 1), 1),
             ReLU(inplace=True),
         )
 
