@@ -7,9 +7,11 @@ LICENSE file in the root directory of this source tree.
 
 from ._estimate_tails import estimate_tails
 from ._log_cdf import log_cdf
+from ._log_expm1 import log_expm1
 from ._log_ndtr import log_ndtr
 from ._log_survival_function import log_survival_function
 from ._lower_bound import lower_bound
+from ._lower_tail import lower_tail
 from ._ndtr import ndtr
 from ._quantization_offset import quantization_offset
 from ._soft_round import (
@@ -18,6 +20,7 @@ from ._soft_round import (
     soft_round_inverse,
 )
 from ._survival_function import survival_function
+from ._upper_tail import upper_tail
 from .complexity import count_flops
 from .distortion import (
     learned_perceptual_image_patch_similarity,

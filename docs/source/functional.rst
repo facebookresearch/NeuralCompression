@@ -16,4 +16,7 @@ neuralcompression.functional
 .. autofunction:: log_ndtr
 .. autofunction:: log_survival_function
 .. autofunction:: log_cdf
+.. autofunction:: lower_tail
 .. autofunction:: lower_bound
+.. autofunction:: upper_bound
+.. autofunction:: log_expm1
