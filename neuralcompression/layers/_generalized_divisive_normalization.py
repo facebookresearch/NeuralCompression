@@ -120,7 +120,9 @@ class GeneralizedDivisiveNormalization(Module):
 
         if alpha_parameter is None:
             if alpha_initializer is None:
-                alpha_initializer = functools.partial(lambda x: torch.ones(x))
+                alpha_initializer = functools.partial(
+                    lambda x: torch.ones(x),
+                )
 
             self._reparameterized_alpha = NonNegativeParameterization(
                 alpha_initializer(channels),
@@ -128,7 +130,9 @@ class GeneralizedDivisiveNormalization(Module):
             )
 
             if self._reparameterized_alpha.initial_value is not None:
-                self.alpha = Parameter(self._reparameterized_alpha.initial_value)
+                self.alpha = Parameter(
+                    self._reparameterized_alpha.initial_value,
+                )
         else:
             if isinstance(alpha_parameter, Parameter):
                 self.alpha = alpha_parameter
@@ -139,7 +143,9 @@ class GeneralizedDivisiveNormalization(Module):
 
         if beta_parameter is None:
             if beta_initializer is None:
-                beta_initializer = functools.partial(lambda x: torch.ones(x))
+                beta_initializer = functools.partial(
+                    lambda x: torch.ones(x),
+                )
 
             self._reparameterized_beta = NonNegativeParameterization(
                 beta_initializer(channels),
@@ -147,7 +153,9 @@ class GeneralizedDivisiveNormalization(Module):
             )
 
             if self._reparameterized_beta.initial_value is not None:
-                self.beta = Parameter(self._reparameterized_beta.initial_value)
+                self.beta = Parameter(
+                    self._reparameterized_beta.initial_value,
+                )
         else:
             if isinstance(beta_parameter, Parameter):
                 self.beta = beta_parameter
@@ -158,7 +166,9 @@ class GeneralizedDivisiveNormalization(Module):
 
         if epsilon_parameter is None:
             if epsilon_initializer is None:
-                epsilon_initializer = functools.partial(lambda x: torch.ones(x))
+                epsilon_initializer = functools.partial(
+                    lambda x: torch.ones(x),
+                )
 
             self._reparameterized_epsilon = NonNegativeParameterization(
                 epsilon_initializer(channels),
@@ -166,7 +176,9 @@ class GeneralizedDivisiveNormalization(Module):
             )
 
             if self._reparameterized_epsilon.initial_value is not None:
-                self.epsilon = Parameter(self._reparameterized_epsilon.initial_value)
+                self.epsilon = Parameter(
+                    self._reparameterized_epsilon.initial_value,
+                )
         else:
             if isinstance(epsilon_parameter, Parameter):
                 self.epsilon = epsilon_parameter
@@ -177,7 +189,9 @@ class GeneralizedDivisiveNormalization(Module):
 
         if gamma_parameter is None:
             if gamma_initializer is None:
-                gamma_initializer = functools.partial(lambda x: 0.1 * torch.eye(x))
+                gamma_initializer = functools.partial(
+                    lambda x: 0.1 * torch.eye(x),
+                )
 
             self._reparameterized_gamma = NonNegativeParameterization(
                 gamma_initializer(channels),
@@ -185,7 +199,9 @@ class GeneralizedDivisiveNormalization(Module):
             )
 
             if self._reparameterized_gamma.initial_value is not None:
-                self.gamma = Parameter(self._reparameterized_gamma.initial_value)
+                self.gamma = Parameter(
+                    self._reparameterized_gamma.initial_value,
+                )
         else:
             if isinstance(gamma_parameter, Parameter):
                 self.gamma = gamma_parameter
