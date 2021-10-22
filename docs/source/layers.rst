@@ -3,6 +3,9 @@ neuralcompression.layers
 
 .. currentmodule:: neuralcompression.layers
 
+HyperAnalysisTransformation2D
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 SimplifiedGDN
 ~~~~~~~~~~~~~
 

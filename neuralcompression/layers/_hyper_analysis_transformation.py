@@ -9,9 +9,9 @@ from torch import Tensor
 from torch.nn import Conv2d, Module, ReLU, Sequential
 
 
-class HyperAnalysisTransformation(Module):
+class HyperAnalysisTransformation2D(Module):
     def __init__(self, m: int, n: int):
-        super(HyperAnalysisTransformation, self).__init__()
+        super(HyperAnalysisTransformation2D, self).__init__()
 
         self.models = Sequential(
             Conv2d(m, n, (3, 3), (1, 2), 2),
