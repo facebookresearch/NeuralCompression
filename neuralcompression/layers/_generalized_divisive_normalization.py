@@ -91,6 +91,11 @@ class GeneralizedDivisiveNormalization(Module):
             initialized to the identity operation.
     """
 
+    alpha: Parameter
+    beta: Parameter
+    epsilon: Parameter
+    gamma: Parameter
+
     def __init__(
         self,
         channels: Union[int, Tensor],
@@ -107,54 +112,68 @@ class GeneralizedDivisiveNormalization(Module):
     ):
         super(GeneralizedDivisiveNormalization, self).__init__()
 
+        channels = torch.tensor(channels)
+
         self._inverse = inverse
 
         self._rectify = rectify
 
         if alpha_parameter is None:
             if alpha_initializer is None:
-                alpha_initializer = torch.ones
+                alpha_initializer = functools.partial(lambda x: torch.ones(x))
 
             self._reparameterized_alpha = NonNegativeParameterization(
                 alpha_initializer(channels),
                 minimum=1,
             )
 
-            self._alpha_parameter = Parameter(
-                self._reparameterized_alpha.initial_value,
-            )
+            if self._reparameterized_alpha.initial_value is not None:
+                self.alpha = Parameter(self._reparameterized_alpha.initial_value)
         else:
-            self._alpha_parameter = alpha_parameter
+            if isinstance(alpha_parameter, Parameter):
+                self.alpha = alpha_parameter
+            else:
+                alpha_parameter = torch.tensor(alpha_parameter)
+
+                self.alpha = Parameter(alpha_parameter)
 
         if beta_parameter is None:
             if beta_initializer is None:
-                beta_initializer = torch.ones
+                beta_initializer = functools.partial(lambda x: torch.ones(x))
 
             self._reparameterized_beta = NonNegativeParameterization(
                 beta_initializer(channels),
                 minimum=1e-6,
             )
 
-            self._beta_parameter = Parameter(
-                self._reparameterized_beta.initial_value,
-            )
+            if self._reparameterized_beta.initial_value is not None:
+                self.beta = Parameter(self._reparameterized_beta.initial_value)
         else:
-            self._beta_parameter = beta_parameter
+            if isinstance(beta_parameter, Parameter):
+                self.beta = beta_parameter
+            else:
+                beta_parameter = torch.tensor(beta_parameter)
+
+                self.beta = Parameter(beta_parameter)
 
         if epsilon_parameter is None:
             if epsilon_initializer is None:
-                epsilon_initializer = torch.ones
+                epsilon_initializer = functools.partial(lambda x: torch.ones(x))
 
             self._reparameterized_epsilon = NonNegativeParameterization(
                 epsilon_initializer(channels),
                 minimum=1e-6,
             )
 
-            self._epsilon_parameter = Parameter(
-                self._reparameterized_epsilon.initial_value,
-            )
+            if self._reparameterized_epsilon.initial_value is not None:
+                self.epsilon = Parameter(self._reparameterized_epsilon.initial_value)
         else:
-            self._epsilon_parameter = epsilon_parameter
+            if isinstance(epsilon_parameter, Parameter):
+                self.epsilon = epsilon_parameter
+            else:
+                epsilon_parameter = torch.tensor(epsilon_parameter)
+
+                self.epsilon = Parameter(epsilon_parameter)
 
         if gamma_parameter is None:
             if gamma_initializer is None:
@@ -165,11 +184,15 @@ class GeneralizedDivisiveNormalization(Module):
                 minimum=0,
             )
 
-            self._gamma_parameter = Parameter(
-                self._reparameterized_gamma.initial_value,
-            )
+            if self._reparameterized_gamma.initial_value is not None:
+                self.gamma = Parameter(self._reparameterized_gamma.initial_value)
         else:
-            self._gamma_parameter = gamma_parameter
+            if isinstance(gamma_parameter, Parameter):
+                self.gamma = gamma_parameter
+            else:
+                gamma_parameter = torch.tensor(gamma_parameter)
+
+                self.gamma = Parameter(gamma_parameter)
 
     def forward(self, x: Tensor) -> Tensor:
         _, channels, _, _ = x.size()
@@ -180,10 +203,10 @@ class GeneralizedDivisiveNormalization(Module):
         y = torch.nn.functional.conv2d(
             x ** 2,
             torch.reshape(
-                self._reparameterized_gamma(self._gamma_parameter),
+                self._reparameterized_gamma(self.gamma),
                 (channels, channels, 1, 1),
             ),
-            self._reparameterized_beta(self._beta_parameter),
+            self._reparameterized_beta(self.beta),
         )
 
         if self._inverse:
