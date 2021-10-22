@@ -3,6 +3,13 @@ neuralcompression.layers
 
 .. currentmodule:: neuralcompression.layers
 
+AnalysisTransformation2D
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: AnalysisTransformation
+  :members: __getitem__
+  :special-members:
+
 GeneralizedDivisiveNormalization
 ~~~~~~~~~~~~~~~~~~~~
 
