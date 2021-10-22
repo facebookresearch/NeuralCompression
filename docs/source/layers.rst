@@ -3,6 +3,13 @@ neuralcompression.layers
 
 .. currentmodule:: neuralcompression.layers
 
+GeneralizedDivisiveNormalization
+~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: GeneralizedDivisiveNormalization
+  :members: __getitem__
+  :special-members:
+
 NonNegativeParameter
 ~~~~~~~~~~~~~~~~~~~~
 
