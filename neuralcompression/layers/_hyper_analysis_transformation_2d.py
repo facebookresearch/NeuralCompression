@@ -10,6 +10,22 @@ from torch.nn import Conv2d, Module, ReLU, Sequential
 
 
 class HyperAnalysisTransformation2D(Module):
+    """Applies the 2D hyper analysis transformation over an input signal.
+
+    The hyper synthesis transformation is used to generate a reconstructed
+    signal from a latent representation.
+
+    The method is described in:
+        | “Variational Image Compression with a Scale Hyperprior”
+        | Johannes Ballé, David Minnen, Saurabh Singh, Sung Jin Hwang,
+            Nick Johnston
+        | https://arxiv.org/abs/1802.01436
+
+    Args:
+        m: number of channels in the input signal.
+        n: number of channels produced by the transformation.
+    """
+
     def __init__(self, m: int, n: int):
         super(HyperAnalysisTransformation2D, self).__init__()
 
