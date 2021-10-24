@@ -101,7 +101,7 @@ class ContinuousEntropy(Module):
 
         if prior is None:
             if prior_shape is None or prior_dtype is None:
-                error_message = r"""either `prior` or both `prior_dtype` and 
+                error_message = r"""either `prior` or both `prior_dtype` and
                 `prior_shape` must be provided
                 """
 
@@ -115,16 +115,16 @@ class ContinuousEntropy(Module):
 
         if self.compressible:
             if not (cdfs is None) == (cdf_sizes is None) == (cdf_offsets is None):
-                error_message = r"""either all or none of the cumulative 
-                distribution function (CDF) arguments (`cdfs`, `cdf_offsets`, 
+                error_message = r"""either all or none of the cumulative
+                distribution function (CDF) arguments (`cdfs`, `cdf_offsets`,
                 `cdf_sizes`, and `maximum_cdf_size`) must be provided
                 """
 
                 raise ValueError(error_message)
 
             if (prior is None) + (maximum_cdf_size is None) + (cdfs is None) != 2:
-                error_message = r"""when `compressible` is `True`, exactly one 
-                of `prior`, `cdfs`, or `maximum_cdf_size` must be provided. 
+                error_message = r"""when `compressible` is `True`, exactly one
+                of `prior`, `cdfs`, or `maximum_cdf_size` must be provided.
                 """
 
                 raise ValueError(error_message)
@@ -135,8 +135,8 @@ class ContinuousEntropy(Module):
                 cdfs, cdf_sizes, cdf_offsets = self._update()
             elif maximum_cdf_size is not None:
                 if self.stateless:
-                    error_message = r"""if `stateless` is `True`, cannot 
-                    provide `maximum_cdf_size` 
+                    error_message = r"""if `stateless` is `True`, cannot
+                    provide `maximum_cdf_size`
                     """
 
                     raise ValueError(error_message)
@@ -159,10 +159,10 @@ class ContinuousEntropy(Module):
                 and cdf_sizes is None
                 and maximum_cdf_size is None
             ):
-                error_message = r"""cumulative distribution function (CDF) 
-                arguments (`cdfs`, `cdf_offsets`, `cdf_sizes`, and 
-                `maximum_cdf_size`) cannot be provided when `compressible` is 
-                `False` 
+                error_message = r"""cumulative distribution function (CDF)
+                arguments (`cdfs`, `cdf_offsets`, `cdf_sizes`, and
+                `maximum_cdf_size`) cannot be provided when `compressible` is
+                `False`
                 """
 
                 raise ValueError(error_message)
@@ -219,7 +219,7 @@ class ContinuousEntropy(Module):
     def prior(self) -> Union[Distribution, UniformNoise]:
         """A prior distribution, used for computing range coding tables."""
         if self._prior is None:
-            error_message = r"""instance doesn’t hold a reference to its prior 
+            error_message = r"""instance doesn’t hold a reference to its prior
             distribution
             """
 
@@ -380,14 +380,14 @@ class ContinuousEntropy(Module):
         offsets = self._cdf_offsets
 
         if offsets.numel() == 0:
-            error_message = r"""uninitialized cumulative distribution function 
+            error_message = r"""uninitialized cumulative distribution function
             (CDF) offsets
             """
 
             raise ValueError(error_message)
 
         if len(offsets.size()) != 1:
-            error_message = r"""invalid cumulative distribution function (CDF) 
+            error_message = r"""invalid cumulative distribution function (CDF)
             offsets
             """
 
@@ -397,14 +397,14 @@ class ContinuousEntropy(Module):
         sizes = self._cdf_sizes
 
         if sizes.numel() == 0:
-            error_message = r"""uninitialized cumulative distribution function 
+            error_message = r"""uninitialized cumulative distribution function
             (CDF) sizes
             """
 
             raise ValueError(error_message)
 
         if len(sizes.size()) != 1:
-            error_message = r"""invalid cumulative distribution function (CDF) 
+            error_message = r"""invalid cumulative distribution function (CDF)
             sizes
             """
 
@@ -414,14 +414,14 @@ class ContinuousEntropy(Module):
         functions = self._cdfs
 
         if functions.numel() == 0:
-            error_message = r"""uninitialized cumulative distribution functions 
+            error_message = r"""uninitialized cumulative distribution functions
             (CDFs)
             """
 
             raise ValueError(error_message)
 
         if len(functions.size()) != 2:
-            error_message = r"""invalid ``size()`` of cumulative distribution 
+            error_message = r"""invalid ``size()`` of cumulative distribution
             functions (CDFs)
             """
 
