@@ -29,15 +29,14 @@ with open("README.md", encoding="utf8") as f:
 # alphabetical order
 install_requires = [
     "compressai>=1.1.4",
+    "fvcore>=0.1.5",
     "jax>=0.2.12",
     "jaxlib>=0.1.65",
     "lpips>=0.1.3",
-    "torch>=1.9.1",
+    "torch==1.9.1",
     "torchmetrics>=0.3.2",
     "torchvision>=0.9.1",
     "tqdm>=4.61.0",
-    "torchmetrics>=0.3.2",
-    "fvcore>=0.1.5",
 ]
 
 setup(
