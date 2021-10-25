@@ -36,7 +36,7 @@ install_requires = [
     "pytorchvideo>=0.1.3",
     "torch==1.9.1",
     "torchmetrics>=0.3.2",
-    "torchvision>=0.9.1",
+    "torchvision==0.10.1",
     "tqdm>=4.61.0",
 ]
 
