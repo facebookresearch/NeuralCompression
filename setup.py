@@ -6,8 +6,11 @@ LICENSE file in the root directory of this source tree.
 """
 import os
 import re
+from pathlib import Path
 
 from setuptools import find_packages, setup
+from torch.utils.cpp_extension import BuildExtension, CppExtension
+
 
 # from https://github.com/facebookresearch/ClassyVision/blob/master/setup.py
 # get version string from module
@@ -31,10 +34,9 @@ install_requires = [
     "jaxlib>=0.1.65",
     "lpips>=0.1.3",
     "pytorchvideo>=0.1.3",
-    "torch>=1.8.1",
+    "torch==1.9.1",
     "torchmetrics>=0.3.2",
-    "torchmetrics>=0.3.2",
-    "torchvision>=0.9.1",
+    "torchvision==0.10.1",
     "tqdm>=4.61.0",
 ]
 
@@ -80,4 +82,18 @@ setup(
             "sphinx>=4.2.0",
         ],
     },
+    ext_modules=[
+        CppExtension(
+            "neuralcompression.ext._pmf_to_quantized_cdf",
+            [
+                str(
+                    Path(__file__).resolve().parent
+                    / "neuralcompression"
+                    / "ext"
+                    / "pmf_to_quantized_cdf_py.cc"
+                )
+            ],
+        ),
+    ],
+    cmdclass={"build_ext": BuildExtension},
 )
