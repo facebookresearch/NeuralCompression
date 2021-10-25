@@ -13,6 +13,7 @@ from ._log_survival_function import log_survival_function
 from ._lower_bound import lower_bound
 from ._lower_tail import lower_tail
 from ._ndtr import ndtr
+from ._pmf_to_quantized_cdf import pmf_to_quantized_cdf
 from ._quantization_offset import quantization_offset
 from ._soft_round import (
     soft_round,
