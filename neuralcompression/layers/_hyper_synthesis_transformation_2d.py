@@ -23,19 +23,19 @@ class HyperSynthesisTransformation2D(Module):
         | https://arxiv.org/abs/1802.01436
 
     Args:
-        m: number of channels in the input signal.
-        n: number of channels produced by the transformation.
+        in_channels: number of channels in the input signal.
+        features: number of inferred latent features.
     """
 
-    def __init__(self, m: int, n: int):
+    def __init__(self, in_channels: int, features: int):
         super(HyperSynthesisTransformation2D, self).__init__()
 
         self.model = Sequential(
-            ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
+            ConvTranspose2d(features, features, (5, 5), (2, 2), (2, 2), (1, 1)),
             ReLU(inplace=True),
-            ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
+            ConvTranspose2d(features, features, (5, 5), (2, 2), (2, 2), (1, 1)),
             ReLU(inplace=True),
-            Conv2d(n, m, (3, 3), (1, 1), 1),
+            Conv2d(features, in_channels, (3, 3), (1, 1), 1),
             ReLU(inplace=True),
         )
 
