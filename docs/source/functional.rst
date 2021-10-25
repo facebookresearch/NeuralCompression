@@ -12,8 +12,12 @@ neuralcompression.functional
 .. autofunction:: dense_image_warp
 .. autofunction:: quantization_offset
 .. autofunction:: ndtr
+.. autofunction:: pmf_to_quantized_cdf
 .. autofunction:: survival_function
 .. autofunction:: log_ndtr
 .. autofunction:: log_survival_function
 .. autofunction:: log_cdf
+.. autofunction:: lower_tail
 .. autofunction:: lower_bound
+.. autofunction:: upper_bound
+.. autofunction:: log_expm1

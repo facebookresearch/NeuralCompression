@@ -3,10 +3,17 @@ neuralcompression.layers
 
 .. currentmodule:: neuralcompression.layers
 
-NonNegativeParameter
-~~~~~~~~~~~~~~~~~~~~
+HyperSynthesisTransformation2D
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: NonNegativeParameter
+.. autoclass:: HyperSynthesisTransformation2D
+  :members: __getitem__
+  :special-members:
+
+NonNegativeParameterization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: NonNegativeParameterization
   :members: __getitem__
   :special-members:
 
