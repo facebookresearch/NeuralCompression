@@ -6,8 +6,10 @@ LICENSE file in the root directory of this source tree.
 """
 import os
 import re
+from pathlib import Path
 
 from setuptools import find_packages, setup
+from torch.utils.cpp_extension import BuildExtension, CppExtension
 
 # from https://github.com/facebookresearch/ClassyVision/blob/master/setup.py
 # get version string from module
@@ -52,4 +54,18 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: System :: Archiving :: Compression",
     ],
+    ext_modules=[
+        CppExtension(
+            "neuralcompression.ext._pmf_to_quantized_cdf",
+            [
+                str(
+                    Path(__file__).resolve().parent
+                    / "neuralcompression"
+                    / "ext"
+                    / "pmf_to_quantized_cdf_py.cc"
+                )
+            ],
+        ),
+    ],
+    cmdclass={"build_ext": BuildExtension},
 )
