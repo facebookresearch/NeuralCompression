@@ -3,6 +3,14 @@ neuralcompression.layers
 
 .. currentmodule:: neuralcompression.layers
 
+
+HyperAnalysisTransformation2D
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: HyperAnalysisTransformation2D
+  :members: __getitem__
+  :special-members:
+
 HyperSynthesisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

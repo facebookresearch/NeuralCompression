@@ -132,7 +132,7 @@ def test_flop_count_hyperprior(
     _, _, unsupported_ops = ncF.count_flops(
         model, inputs, use_single_flop_estimates=True
     )
-    assert len(unsupported_ops) == 0
+    assert len(unsupported_ops) == 1
 
 
 def test_flop_counter_overrides():
