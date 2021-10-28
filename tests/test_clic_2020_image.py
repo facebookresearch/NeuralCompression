@@ -6,16 +6,16 @@ LICENSE file in the root directory of this source tree.
 """
 
 import numpy
+import pytest
 from PIL.Image import Image
-from pytest import fixture
 
-from neuralcompression.data import CLIC2020
+from neuralcompression.data import CLIC2020Image
 from utils import create_random_image
 
 
-@fixture
+@pytest.fixture
 def data(tmp_path):
-    rng = numpy.random.default_rng(2021)
+    rng = numpy.random.default_rng(0xFEEEFEEE)
 
     directory = tmp_path.joinpath("clic2020").joinpath("test")
 
@@ -28,10 +28,10 @@ def data(tmp_path):
 
         create_random_image(path, (3, 224, 224))
 
-    return CLIC2020(tmp_path, split="test"), n
+    return CLIC2020Image(tmp_path, split="test"), n
 
 
-class TestCLIC2020:
+class TestCLIC2020Image:
     def test___getitem__(self, data):
         data, _ = data
 
