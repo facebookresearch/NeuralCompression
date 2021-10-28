@@ -154,3 +154,6 @@ lightning_logs/
 
 # sphinx-gallery
 docs/source/examples
+
+# setuptools_scm
+neuralcompression/version.py

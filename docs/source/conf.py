@@ -21,7 +21,7 @@ LICENSE file in the root directory of this source tree.
 # import sys
 # sys.path.insert(0, os.path.abspath("."))
 
-import neuralcompression
+import neuralcompression.version
 
 # -- Project information -----------------------------------------------------
 
@@ -30,7 +30,7 @@ copyright = "2021, Facebook"
 author = "Facebook"
 
 # The full version, including alpha/beta/rc tags
-release = f"v{neuralcompression.__version__}"
+release = f"v{neuralcompression.version.version}"
 
 
 # -- General configuration ---------------------------------------------------
