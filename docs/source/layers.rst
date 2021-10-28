@@ -10,10 +10,24 @@ GeneralizedDivisiveNormalization
   :members: __getitem__
   :special-members:
 
-NonNegativeParameter
-~~~~~~~~~~~~~~~~~~~~
+NonNegativeParameterization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: NonNegativeParameter
+.. autoclass:: NonNegativeParameterization
+  :members: __getitem__
+  :special-members:
+
+HyperAnalysisTransformation2D
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: HyperAnalysisTransformation2D
+  :members: __getitem__
+  :special-members:
+
+HyperSynthesisTransformation2D
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: HyperSynthesisTransformation2D
   :members: __getitem__
   :special-members:
 
