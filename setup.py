@@ -5,8 +5,6 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-import os
-import re
 from pathlib import Path
 
 from setuptools import setup
@@ -28,5 +26,4 @@ setup(
             ],
         ),
     ],
-    version=version,
 )
