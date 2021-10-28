@@ -12,7 +12,7 @@ from torch.nn import Conv2d, Module, ReLU, Sequential
 class HyperAnalysisTransformation2D(Module):
     """Applies the 2D hyper analysis transformation over an input signal.
 
-    The hyper synthesis transformation is used to generate a reconstructed
+    The hyper analysis transformation is used to generate a reconstructed
     signal from a latent representation.
 
     The method is described in:
