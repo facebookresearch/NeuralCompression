@@ -7,5 +7,7 @@ LICENSE file in the root directory of this source tree.
 
 from ._analysis_transformation_2d import AnalysisTransformation2D
 from ._generalized_divisive_normalization import GeneralizedDivisiveNormalization
+from ._hyper_analysis_transformation_2d import HyperAnalysisTransformation2D
+from ._hyper_synthesis_transformation_2d import HyperSynthesisTransformation2D
 from ._non_negative_parameterization import NonNegativeParameterization
 from .gdn import SimplifiedGDN, SimplifiedInverseGDN
