@@ -15,15 +15,13 @@ from neuralcompression.distributions import NoisyNormal
 
 
 class TestContinuousEntropy:
-    cls = ContinuousEntropy
-
     batch_shape = Size([16])
 
     prior = NoisyNormal(0.0, 1.0)
 
     prior._batch_shape = batch_shape
 
-    continuous_entropy = cls(
+    continuous_entropy = ContinuousEntropy(
         prior=prior,
     )
 
@@ -38,22 +36,22 @@ class TestContinuousEntropy:
     def test___init__(self):
         # missing `prior` or `prior_shape` and `prior_dtype`
         with pytest.raises(ValueError):
-            self.cls()
+            ContinuousEntropy()
 
         # missing `prior` or `prior_dtype`
         with pytest.raises(ValueError):
-            self.cls(
+            ContinuousEntropy(
                 prior_shape=(32,),
             )
 
         # missing `prior` or `prior_shape`
         with pytest.raises(ValueError):
-            self.cls(
+            ContinuousEntropy(
                 prior_dtype=torch.int32,
             )
 
         # `prior` (no `prior_shape` and `prior_dtype`)
-        continuous_entropy = self.cls(
+        continuous_entropy = ContinuousEntropy(
             prior=self.prior,
         )
 
@@ -61,7 +59,7 @@ class TestContinuousEntropy:
         assert continuous_entropy._prior_dtype == self.prior_dtype
 
         # `prior` (no `prior_shape` and `prior_dtype`)
-        continuous_entropy = self.cls(
+        continuous_entropy = ContinuousEntropy(
             prior_shape=self.prior_shape,
             prior_dtype=self.prior_dtype,
         )
@@ -72,7 +70,7 @@ class TestContinuousEntropy:
         # `compressible` is `True`, `cdfs` is provided, but missing `cdf_sizes`
         # and `cdf_offsets`
         with pytest.raises(ValueError):
-            self.cls(
+            ContinuousEntropy(
                 compressible=True,
                 prior=self.prior,
                 cdfs=self.cdfs,
@@ -81,7 +79,7 @@ class TestContinuousEntropy:
         # `compressible` is `True`, `cdf_sizes` is provided, but missing `cdfs`
         # and `cdf_offsets`
         with pytest.raises(ValueError):
-            self.cls(
+            ContinuousEntropy(
                 compressible=True,
                 prior=self.prior,
                 cdf_sizes=self.cdf_sizes,
@@ -90,7 +88,7 @@ class TestContinuousEntropy:
         # `compressible` is `True`, `cdf_offsets` is provided, but missing
         # `cdfs` and `cdf_sizes`
         with pytest.raises(ValueError):
-            self.cls(
+            ContinuousEntropy(
                 compressible=True,
                 prior=self.prior,
                 cdf_offsets=self.cdf_offsets,
@@ -99,13 +97,13 @@ class TestContinuousEntropy:
         # `compressible` is `True`, but missing exactly one of `prior`, `cdfs`,
         # and `maximum_cdf_size`
         with pytest.raises(ValueError):
-            self.cls(
+            ContinuousEntropy(
                 compressible=True,
                 prior_shape=self.prior_shape,
                 prior_dtype=self.prior_dtype,
             )
 
-            self.cls(
+            ContinuousEntropy(
                 compressible=True,
                 prior=self.prior,
                 maximum_cdf_size=16,
@@ -115,7 +113,7 @@ class TestContinuousEntropy:
         # provided, but `stateless` is `True` and `maximum_cdf_size` is
         # provided
         with pytest.raises(ValueError):
-            self.cls(
+            ContinuousEntropy(
                 compressible=True,
                 stateless=True,
                 prior_shape=self.prior_shape,
@@ -125,7 +123,7 @@ class TestContinuousEntropy:
 
         # `compressible` is `True`, both `prior_shape` and `prior_dtype` are
         # provided, and `maximum_cdf_size` is provided
-        continuous_entropy = self.cls(
+        continuous_entropy = ContinuousEntropy(
             compressible=True,
             prior_shape=self.prior_shape,
             prior_dtype=self.prior_dtype,
@@ -145,7 +143,7 @@ class TestContinuousEntropy:
         )
 
         # `compressible` is `True`, `prior` is provided
-        continuous_entropy = self.cls(
+        continuous_entropy = ContinuousEntropy(
             compressible=True,
             prior=self.prior,
         )
@@ -166,7 +164,7 @@ class TestContinuousEntropy:
         )
 
     def test_cdf_offsets(self):
-        continuous_entropy = self.cls(
+        continuous_entropy = ContinuousEntropy(
             compressible=True,
             prior=self.prior,
         )
@@ -174,7 +172,7 @@ class TestContinuousEntropy:
         assert continuous_entropy.cdf_offsets.shape == Size([16])
 
     def test_cdf_sizes(self):
-        continuous_entropy = self.cls(
+        continuous_entropy = ContinuousEntropy(
             compressible=True,
             prior=self.prior,
         )
@@ -182,7 +180,7 @@ class TestContinuousEntropy:
         assert continuous_entropy.cdf_sizes.shape == Size([16])
 
     def test_cdfs(self):
-        continuous_entropy = self.cls(
+        continuous_entropy = ContinuousEntropy(
             compressible=True,
             prior=self.prior,
         )
@@ -221,7 +219,7 @@ class TestContinuousEntropy:
     def test_range_coder_precision(self):
         assert self.continuous_entropy.range_coder_precision == 12
 
-        continuous_entropy = self.cls(
+        continuous_entropy = ContinuousEntropy(
             prior=self.prior,
             range_coder_precision=16,
         )
@@ -231,7 +229,7 @@ class TestContinuousEntropy:
     def test_stateless(self):
         assert not self.continuous_entropy.stateless
 
-        continuous_entropy = self.cls(
+        continuous_entropy = ContinuousEntropy(
             prior=self.prior,
             stateless=True,
         )
@@ -241,7 +239,7 @@ class TestContinuousEntropy:
     def test_tail_mass(self):
         assert self.continuous_entropy.tail_mass == 0.00390625
 
-        continuous_entropy = self.cls(
+        continuous_entropy = ContinuousEntropy(
             prior=self.prior,
             tail_mass=0.0,
         )
