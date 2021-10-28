@@ -17,10 +17,10 @@ GeneralizedDivisiveNormalization
   :members: __getitem__
   :special-members:
 
-NonNegativeParameter
-~~~~~~~~~~~~~~~~~~~~
+NonNegativeParameterization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: NonNegativeParameter
+.. autoclass:: NonNegativeParameterization
   :members: __getitem__
   :special-members:
 
