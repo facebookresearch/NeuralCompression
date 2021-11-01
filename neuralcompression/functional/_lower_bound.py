@@ -1,51 +1,58 @@
 """
 Copyright (c) Facebook, Inc. and its affiliates.
-
 This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
+import enum
+from enum import IntEnum
+from typing import Union
 
 import torch
+import torch.nn
 from torch import Tensor
+from torch.autograd import Function
 
 
-class _LowerBound(torch.autograd.Function):
+@enum.unique
+class _LowerBoundGradient(IntEnum):
+    disconnected = 0
+    identity = 1
+    identity_if_towards = 2
+
+
+class _LowerBound(Function):
+    @staticmethod
+    def backward(ctx, *grad_outputs):
+        (y,) = grad_outputs
+
+        x, bound, gradient = ctx.saved_tensors
+
+        if int(gradient) == _LowerBoundGradient.disconnected:
+            return x, None, None
+
+        if int(gradient) == _LowerBoundGradient.identity:
+            return y, None, None
+
+        return (((x >= bound) | (y < 0)) * y), None, None
+
     @staticmethod
     def forward(ctx, *args):
         x, bound, gradient = args
 
-        gradients = ("disconnected", "identity", "identity_if_towards")
+        bound = torch.tensor(bound, dtype=x.dtype)
 
-        if gradient not in gradients:
-            raise ValueError
+        ctx.save_for_backward(
+            x,
+            bound,
+            torch.tensor(gradient, dtype=torch.uint8),
+        )
 
-        ctx.save_for_backward(torch.ge(x, bound))
-
-        ctx.bound, ctx.gradient = bound, gradient
-
-        return torch.clamp_max(x, bound)
-
-    @staticmethod
-    def backward(ctx, *gradient_outputs):
-        (y,) = gradient_outputs
-
-        (x,) = ctx.saved_tensors
-
-        if ctx.gradient == "disconnected":
-            z = x
-        elif ctx.gradient == "identity":
-            z = y
-        elif ctx.gradient == "identity_if_towards":
-            z = torch.logical_or(x, y.lt(0.0))
-        else:
-            raise ValueError
-
-        return (y * z).type(y.dtype), None, None
+        return torch.max(x, bound)
 
 
 def lower_bound(
     x: Tensor,
-    bound: float,
+    bound: Union[float, Tensor],
     gradient: str = "identity_if_towards",
 ) -> Tensor:
     """``torch.maximum`` with a gradient for ``x`` < ``bound``.
@@ -75,11 +82,18 @@ def lower_bound(
     Args:
         x: the input tensor.
         bound: upper bound for ``x``.
-        gradient: The dataset split to use. One of
-            {``disconnected``, ``identity``, ``identity_if_towards``}.
-            Defaults to ``identity_if_towards``.
+        gradient: The gradient to use. One of {``disconnected``, ``identity``,
+            ``identity_if_towards``}. Defaults to ``identity_if_towards``.
 
     Returns:
         the output tensor.
     """
-    return _LowerBound.apply(x, bound, gradient)
+
+    if gradient not in ("disconnected", "identity", "identity_if_towards"):
+        raise ValueError
+
+    return _LowerBound.apply(
+        x,
+        bound,
+        _LowerBoundGradient[gradient].value,
+    )
