@@ -101,7 +101,7 @@ class GeneralizedDivisiveNormalization(Module):
     ):
         super(GeneralizedDivisiveNormalization, self).__init__()
 
-        channels = torch.tensor(channels)
+        self._channels = torch.tensor(channels, dtype=torch.int32)
 
         self._inverse = inverse
 
@@ -112,7 +112,7 @@ class GeneralizedDivisiveNormalization(Module):
                 )
 
             self._reparameterized_alpha = NonNegativeParameterization(
-                alpha_initializer(channels),
+                alpha_initializer(self._channels),
                 minimum=1,
             )
 
@@ -135,7 +135,7 @@ class GeneralizedDivisiveNormalization(Module):
                 )
 
             self._reparameterized_beta = NonNegativeParameterization(
-                beta_initializer(channels),
+                beta_initializer(self._channels),
                 minimum=1e-6,
             )
 
@@ -158,7 +158,7 @@ class GeneralizedDivisiveNormalization(Module):
                 )
 
             self._reparameterized_epsilon = NonNegativeParameterization(
-                epsilon_initializer(channels),
+                epsilon_initializer(self._channels),
                 minimum=1e-6,
             )
 
@@ -181,7 +181,7 @@ class GeneralizedDivisiveNormalization(Module):
                 )
 
             self._reparameterized_gamma = NonNegativeParameterization(
-                gamma_initializer(channels),
+                gamma_initializer(self._channels),
                 minimum=0,
             )
 
