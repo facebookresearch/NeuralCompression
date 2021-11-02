@@ -6,7 +6,7 @@ LICENSE file in the root directory of this source tree.
 """
 
 import functools
-from typing import Callable, Optional, Union
+from typing import Callable, Optional
 
 import torch
 import torch.nn.functional
@@ -50,31 +50,23 @@ class GeneralizedDivisiveNormalization(Module):
             generalized divisive normalization; the division is replaced by
             multiplication).
         alpha_parameter: A ``Tensor`` means that the value of ``alpha`` is
-            fixed. A ``Callable`` can be used to determine the value of
-            ``alpha`` as a function of some other parameter or tensor. This can
-            be a ``Parameter``. ``None`` means that when the layer is
-            initialized, a ``NonNegativeParameterization`` layer is created to
-            train ``alpha`` (with a minimum value of ``1``). The default is a
-            fixed value of ``1``.
+            fixed. ``None`` means that when the layer is initialized, a
+            ``NonNegativeParameterization`` layer is created to train ``alpha``
+            (with a minimum value of ``1``). The default is a fixed value of
+            ``1``.
         beta_parameter: A ``Tensor`` means that the value of ``beta`` is fixed.
-            A ``Callable`` can be used to determine the value of ``beta`` as a
-            function of some other parameter or tensor. This can be a
-            ``Parameter``. ``None`` means that when the layer is initialized, a
+            ``None`` means that when the layer is initialized, a
             ``NonNegativeParameterization`` layer is created to train ``beta``
             (with a minimum value of ``1e-6``).
         epsilon_parameter: A ``Tensor`` means that the value of ``epsilon`` is
-            fixed. A ``Callable`` can be used to determine the value of
-            ``epsilon`` as a function of some other parameter or tensor. This
-            can be a ``Parameter``. ``None`` means that when the layer is
-            initialized, a ``NonNegativeParameterization`` layer is created to
-            train ``epsilon`` (with a minimum value of 1e-6). The default is a
-            fixed value of ``1``.
+            fixed. ``None`` means that when the layer is initialized, a
+            ``NonNegativeParameterization`` layer is created to train
+            ``epsilon`` (with a minimum value of 1e-6). The default is a fixed
+            value of ``1``.
         gamma_parameter: A ``Tensor`` means that the value of ``gamma`` is
-            fixed. A ``Callable`` can be used to determine the value of
-            ``gamma`` as a function of some other parameter or tensor. This can
-            be a ``Parameter``. ``None`` means that when the layer is
-            initialized, a ``NonNegativeParameterization`` layer is created to
-            train ``gamma``.
+            fixed. ``None`` means that when the layer is initialized, a
+            ``NonNegativeParameterization`` layer is created to train
+            ``gamma``.
         alpha_initializer: initializes the ``alpha`` parameter. Only used if
             ``alpha`` is trained. Defaults to ``1``.
         beta_initializer: initializes the ``beta`` parameter. Only used if
@@ -96,12 +88,12 @@ class GeneralizedDivisiveNormalization(Module):
 
     def __init__(
         self,
-        channels: Union[int, Tensor],
+        channels: int,
         inverse: bool = False,
-        alpha_parameter: Union[float, int, Tensor, Parameter] = None,
-        beta_parameter: Union[float, int, Tensor, Parameter] = None,
-        epsilon_parameter: Union[float, int, Tensor, Parameter] = None,
-        gamma_parameter: Union[float, int, Tensor, Parameter] = None,
+        alpha_parameter: Optional[Tensor] = None,
+        beta_parameter: Optional[Tensor] = None,
+        epsilon_parameter: Optional[Tensor] = None,
+        gamma_parameter: Optional[Tensor] = None,
         alpha_initializer: Optional[Callable[[Tensor], Tensor]] = None,
         beta_initializer: Optional[Callable[[Tensor], Tensor]] = None,
         epsilon_initializer: Optional[Callable[[Tensor], Tensor]] = None,
