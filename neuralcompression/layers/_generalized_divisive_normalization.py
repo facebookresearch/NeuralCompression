@@ -49,8 +49,6 @@ class GeneralizedDivisiveNormalization(Module):
             response (one step of fixed point iteration to invert the
             generalized divisive normalization; the division is replaced by
             multiplication).
-        rectify: If ``True``, apply a ``ReLU`` non-linearity to the inputs
-            before calculating the generalized divisive normalization response.
         alpha_parameter: A ``Tensor`` means that the value of ``alpha`` is
             fixed. A ``Callable`` can be used to determine the value of
             ``alpha`` as a function of some other parameter or tensor. This can
@@ -100,7 +98,6 @@ class GeneralizedDivisiveNormalization(Module):
         self,
         channels: Union[int, Tensor],
         inverse: bool = False,
-        rectify: bool = False,
         alpha_parameter: Union[float, int, Tensor, Parameter] = None,
         beta_parameter: Union[float, int, Tensor, Parameter] = None,
         epsilon_parameter: Union[float, int, Tensor, Parameter] = None,
@@ -115,8 +112,6 @@ class GeneralizedDivisiveNormalization(Module):
         channels = torch.tensor(channels)
 
         self._inverse = inverse
-
-        self._rectify = rectify
 
         if alpha_parameter is None:
             if alpha_initializer is None:
@@ -212,9 +207,6 @@ class GeneralizedDivisiveNormalization(Module):
 
     def forward(self, x: Tensor) -> Tensor:
         _, channels, _, _ = x.size()
-
-        if self._rectify:
-            x = torch.nn.functional.relu(x)
 
         y = torch.nn.functional.conv2d(
             x ** 2,
