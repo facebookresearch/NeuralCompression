@@ -58,3 +58,10 @@ SimplifiedInverseGDN
 .. autoclass:: SimplifiedInverseGDN
   :members: __getitem__
   :special-members:
+
+SynthesisTransformation2D
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: SynthesisTransformation2D
+  :members: __getitem__
+  :special-members:
