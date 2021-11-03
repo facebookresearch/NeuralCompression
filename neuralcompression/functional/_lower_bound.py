@@ -23,37 +23,29 @@ class _LowerBoundGradient(IntEnum):
 class _LowerBound(Function):
     @staticmethod
     def backward(ctx, *grad_outputs):
-        (grad_output,) = grad_outputs
+        (y,) = grad_outputs
 
-        (x,) = ctx.saved_tensors
+        x, bound, gradient = ctx.saved_tensors
 
-        gradient = int(ctx.gradient)
+        if int(gradient) == _LowerBoundGradient.disconnected:
+            return x, None, None
 
-        if gradient == _LowerBoundGradient.disconnected:
-            return x
+        if int(gradient) == _LowerBoundGradient.identity:
+            return y, None, None
 
-        if gradient == _LowerBoundGradient.identity:
-            return grad_output
-
-        return ((x >= ctx.bound) | (grad_output < 0)) * grad_output, None, None
+        return (((x >= bound) | (y < 0)) * y), None, None
 
     @staticmethod
     def forward(ctx, *args):
         x, bound, gradient = args
 
-        if gradient not in ("disconnected", "identity", "identity_if_towards"):
-            raise ValueError
+        bound = torch.tensor(bound, dtype=x.dtype)
 
-        bound = torch.tensor([bound], dtype=x.dtype)
-
-        ctx.bound = bound
-
-        ctx.gradient = torch.tensor(
-            _LowerBoundGradient[gradient].value,
-            dtype=torch.uint8,
+        ctx.save_for_backward(
+            x,
+            bound,
+            torch.tensor(gradient, dtype=torch.uint8),
         )
-
-        ctx.save_for_backward(x)
 
         return torch.max(x, bound)
 
@@ -96,4 +88,12 @@ def lower_bound(
     Returns:
         the output tensor.
     """
-    return _LowerBound.apply(x, bound, gradient)
+
+    if gradient not in ("disconnected", "identity", "identity_if_towards"):
+        raise ValueError
+
+    return _LowerBound.apply(
+        x,
+        bound,
+        _LowerBoundGradient[gradient].value,
+    )
