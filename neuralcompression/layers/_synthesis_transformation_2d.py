@@ -8,7 +8,7 @@ class SynthesisTransformation2D(Module):
     def __init__(self, m: int, n: int):
         super(SynthesisTransformation2D, self).__init__()
 
-        self._modules = Sequential(
+        self.model = Sequential(
             ConvTranspose2d(m, n, (5, 5), (2, 2), (2, 2), (1, 1)),
             GeneralizedDivisiveNormalization(n, inverse=True),
             ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
@@ -19,4 +19,4 @@ class SynthesisTransformation2D(Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        return self._modules(x)
+        return self.model(x)
