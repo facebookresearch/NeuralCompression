@@ -38,6 +38,13 @@ HyperSynthesisTransformation2D
   :members: __getitem__
   :special-members:
 
+NonNegativeParameterization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: NonNegativeParameterization
+  :members: __getitem__
+  :special-members:
+
 SimplifiedGDN
 ~~~~~~~~~~~~~
 
