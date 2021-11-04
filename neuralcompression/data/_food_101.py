@@ -13,7 +13,6 @@ from torchvision.datasets import VisionDataset
 
 
 class Food101(VisionDataset):
-    url = "https://data.vision.ee.ethz.ch/cvl/food-101.tar.gz"
     _classes: List[str] = []
     _paths: List[str] = []
 
@@ -36,6 +35,10 @@ class Food101(VisionDataset):
         self.root = root
 
         self.split = split
+
+        self.transform = transform
+
+        self.target_transform = target_transform
 
         if download:
             self.download()
@@ -70,5 +73,5 @@ class Food101(VisionDataset):
             download_root=self.root,
             extract_root=".",
             remove_finished=True,
-            url=self.url,
+            url="https://data.vision.ee.ethz.ch/cvl/food-101.tar.gz",
         )
