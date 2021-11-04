@@ -63,6 +63,9 @@ class Food101(VisionDataset):
 
         target = self._classes.index(directory)
 
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+
         return data, target
 
     def __len__(self) -> int:
