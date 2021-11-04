@@ -6,6 +6,7 @@ LICENSE file in the root directory of this source tree.
 """
 
 from ._analysis_transformation_2d import AnalysisTransformation2D
+from ._continuous_batched_entropy import ContinuousBatchedEntropy
 from ._continuous_entropy import ContinuousEntropy
 from ._generalized_divisive_normalization import GeneralizedDivisiveNormalization
 from ._hyper_analysis_transformation_2d import HyperAnalysisTransformation2D

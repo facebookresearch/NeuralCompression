@@ -5,7 +5,6 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
-import abc
 from typing import Optional, Tuple, Union
 
 import torch
@@ -65,7 +64,7 @@ class ContinuousEntropy(Module):
             ``compressible`` to be ``True`` and ``stateless`` to be ``False``.
     """
 
-    _coding_rank: Optional[int]
+    _coding_rank: int
 
     _cdfs: IntTensor
     _cdf_sizes: IntTensor
@@ -73,7 +72,7 @@ class ContinuousEntropy(Module):
 
     def __init__(
         self,
-        coding_rank: Optional[int] = None,
+        coding_rank: int,
         compressible: bool = False,
         stateless: bool = False,
         prior: Optional[Union[Distribution, UniformNoise]] = None,
@@ -191,7 +190,7 @@ class ContinuousEntropy(Module):
         return self._cdfs
 
     @property
-    def coding_rank(self) -> Optional[int]:
+    def coding_rank(self) -> int:
         """Number of innermost dimensions considered a coding unit."""
         return self._coding_rank
 
@@ -257,14 +256,6 @@ class ContinuousEntropy(Module):
         precision, by using a Golomb-like code.
         """
         return self._tail_mass
-
-    @abc.abstractmethod
-    def compress(self, *args, **kwargs):
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def decompress(self, *args, **kwargs):
-        raise NotImplementedError
 
     @staticmethod
     def quantize(
