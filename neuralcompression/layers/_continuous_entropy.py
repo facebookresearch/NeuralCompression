@@ -260,7 +260,6 @@ class ContinuousEntropy(Module):
     @staticmethod
     def quantize(
         bottleneck: Tensor,
-        indexes: Tensor,
         offsets: Optional[Tensor] = None,
     ) -> IntTensor:
         """Quantizes a floating-point ``Tensor``.
