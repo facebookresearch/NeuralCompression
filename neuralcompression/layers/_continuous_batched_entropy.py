@@ -382,7 +382,16 @@ class ContinuousBatchedEntropy(ContinuousEntropy):
             the bit rate. ``bits`` has the same shape as ``bottleneck`` without
             the ``self.coding_rank`` innermost dimensions.
         """
-        pass
+        quantized = self.quantize(bottleneck)
+
+        k = torch.sum(
+            self.prior.log_prob(quantized),
+            range(-self.coding_rank, 0),
+        )
+
+        bits = k / 2
+
+        return quantized, bits
 
     def _pmf_to_cdf(
         self,
