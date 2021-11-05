@@ -41,7 +41,60 @@ from ._continuous_entropy import (
 
 
 class ContinuousBatchedEntropy(ContinuousEntropy):
-    """
+    """A batched entropy layer for continuous random variables.
+
+    This entropy layer handles quantization of a ``bottleneck`` tensor and
+    helps with training of the parameters of the probability distribution
+    modeling the tensor (a shared "prior" between sender and receiver). It also
+    pre-computes integer probability tables, which can then be used to compress
+    and decompress bottleneck tensors reliably across different platforms.
+
+    A typical workflow looks like this:
+
+        1.  Train a model using an instance of this entropy layer as a
+            bottleneck, passing the ``bottleneck`` tensor through it. With
+            ``training`` is ``True``, the model computes a differentiable upper
+            bound on the number of bits needed to compress the bottleneck
+            tensor.
+
+        2.  For evaluation, get a closer estimate of the number of compressed
+            bits using `training=False`.
+
+        3.  Instantiate an entropy model with `compression=True` (and the same
+            parameters as during training), and share the model between a
+            sender and a receiver.
+
+        4.  On the sender side, compute the bottleneck tensor and call
+            `compress()` on it. The output is a compressed string
+            representation of the tensor. Transmit the string to the receiver,
+            and call `decompress()` there. The output is the quantized
+            bottleneck tensor. Continue processing the tensor on the receiving
+            side.
+
+    Entropy models which contain range coding tables (i.e. with
+    `compression=True`) can be instantiated in two ways:
+
+        1.  By providing a continuous "prior" distribution object. The range
+            coding tables are then derived from that continuous distribution.
+
+        3.  In a more low-level way, by directly providing the range coding
+            tables to ``__init__``.
+
+    This class assumes that all scalar elements of the encoded tensor are
+    statistically independent, and that the parameters of their scalar
+    distributions do not depend on data. The innermost dimensions of the
+    bottleneck tensor must be broadcastable to the batch shape of `prior`. Any
+    dimensions to the left of the batch shape are assumed to be i.i.d. (i.e.
+    the likelihoods are broadcast to the bottleneck tensor accordingly).
+
+    A more detailed description (and motivation) of this way of performing
+    quantization and range coding can be found in the following paper. Please
+    cite the paper when using this code for derivative work.
+
+        | “End-to-end Optimized Image Compression”
+        | Johannes Ballé, Valero Laparra, Eero P. Simoncelli
+        | https://arxiv.org/abs/1611.01704
+
     Args:
         coding_rank: Number of innermost dimensions considered a coding unit.
             Each coding unit is compressed to its own bit string. The coding
@@ -314,6 +367,22 @@ class ContinuousBatchedEntropy(ContinuousEntropy):
             outputs += self.quantization_offset
 
         return outputs
+
+    def forward(self, bottleneck: Tensor):
+        """Perturbs a tensor with quantization noise and estimates bits.
+
+        Args:
+            bottleneck: the data to be compressed. Must have at least
+            ``self.coding_rank`` dimensions, and the innermost dimensions must
+            be broadcastable to ``self.prior_shape``.
+
+        Returns:
+            a pair, ``perturbed`` and ``bits``, where ``perturbed`` is the
+            ``bottleneck`` perturbed with quantization noise and ``bits`` is
+            the bit rate. ``bits`` has the same shape as ``bottleneck`` without
+            the ``self.coding_rank`` innermost dimensions.
+        """
+        pass
 
     def _pmf_to_cdf(
         self,
