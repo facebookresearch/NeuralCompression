@@ -95,6 +95,8 @@ class ContinuousEntropy(Module):
 
         self._tail_mass = tail_mass
 
+        self._prior = prior
+
         self._range_coder_precision = range_coder_precision
 
         if prior is None:
@@ -225,9 +227,9 @@ class ContinuousEntropy(Module):
 
         return self._prior
 
-    @prior.deleter
-    def prior(self):
-        self._prior = None
+    # @prior.deleter
+    # def prior(self):
+    #     self._prior = None
 
     @property
     def prior_dtype(self) -> torch.dtype:
