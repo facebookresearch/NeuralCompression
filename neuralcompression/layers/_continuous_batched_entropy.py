@@ -227,7 +227,7 @@ class ContinuousBatchedEntropy(ContinuousEntropy):
         from the mode or median of ``self.prior``. ``False`` when using soft
         quantization during training.
         """
-        return self.non_integer_offsets
+        return self._non_integer_offsets
 
     @property
     def quantization_offset(self) -> Optional[Tensor]:
