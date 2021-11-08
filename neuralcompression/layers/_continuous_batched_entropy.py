@@ -386,7 +386,7 @@ class ContinuousBatchedEntropy(ContinuousEntropy):
 
         k = torch.sum(
             self.prior.log_prob(quantized),
-            range(-self.coding_rank, 0),
+            [*range(-self.coding_rank, 0)],
         )
 
         bits = k / 2
