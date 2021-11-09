@@ -1,5 +1,5 @@
-torchvision
-===========
+NeuralCompression
+=================
 
 The :mod:`neuralcompression` package consists of datasets, metrics, and models
 for data compression.
