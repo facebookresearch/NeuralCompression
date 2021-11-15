@@ -10,6 +10,13 @@ AnalysisTransformation2D
   :members: __getitem__
   :special-members:
 
+FactorizedPrior
+~~~~~~~~~~~~~~~
+
+.. autoclass:: FactorizedPrior
+  :members: __getitem__
+  :special-members:
+
 GeneralizedDivisiveNormalization
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -42,6 +49,13 @@ NonNegativeParameterization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: NonNegativeParameterization
+  :members: __getitem__
+  :special-members:
+
+Prior
+~~~~~
+
+.. autoclass:: Prior
   :members: __getitem__
   :special-members:
 
