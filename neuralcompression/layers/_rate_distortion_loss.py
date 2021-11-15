@@ -20,12 +20,12 @@ class _ForwardReturnType(NamedTuple):
 
 
 class RateDistortionLoss(Module):
-    def __init__(self, smoothness: float = 1e-2):
+    def __init__(self, smoothing: float = 1e-2):
         super(RateDistortionLoss, self).__init__()
 
         self.mse = MSELoss()
 
-        self.smoothness = smoothness
+        self.smoothness = smoothing
 
     def forward(
         self,
