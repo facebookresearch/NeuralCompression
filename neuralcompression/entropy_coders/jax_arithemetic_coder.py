@@ -1,12 +1,13 @@
+# Copyright (c) Facebook, Inc. and its affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 """
-Copyright (c) Facebook, Inc. and its affiliates.
-
-This source code is licensed under the MIT license found in the
-LICENSE file in the root directory of this source tree.
-
 This implementation is based on the blog post at
 https://marknelson.us/posts/2014/10/19/data-compression-with-arithmetic-coding.html
 """
+
 from typing import Any, Callable, List, Tuple
 
 import jax
