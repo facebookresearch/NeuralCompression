@@ -10,6 +10,7 @@ from ._continuous_entropy import ContinuousEntropy
 from ._generalized_divisive_normalization import GeneralizedDivisiveNormalization
 from ._hyper_analysis_transformation_2d import HyperAnalysisTransformation2D
 from ._hyper_synthesis_transformation_2d import HyperSynthesisTransformation2D
+from ._mean_scale_hyperprior import MeanScaleHyperprior
 from ._non_negative_parameterization import NonNegativeParameterization
 from ._prior import Prior
 from ._scale_hyperprior import ScaleHyperprior

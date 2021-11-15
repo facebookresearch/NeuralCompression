@@ -10,6 +10,7 @@ from typing import List, NamedTuple, Optional, OrderedDict, Union
 
 import torch
 import torch.nn
+from torch.nn import Module
 from compressai.entropy_models import GaussianConditional
 from torch import Size, Tensor
 
@@ -25,17 +26,20 @@ class _CompressReturnType(NamedTuple):
     broadcast_shape: Size
 
 
-class _ForwardOutputScores(NamedTuple):
+class _ForwardReturnTypeScores(NamedTuple):
     y: Tensor
     z: Tensor
 
 
-class _ForwardOutput(NamedTuple):
-    scores: _ForwardOutputScores
+class _ForwardReturnType(NamedTuple):
+    scores: _ForwardReturnTypeScores
     x_hat: Tensor
 
 
 class ScaleHyperprior(Prior):
+    _hyper_encode: Module
+    _hyper_decode: Module
+
     def __init__(
         self,
         n: int = 128,
@@ -70,7 +74,7 @@ class ScaleHyperprior(Prior):
     def scales(self) -> Tensor:
         return torch.exp(torch.linspace(self._minimum, self._maximum, self._steps))
 
-    def forward(self, x: Tensor) -> _ForwardOutput:
+    def forward(self, x: Tensor) -> _ForwardReturnType:
         y = self._encode(x)
 
         z_hat, z_scores = self.bottleneck(self._hyper_encode(torch.abs(y)))
@@ -79,9 +83,9 @@ class ScaleHyperprior(Prior):
 
         x_hat = self._decode(y_hat)
 
-        scores = _ForwardOutputScores(y_scores, z_scores)
+        scores = _ForwardReturnTypeScores(y_scores, z_scores)
 
-        return _ForwardOutput(scores, x_hat)
+        return _ForwardReturnType(scores, x_hat)
 
     def load_state_dict(
         self,
@@ -159,7 +163,7 @@ class ScaleHyperprior(Prior):
     def decompress(
         self,
         strings: List[str],
-        broadcast_shape: Size,
+        broadcast_size: Size,
     ) -> Tensor:
         """Decompresses a ``Tensor``.
 
@@ -169,7 +173,7 @@ class ScaleHyperprior(Prior):
 
         Args:
             strings: the compressed bit strings.
-            broadcast_shape: the part of the output ``Tensor`` size between the
+            broadcast_size: the part of the output ``Tensor`` size between the
                 shape of ``strings`` on the left and the prior shape on the
                 right. This must match the shape of the input passed to
                 ``compress()``.
@@ -177,7 +181,7 @@ class ScaleHyperprior(Prior):
         Returns:
             has the size ``Size([*strings.size(), *broadcast_shape])``.
         """
-        z_hat = self.bottleneck.decompress(strings[1], broadcast_shape)
+        z_hat = self.bottleneck.decompress(strings[1], broadcast_size)
 
         indexes = self._prior.build_indexes(self._hyper_decode(z_hat)).to(torch.int32)
 
