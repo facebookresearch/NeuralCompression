@@ -5,6 +5,7 @@ This source code is licensed under the MIT license found in the
 LICENSE file in the root directory of this source tree.
 """
 
+from typing import Optional
 from torch import Tensor
 from torch.nn import Conv2d, ConvTranspose2d, Module, ReLU, Sequential
 
@@ -23,21 +24,30 @@ class HyperSynthesisTransformation2D(Module):
         | https://arxiv.org/abs/1802.01436
 
     Args:
-        in_channels: number of channels in the input signal.
-        features: number of inferred latent features.
+        n: number of channels in the input signal.
+        m: number of inferred latent features.
     """
 
-    def __init__(self, in_channels: int, features: int):
+    def __init__(
+        self,
+        n: int,
+        m: int,
+        activation: Module = ReLU(inplace=True),
+        convolution: Optional[Module] = None,
+    ):
         super(HyperSynthesisTransformation2D, self).__init__()
 
-        self.model = Sequential(
-            ConvTranspose2d(features, features, (5, 5), (2, 2), (2, 2), (1, 1)),
-            ReLU(inplace=True),
-            ConvTranspose2d(features, features, (5, 5), (2, 2), (2, 2), (1, 1)),
-            ReLU(inplace=True),
-            Conv2d(features, in_channels, (3, 3), (1, 1), 1),
-            ReLU(inplace=True),
+        if not convolution:
+            convolution = Conv2d(n, m, (3, 3), (1, 1), (1, 1))
+
+        self.sequence = Sequential(
+            ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
+            activation,
+            ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
+            activation,
+            convolution,
+            activation,
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        return self.model(x)
+        return self.sequence(x)

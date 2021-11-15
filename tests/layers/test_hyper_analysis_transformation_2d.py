@@ -11,8 +11,9 @@ from neuralcompression.layers import HyperAnalysisTransformation2D
 
 
 class TestHyperAnalysisTransformation:
-    transformation = HyperAnalysisTransformation2D(28, 28)
+    def test_forward(self):
+        transformation = HyperAnalysisTransformation2D(28, 28)
 
-    x = torch.rand((28, 28, 5, 5))
+        x = torch.rand((28, 28, 5, 5))
 
-    assert transformation(x).shape == Size([28, 28, 2, 1])
+        assert transformation(x).shape == Size([28, 28, 2, 2])

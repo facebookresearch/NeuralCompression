@@ -22,20 +22,25 @@ class HyperAnalysisTransformation2D(Module):
         | https://arxiv.org/abs/1802.01436
 
     Args:
-        in_channels: number of channels in the input signal.
-        out_channels: number of channels produced by the transformation.
+        n: number of channels in the input signal.
+        m: number of channels produced by the transformation.
     """
 
-    def __init__(self, in_channels: int, out_channels: int):
+    def __init__(
+        self,
+        n: int,
+        m: int,
+        activation: Module = ReLU(inplace=True),
+    ):
         super(HyperAnalysisTransformation2D, self).__init__()
 
-        self.models = Sequential(
-            Conv2d(in_channels, out_channels, (3, 3), (1, 2), 2),
-            ReLU(inplace=True),
-            Conv2d(out_channels, out_channels, (5, 5), (2, 2), 2),
-            ReLU(inplace=True),
-            Conv2d(out_channels, out_channels, (5, 5), (2, 2), 2),
+        self.sequence = Sequential(
+            Conv2d(m, n, (3, 3), (1, 1), (1, 1)),
+            activation,
+            Conv2d(n, n, (5, 5), (2, 2), (2, 2)),
+            activation,
+            Conv2d(n, n, (5, 5), (2, 2), (2, 2)),
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        return self.models(x)
+        return self.sequence(x)

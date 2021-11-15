@@ -11,5 +11,7 @@ from ._generalized_divisive_normalization import GeneralizedDivisiveNormalizatio
 from ._hyper_analysis_transformation_2d import HyperAnalysisTransformation2D
 from ._hyper_synthesis_transformation_2d import HyperSynthesisTransformation2D
 from ._non_negative_parameterization import NonNegativeParameterization
+from ._prior import Prior
+from ._scale_hyperprior import ScaleHyperprior
 from ._synthesis_transformation_2d import SynthesisTransformation2D
 from .gdn import SimplifiedGDN, SimplifiedInverseGDN
