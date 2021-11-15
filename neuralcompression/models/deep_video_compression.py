@@ -1,9 +1,9 @@
+# Copyright (c) Facebook, Inc. and its affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 """
-Copyright (c) Facebook, Inc. and its affiliates.
-
-This source code is licensed under the MIT license found in the
-LICENSE file in the root directory of this source tree.
-
 Code is based on the papers:
 
 Lu, Guo, et al. "DVC: An end-to-end deep video compression framework."
