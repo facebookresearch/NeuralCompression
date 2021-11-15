@@ -63,7 +63,8 @@ class FactorizedPrior(Prior):
         outputs = self.forward(batch)
 
         rate_distortion_losses = self._rate_distortion_loss.forward(
-            outputs,
+            outputs.x_hat,
+            dict(outputs.scores),
             batch,
         )
 

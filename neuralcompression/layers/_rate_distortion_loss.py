@@ -13,11 +13,6 @@ from torch import Tensor
 from torch.nn import Module, MSELoss
 
 
-class _ForwardOutputsType(NamedTuple):
-    x_hat: Tensor
-    scores: Dict[str, Tensor]
-
-
 class _ForwardReturnType(NamedTuple):
     bpp: float
     mse: float
@@ -34,14 +29,15 @@ class RateDistortionLoss(Module):
 
     def forward(
         self,
-        outputs: _ForwardOutputsType,
+        x_hat: Tensor,
+        scores: Dict[str, Tensor],
         target: Tensor,
     ) -> _ForwardReturnType:
         n, _, h, w = target.size()
 
         bpps = []
 
-        for scores in outputs.scores.values():
+        for scores in scores.values():
             bits = torch.log(scores).sum()
 
             pixels = -math.log(2) * (n * h * w)
@@ -50,7 +46,7 @@ class RateDistortionLoss(Module):
 
         bpp = sum(bpps)
 
-        mse = self.mse(outputs.x_hat, target)
+        mse = self.mse(x_hat, target)
 
         rate_distortion = self.smoothness * 255 ** 2 * mse + bpp
 
