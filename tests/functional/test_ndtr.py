@@ -14,7 +14,7 @@ from neuralcompression.functional import ndtr
 
 
 def test_ndtr():
-    torch.testing.assert_equal(
+    torch.testing.assert_close(
         ndtr(torch.tensor([0.0])),
         torch.tensor([0.5]),
     )
