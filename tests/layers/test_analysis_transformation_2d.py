@@ -11,8 +11,9 @@ from neuralcompression.layers import AnalysisTransformation2D
 
 
 class TestAnalysisTransformation2D:
-    transformation = AnalysisTransformation2D(28, 28)
+    def test_forward(self):
+        transformation = AnalysisTransformation2D(28, 28)
 
-    x = torch.rand((16, 3, 28, 28))
+        x = torch.rand((16, 3, 28, 28))
 
-    assert transformation(x).shape == Size([16, 28, 2, 2])
+        assert transformation(x).shape == Size([16, 28, 2, 2])

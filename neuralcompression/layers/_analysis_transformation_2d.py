@@ -12,17 +12,17 @@ from ._generalized_divisive_normalization import GeneralizedDivisiveNormalizatio
 
 
 class AnalysisTransformation2D(Module):
-    def __init__(self, m: int, n: int):
+    def __init__(self, n: int, m: int, in_channels: int = 3):
         super(AnalysisTransformation2D, self).__init__()
 
         self.model = Sequential(
-            Conv2d(3, m, (5, 5), (2, 2), 2),
-            GeneralizedDivisiveNormalization(m),
-            Conv2d(m, m, (5, 5), (2, 2), 2),
-            GeneralizedDivisiveNormalization(m),
-            Conv2d(m, m, (5, 5), (2, 2), 2),
-            GeneralizedDivisiveNormalization(m),
-            Conv2d(m, n, (5, 5), (2, 2), 2),
+            Conv2d(in_channels, n, (5, 5), (2, 2), 2),
+            GeneralizedDivisiveNormalization(n),
+            Conv2d(n, n, (5, 5), (2, 2), 2),
+            GeneralizedDivisiveNormalization(n),
+            Conv2d(n, n, (5, 5), (2, 2), 2),
+            GeneralizedDivisiveNormalization(n),
+            Conv2d(n, m, (5, 5), (2, 2), 2),
         )
 
     def forward(self, x: Tensor) -> Tensor:
