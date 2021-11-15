@@ -6,5 +6,6 @@ LICENSE file in the root directory of this source tree.
 """
 
 from ._hific import HiFiCDiscriminator, HiFiCEncoder, HiFiCGenerator
+from ._prior import Prior
 from .deep_video_compression import DVC
 from .scale_hyperprior import ScaleHyperprior

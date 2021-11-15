@@ -34,7 +34,7 @@ class _ForwardOutput(NamedTuple):
 
 
 class FactorizedPrior(Prior):
-    def __init__(self, n: int, m: int):
+    def __init__(self, n: int = 128, m: int = 192):
         super(FactorizedPrior, self).__init__(channels=m)
 
         self.encode = AnalysisTransformation2D(n, m)
