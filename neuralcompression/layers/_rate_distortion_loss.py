@@ -18,20 +18,20 @@ class _ForwardReturnType(NamedTuple):
 
 
 class RateDistortionLoss(Module):
-    def __init__(self, smoothing: float = 1e-2):
+    def __init__(self, _lambda: float = 1e-2):
         super(RateDistortionLoss, self).__init__()
 
-        self.mse = MSELoss()
+        self._lambda = _lambda
 
-        self.smoothness = smoothing
+        self._mse = MSELoss()
 
     def forward(
         self,
         x_hat: Tensor,
         scores: List[Tensor],
-        target: Tensor,
+        x: Tensor,
     ) -> _ForwardReturnType:
-        n, _, h, w = target.size()
+        n, _, h, w = x.size()
 
         bpps = []
 
@@ -44,8 +44,8 @@ class RateDistortionLoss(Module):
 
         bpp = sum(bpps)
 
-        mse = self.mse(x_hat, target)
+        mse = self._mse(x_hat, x)
 
-        rate_distortion = self.smoothness * 255 ** 2 * mse + bpp
+        rate_distortion = self._lambda * 255 ** 2 * mse + bpp
 
         return _ForwardReturnType(bpp, mse, rate_distortion)
