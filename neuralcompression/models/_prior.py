@@ -6,6 +6,7 @@
 from typing import Dict, List, Set
 
 import torch
+from compressai.entropy_models import EntropyBottleneck
 from pytorch_lightning import LightningModule
 from torch.nn import Parameter
 from torch.optim import Adam
@@ -15,6 +16,8 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 class Prior(LightningModule):
     def __init__(
         self,
+        m: int = 128,
+        n: int = 192,
         bottleneck_optimizer_lr: float = 1e-4,
         optimizer_lr: float = 1e-3,
     ):
@@ -24,22 +27,33 @@ class Prior(LightningModule):
 
         self.optimizer_lr = optimizer_lr
 
+        self.bottleneck = EntropyBottleneck(m)
+
         self.save_hyperparameters()
 
         self.example_input_array = torch.zeros(2, 3, 256, 256)
 
-    @property
+    def _autoencoder_parameters(self) -> Set[str]:
+        autoencoder_parameters = set()
+
+        for name, parameter in self.named_parameters():
+            if not name.endswith(".quantiles") and parameter.requires_grad:
+                autoencoder_parameters.add(name)
+
+        return autoencoder_parameters
+
     def _bottleneck_optimizer_parameters(self) -> List[Parameter]:
         bottleneck_optimizer_parameters = []
 
-        for bottleneck_parameter in sorted(self._bottleneck_parameters):
-            bottleneck_optimizer_parameter = self._parameters_dict[bottleneck_parameter]
+        for bottleneck_parameter in sorted(self._bottleneck_parameters()):
+            bottleneck_optimizer_parameter = self._parameters_dict()[
+                bottleneck_parameter
+            ]
 
             bottleneck_optimizer_parameters += [bottleneck_optimizer_parameter]
 
         return bottleneck_optimizer_parameters
 
-    @property
     def _bottleneck_parameters(self) -> Set[str]:
         bottleneck_parameters = set()
 
@@ -49,44 +63,30 @@ class Prior(LightningModule):
 
         return bottleneck_parameters
 
-    @property
     def _intersection_parameters(self) -> Set[str]:
-        return self._parameters & self._bottleneck_parameters
+        return self._autoencoder_parameters() & self._bottleneck_parameters()
 
-    @property
     def _optimizer_parameters(self) -> List[Parameter]:
         optimizer_parameters = []
 
-        for parameter in sorted(self._parameters):
-            optimizer_parameters += [self._parameters_dict[parameter]]
+        for parameter in sorted(self._autoencoder_parameters()):
+            optimizer_parameters += [self._parameters_dict()[parameter]]
 
         return optimizer_parameters
 
-    @property
-    def _parameters(self) -> Set[str]:
-        parameters = set()
-
-        for name, parameter in self.named_parameters():
-            if not name.endswith(".quantiles") and parameter.requires_grad:
-                parameters.add(name)
-
-        return parameters
-
-    @property
     def _parameters_dict(self) -> Dict[str, Parameter]:
         return dict(self.named_parameters())
 
-    @property
     def _union_parameters(self) -> Set[str]:
-        return self._parameters | self._bottleneck_parameters
+        return self._autoencoder_parameters() | self._bottleneck_parameters()
 
     def configure_optimizers(self):
-        assert len(self._intersection_parameters) == 0
+        assert len(self._intersection_parameters()) == 0
 
-        assert len(self._union_parameters) - len(self._parameters_dict.keys()) == 0
+        assert len(self._union_parameters()) - len(self._parameters_dict().keys()) == 0
 
         bottleneck_optimizer = Adam(
-            self._bottleneck_optimizer_parameters,
+            self._bottleneck_optimizer_parameters(),
             lr=self.bottleneck_optimizer_lr,
         )
 
@@ -96,7 +96,7 @@ class Prior(LightningModule):
         )
 
         bottleneck_lr_scheduler = Adam(
-            self._bottleneck_optimizer_parameters,
+            self._bottleneck_optimizer_parameters(),
             lr=self.bottleneck_optimizer_lr,
         )
 
