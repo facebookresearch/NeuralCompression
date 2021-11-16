@@ -1,44 +1,42 @@
-"""
-Copyright (c) Facebook, Inc. and its affiliates.
-
-This source code is licensed under the MIT license found in the
-LICENSE file in the root directory of this source tree.
-"""
+# Copyright (c) Facebook, Inc. and its affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
 
 import math
-from typing import Dict, NamedTuple
+from typing import List, NamedTuple
 
 import torch
 from torch import Tensor
 from torch.nn import Module, MSELoss
 
 
-class _Outputs(NamedTuple):
-    x_hat: Tensor
-    scores: Dict[str, Tensor]
-
-
-class _RateDistortionLosses(NamedTuple):
+class _ForwardReturnType(NamedTuple):
     bpp: float
     mse: float
     rate_distortion: float
 
 
 class RateDistortionLoss(Module):
-    def __init__(self, smoothness: float = 1e-2):
+    def __init__(self, smoothing: float = 1e-2):
         super(RateDistortionLoss, self).__init__()
 
         self.mse = MSELoss()
 
-        self.smoothness = smoothness
+        self.smoothness = smoothing
 
-    def forward(self, outputs: _Outputs, target: Tensor) -> _RateDistortionLosses:
+    def forward(
+        self,
+        x_hat: Tensor,
+        scores: List[Tensor],
+        target: Tensor,
+    ) -> _ForwardReturnType:
         n, _, h, w = target.size()
 
         bpps = []
 
-        for scores in outputs.scores.values():
-            bits = torch.log(scores).sum()
+        for score in scores:
+            bits = torch.log(score).sum()
 
             pixels = -math.log(2) * (n * h * w)
 
@@ -46,8 +44,8 @@ class RateDistortionLoss(Module):
 
         bpp = sum(bpps)
 
-        mse = self.mse(outputs.x_hat, target)
+        mse = self.mse(x_hat, target)
 
         rate_distortion = self.smoothness * 255 ** 2 * mse + bpp
 
-        return _RateDistortionLosses(bpp, mse, rate_distortion)
+        return _ForwardReturnType(bpp, mse, rate_distortion)
