@@ -1,9 +1,7 @@
-"""
-Copyright (c) Facebook, Inc. and its affiliates.
-
-This source code is licensed under the MIT license found in the
-LICENSE file in the root directory of this source tree.
-"""
+# Copyright (c) Facebook, Inc. and its affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
 
 import pytest
 import torch
@@ -130,15 +128,15 @@ class TestContinuousEntropy:
             maximum_cdf_size=self.maximum_cdf_size,
         )
 
-        torch.testing.assert_equal(
+        torch.testing.assert_close(
             continuous_entropy._cdfs, torch.zeros((1, 16)).to(torch.int32)
         )
 
-        torch.testing.assert_equal(
+        torch.testing.assert_close(
             continuous_entropy._cdf_sizes, torch.zeros((16,)).to(torch.int32)
         )
 
-        torch.testing.assert_equal(
+        torch.testing.assert_close(
             continuous_entropy._cdf_offsets, torch.zeros((16,)).to(torch.int32)
         )
 
@@ -148,17 +146,17 @@ class TestContinuousEntropy:
             prior=self.prior,
         )
 
-        torch.testing.assert_equal(
+        torch.testing.assert_close(
             continuous_entropy._cdfs.shape,
             Size([16, 6]),
         )
 
-        torch.testing.assert_equal(
+        torch.testing.assert_close(
             continuous_entropy._cdf_sizes.shape,
             Size([16]),
         )
 
-        torch.testing.assert_equal(
+        torch.testing.assert_close(
             continuous_entropy._cdf_offsets.shape,
             Size([16]),
         )

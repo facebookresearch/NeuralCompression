@@ -1,8 +1,7 @@
-"""
-Copyright (c) Facebook, Inc. and its affiliates.
-This source code is licensed under the MIT license found in the
-LICENSE file in the root directory of this source tree.
-"""
+# Copyright (c) Facebook, Inc. and its affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
 
 import torch
 import torch.testing
@@ -24,7 +23,7 @@ def test_lower_bound():
 
     y = lower_bound(x, bound)
 
-    torch.testing.assert_equal(
+    torch.testing.assert_close(
         y,
         torch.max(x, bound),
     )

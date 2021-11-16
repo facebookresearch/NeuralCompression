@@ -1,9 +1,7 @@
-"""
-Copyright (c) Facebook, Inc. and its affiliates.
-
-This source code is licensed under the MIT license found in the
-LICENSE file in the root directory of this source tree.
-"""
+# Copyright (c) Facebook, Inc. and its affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
 
 import numpy.random
 import scipy.special
@@ -14,7 +12,7 @@ from neuralcompression.functional import ndtr
 
 
 def test_ndtr():
-    torch.testing.assert_equal(
+    torch.testing.assert_close(
         ndtr(torch.tensor([0.0])),
         torch.tensor([0.5]),
     )
