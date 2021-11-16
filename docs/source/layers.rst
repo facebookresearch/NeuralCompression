@@ -45,10 +45,10 @@ NonNegativeParameterization
   :members: __getitem__
   :special-members:
 
-RateDistortionLoss
-~~~~~~~~~~~~~~~~~~
+RateMSEDistortionLoss
+~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: RateDistortionLoss
+.. autoclass:: RateMSEDistortionLoss
   :members: __getitem__
   :special-members:
 
