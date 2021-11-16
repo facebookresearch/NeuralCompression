@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import Dict, List, Set
+from typing import Dict, List, Optional, Set
 
 import torch
 from pytorch_lightning import LightningModule
@@ -11,14 +11,19 @@ from torch.nn import Parameter
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
+import neuralcompression.layers
+
 
 class Prior(LightningModule):
     def __init__(
         self,
+        architecture: Optional[neuralcompression.layers.Prior] = None,
         bottleneck_optimizer_lr: float = 1e-4,
         optimizer_lr: float = 1e-3,
     ):
         super(Prior, self).__init__()
+
+        self.architecture = architecture
 
         self.bottleneck_optimizer_lr = bottleneck_optimizer_lr
 
