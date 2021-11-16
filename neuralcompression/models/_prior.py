@@ -6,7 +6,6 @@
 from typing import Dict, List, Set
 
 import torch
-from compressai.entropy_models import EntropyBottleneck
 from pytorch_lightning import LightningModule
 from torch.nn import Parameter
 from torch.optim import Adam
@@ -16,8 +15,6 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 class Prior(LightningModule):
     def __init__(
         self,
-        m: int = 128,
-        n: int = 192,
         bottleneck_optimizer_lr: float = 1e-4,
         optimizer_lr: float = 1e-3,
     ):
@@ -26,8 +23,6 @@ class Prior(LightningModule):
         self.bottleneck_optimizer_lr = bottleneck_optimizer_lr
 
         self.optimizer_lr = optimizer_lr
-
-        self.bottleneck = EntropyBottleneck(m)
 
         self.save_hyperparameters()
 
