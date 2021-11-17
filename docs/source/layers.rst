@@ -45,6 +45,13 @@ NonNegativeParameterization
   :members: __getitem__
   :special-members:
 
+Prior
+~~~~~
+
+.. autoclass:: Prior
+  :members: __getitem__
+  :special-members:
+
 RateMSEDistortionLoss
 ~~~~~~~~~~~~~~~~~~~~~
 
