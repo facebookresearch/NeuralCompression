@@ -45,6 +45,13 @@ NonNegativeParameterization
   :members: __getitem__
   :special-members:
 
+RateMSEDistortionLoss
+~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: RateMSEDistortionLoss
+  :members: __getitem__
+  :special-members:
+
 SimplifiedGDN
 ~~~~~~~~~~~~~
 
