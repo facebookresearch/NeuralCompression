@@ -47,23 +47,23 @@ class RateMSEDistortionLoss(Module):
     def forward(
         self,
         x_hat: Tensor,
-        bits: List[Tensor],
+        probabilities: List[Tensor],
         x: Tensor,
     ) -> RateDistortionLoss:
         """
         Args:
             x_hat: encoder output.
-            bits: predicted bits.
+            probabilities: reconstruction likelihoods.
             x: encoder input.
         """
         n, _, h, w = x.size()
 
         bpps = []
 
-        for score in bits:
+        for probability in probabilities:
             pixels = -math.log(2) * (n * h * w)
 
-            bpps += [float(torch.log(score).sum() / pixels)]
+            bpps += [float(torch.log(probability).sum() / pixels)]
 
         rate = sum(bpps)
 
