@@ -13,7 +13,7 @@ class AnalysisTransformation2D(Module):
     def __init__(self, n: int, m: int, in_channels: int = 3):
         super(AnalysisTransformation2D, self).__init__()
 
-        self.model = Sequential(
+        self.sequence = Sequential(
             Conv2d(in_channels, n, (5, 5), (2, 2), 2),
             GeneralizedDivisiveNormalization(n),
             Conv2d(n, n, (5, 5), (2, 2), 2),
@@ -24,4 +24,4 @@ class AnalysisTransformation2D(Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        return self.model(x)
+        return self.sequence(x)
