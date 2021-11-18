@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import List, OrderedDict
+from typing import List, Optional, OrderedDict
 
 import torch
 import torch.nn.init
@@ -17,32 +17,53 @@ from torch.nn import (
 
 
 class Prior(Module):
+    """A base class for implementing neural compression autoencoders.
+
+    The class couples a ``bottleneck_module`` (e.g. the ``EntropyBottleneck``
+    module provided by the CompressionAI package) with an autoencoder
+    (i.e. ``encoder`` and ``decoder``).
+
+    Using the base class is as straightforward as inheriting from the class and
+    defining an ``encoder_module`` and ``decoder_module``. You may optionally
+    provide a ``hyper_encoder_module`` and ``hyper_decoder_module`` (e.g. for
+    implementing Hyperprior architectures).
+
+    The ``neuralcompression.layers`` package includes a standard encoder
+    (``AnalysisTransformation2D``), decoder (``SynthesisTransformation2D``),
+    hyper encoder (``HyperAnalysisTransformation2D``), and hyper decoder
+    (``HyperSynthesisTransformation2D``).
+
+    Args:
+        encoder_module:
+        decoder_module:
+        bottleneck_module:
+        bottleneck_module_name:
+        bottleneck_buffer_names:
+        hyper_encoder_module:
+        hyper_decoder_module:
+    """
+
     def __init__(
         self,
-        n: int,
-        m: int,
-        bottleneck_module: EntropyBottleneck,
+        encoder_module: Module,
+        decoder_module: Module,
+        bottleneck_module: Module,
         bottleneck_module_name: str,
         bottleneck_buffer_names: List[str],
+        hyper_encoder_module: Optional[Module] = None,
+        hyper_decoder_module: Optional[Module] = None,
     ):
-        """
-        Args:
-            n:
-            m:
-            bottleneck_module:
-            bottleneck_module_name:
-            bottleneck_buffer_names:
-        """
         super(Prior, self).__init__()
 
-        self._n = n
-        self._m = m
+        self._encoder_module = encoder_module
+        self._decoder_module = decoder_module
 
         self._bottleneck_module = bottleneck_module
-
         self._bottleneck_module_name = bottleneck_module_name
-
         self._bottleneck_buffer_names = bottleneck_buffer_names
+
+        self._hyper_encoder_module = hyper_encoder_module
+        self._hyper_decoder_module = hyper_decoder_module
 
         for module in self.modules():
             if isinstance(module, (Conv2d, ConvTranspose2d)):

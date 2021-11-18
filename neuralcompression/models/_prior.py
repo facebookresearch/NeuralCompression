@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Set
 
 import torch
 from pytorch_lightning import LightningModule
@@ -15,15 +15,39 @@ import neuralcompression.layers
 
 
 class Prior(LightningModule):
+    """A base class for implementing neural compression autoencoders.
+
+    The class couples a ``bottleneck_module`` (e.g. the ``EntropyBottleneck``
+    module provided by the CompressionAI package) with an autoencoder
+    (i.e. ``encoder`` and ``decoder``).
+
+    Using the base class is as straightforward as inheriting from the class and
+    defining an ``encoder_module`` and ``decoder_module``. You may optionally
+    provide a ``hyper_encoder_module`` and ``hyper_decoder_module`` (e.g. for
+    implementing Hyperprior architectures).
+
+    The ``neuralcompression.layers`` package includes a standard encoder
+    (``AnalysisTransformation2D``), decoder (``SynthesisTransformation2D``),
+    hyper encoder (``HyperAnalysisTransformation2D``), and hyper decoder
+    (``HyperSynthesisTransformation2D``).
+
+    Args:
+        autoencoder: an autoencoder with an encoder and decoder modules (e.g.
+            the ``FactorizedPrior``, ``ScaleHyperprior``, or
+            ``MeanScaleHyperprior`` modules from ``neuralcompression.models``).
+        bottleneck_optimizer_lr: the learning rate for the bottleneck module.
+        optimizer_lr: the learning rate for the autoencoder.
+    """
+
     def __init__(
         self,
-        architecture: Optional[neuralcompression.layers.Prior] = None,
+        autoencoder: neuralcompression.layers.Prior,
         bottleneck_optimizer_lr: float = 1e-4,
         optimizer_lr: float = 1e-3,
     ):
         super(Prior, self).__init__()
 
-        self.architecture = architecture
+        self.autoencoder = autoencoder
 
         self.bottleneck_optimizer_lr = bottleneck_optimizer_lr
 
