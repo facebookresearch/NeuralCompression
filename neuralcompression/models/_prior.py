@@ -47,7 +47,7 @@ class Prior(LightningModule):
     ):
         super(Prior, self).__init__()
 
-        self.autoencoder = architecture
+        self.architecture = architecture
 
         self.bottleneck_optimizer_lr = bottleneck_optimizer_lr
 

@@ -11,7 +11,6 @@ from ._hyper_analysis_transformation_2d import HyperAnalysisTransformation2D
 from ._hyper_synthesis_transformation_2d import HyperSynthesisTransformation2D
 from ._non_negative_parameterization import NonNegativeParameterization
 from ._prior import Prior
-from ._rate_distortion_loss import RateDistortionLoss
 from ._rate_mse_distortion_loss import RateMSEDistortionLoss
 from ._synthesis_transformation_2d import SynthesisTransformation2D
 from .gdn import SimplifiedGDN, SimplifiedInverseGDN

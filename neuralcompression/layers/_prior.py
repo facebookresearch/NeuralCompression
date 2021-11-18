@@ -3,12 +3,12 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import List, Optional, OrderedDict
+from typing import List, Optional, OrderedDict, Tuple
 
 import torch
 import torch.nn.init
 from compressai.entropy_models import EntropyBottleneck
-from torch import Tensor
+from torch import Tensor, Size
 from torch.nn import (
     Conv2d,
     ConvTranspose2d,
@@ -47,7 +47,7 @@ class Prior(Module):
         self,
         encoder: Module,
         decoder: Module,
-        bottleneck: Module,
+        bottleneck: EntropyBottleneck,
         bottleneck_module_name: str,
         bottleneck_buffer_names: List[str],
         hyper_encoder: Optional[Module] = None,
@@ -81,6 +81,15 @@ class Prior(Module):
                 losses += [module.loss()]
 
         return sum(losses)
+
+    def compress(self, x: Tensor) -> Tuple[List[List[str]], Size]:
+        raise NotImplementedError
+
+    def decompress(self, strings: List[List[str]], size: Size) -> Tensor:
+        raise NotImplementedError
+
+    def forward(self, x: Tensor) -> Tuple[Tensor, List[Tensor]]:
+        raise NotImplementedError
 
     def update_bottleneck(self, force: bool = False) -> bool:
         updated = False

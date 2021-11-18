@@ -37,7 +37,7 @@ class FactorizedPrior(Prior):
     def forward(self, *args, **kwargs) -> Tuple[Tensor, List[Tensor]]:
         (x,) = args
 
-        return self.autoencoder.forward(x)
+        return self.architecture.forward(x)
 
     def training_step(self, *args, **kwargs) -> STEP_OUTPUT:
         batch: Tensor
@@ -76,7 +76,7 @@ class FactorizedPrior(Prior):
             )
 
         if optimizer_idx == 1:
-            bottleneck_loss = self.autoencoder.bottleneck_loss
+            bottleneck_loss = self.architecture.bottleneck_loss
 
             losses = {
                 "bottleneck_loss": bottleneck_loss,

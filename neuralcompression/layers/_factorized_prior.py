@@ -22,12 +22,12 @@ class FactorizedPrior(Prior):
         super(FactorizedPrior, self).__init__(
             AnalysisTransformation2D(self._n, self._m),
             SynthesisTransformation2D(self._n, self._m),
-            EntropyBottleneck(m),
+            EntropyBottleneck(self._m),
             "bottleneck",
             ["_cdf_length", "_offset", "_quantized_cdf"],
         )
 
-    def forward(self, x: Tensor):
+    def forward(self, x: Tensor) -> Tuple[Tensor, List[Tensor]]:
         y = self.encoder.forward(x)
 
         y_hat, y_probabilities = self.bottleneck.forward(y)
