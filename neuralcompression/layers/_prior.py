@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import List, Optional, OrderedDict
+from typing import List, OrderedDict
 
 import torch
 import torch.nn.init
@@ -17,10 +17,17 @@ from torch.nn import (
 
 
 class Prior(Module):
-    def __init__(self, channels: int):
+    def __init__(
+        self,
+        n: int,
+        m: int,
+    ):
         super(Prior, self).__init__()
 
-        self.bottleneck = EntropyBottleneck(channels)
+        self._n = n
+        self._m = m
+
+        self.bottleneck = EntropyBottleneck(self._m)
 
         for module in self.modules():
             if isinstance(module, (Conv2d, ConvTranspose2d)):
@@ -55,9 +62,9 @@ class Prior(Module):
         state_dict: OrderedDict[str, Tensor],
         strict: bool = True,
     ):
-        self._update_registered_buffers(
+        self._resize_registered_buffers(
             self.bottleneck,
-            "entropy_bottleneck",
+            "bottleneck",
             [
                 "_quantized_cdf",
                 "_offset",
@@ -69,33 +76,13 @@ class Prior(Module):
         super(Prior, self).load_state_dict(state_dict, strict)
 
     @staticmethod
-    def _update_registered_buffers(
+    def _resize_registered_buffers(
         module: Module,
         module_name: str,
         buffer_names: List[str],
         state_dict: OrderedDict,
-        policy: str = "resize_if_empty",
-        dtype: torch.dtype = torch.int32,
     ):
-        if policy not in ("register", "resize", "resize_if_empty"):
-            error_message = f"""
-            Invalid policy '{policy}'
-            """
-
-            raise ValueError(error_message)
-
-        valid_buffer_names = []
-
-        for name, _ in module.named_buffers():
-            valid_buffer_names += [name]
-
         for buffer_name in buffer_names:
-            if buffer_name not in valid_buffer_names:
-                error_message = f"""invalid buffer name: {buffer_name}
-                """
-
-                raise ValueError(error_message)
-
             size = state_dict[f"{module_name}.{buffer_name}"].size()
 
             registered_buffers = []
@@ -104,27 +91,8 @@ class Prior(Module):
                 if name == buffer_name:
                     registered_buffers += [buffer]
 
-            registered_buffer: Optional[Tensor]
-
             if registered_buffers:
                 registered_buffer = registered_buffers[0]
-            else:
-                registered_buffer = None
 
-            if policy in ("resize_if_empty", "resize"):
-                if registered_buffer is None:
-                    error_message = f"""unregistered buffer: {buffer_name}
-                    """
-
-                    raise RuntimeError(error_message)
-
-                if policy == "resize" or registered_buffer.numel() == 0:
+                if registered_buffer.numel() == 0:
                     registered_buffer.resize_(size)
-            elif policy == "register":
-                if registered_buffer is not None:
-                    error_message = f"""preregistered buffer: {buffer_name}
-                    """
-
-                    raise RuntimeError(error_message)
-
-                module.register_buffer(buffer_name, torch.zeros(size, dtype=dtype))

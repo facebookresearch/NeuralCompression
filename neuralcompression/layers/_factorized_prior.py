@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import List, NamedTuple, OrderedDict
+from typing import List, NamedTuple, OrderedDict, Tuple
 
 import torch
 from torch import Size, Tensor
@@ -11,15 +11,6 @@ from torch import Size, Tensor
 from ._analysis_transformation_2d import AnalysisTransformation2D
 from ._prior import Prior
 from ._synthesis_transformation_2d import SynthesisTransformation2D
-
-
-class _CompressOutput(NamedTuple):
-    compressed: List[List[str]]
-    size: Size
-
-
-class _DecompressOutput(NamedTuple):
-    decompressed: Tensor
 
 
 class _ForwardOutputScores(NamedTuple):
@@ -33,7 +24,7 @@ class _ForwardOutput(NamedTuple):
 
 class FactorizedPrior(Prior):
     def __init__(self, n: int = 128, m: int = 192):
-        super(FactorizedPrior, self).__init__(channels=m)
+        super(FactorizedPrior, self).__init__(n, m)
 
         self.encode = AnalysisTransformation2D(n, m)
         self.decode = SynthesisTransformation2D(n, m)
@@ -42,15 +33,15 @@ class FactorizedPrior(Prior):
         self.m = m
 
     def forward(self, x: Tensor) -> _ForwardOutput:
-        encoded = self.encode(x)
+        y = self.encode(x)
 
-        encoded, y_scores = self.bottleneck(encoded)
+        y_hat, y_probabilities = self.bottleneck(y)
 
-        scores = _ForwardOutputScores(y_scores)
+        probabilities = _ForwardOutputScores(y_probabilities)
 
-        x_hat = self.decode(encoded)
+        x_hat = self.decode(y_hat)
 
-        return _ForwardOutput(scores, x_hat)
+        return _ForwardOutput(probabilities, x_hat)
 
     @classmethod
     def from_state_dict(cls, state_dict: OrderedDict[str, Tensor]):
@@ -63,22 +54,12 @@ class FactorizedPrior(Prior):
 
         return prior
 
-    def compress(self, x: Tensor) -> _CompressOutput:
+    def compress(self, x: Tensor) -> Tuple[List[List[str]], Size]:
         y = self.encode(x)
 
-        compressed = [self.bottleneck.compress(y)]
+        return [self.bottleneck.compress(y)], Size(y.size()[-2:])
 
-        size = Size(y.size()[-2:])
+    def decompress(self, compressed: List[List[str]], size: Size) -> Tensor:
+        y_hat = self.bottleneck.decompress(compressed[0], size)
 
-        return _CompressOutput(compressed, size)
-
-    def decompress(
-        self,
-        compressed: List[List[str]],
-        size: Size,
-    ) -> _DecompressOutput:
-        decoded = self.decode(self.bottleneck.decompress(compressed[0], size))
-
-        decompressed = torch.clamp(decoded, 0, 1)
-
-        return _DecompressOutput(decompressed)
+        return torch.clamp(self.decode(y_hat), 0, 1)
