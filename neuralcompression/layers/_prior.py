@@ -21,13 +21,28 @@ class Prior(Module):
         self,
         n: int,
         m: int,
+        bottleneck_module: EntropyBottleneck,
+        bottleneck_module_name: str,
+        bottleneck_buffer_names: List[str],
     ):
+        """
+        Args:
+            n:
+            m:
+            bottleneck_module:
+            bottleneck_module_name:
+            bottleneck_buffer_names:
+        """
         super(Prior, self).__init__()
 
         self._n = n
         self._m = m
 
-        self.bottleneck = EntropyBottleneck(self._m)
+        self._bottleneck_module = bottleneck_module
+
+        self._bottleneck_module_name = bottleneck_module_name
+
+        self._bottleneck_buffer_names = bottleneck_buffer_names
 
         for module in self.modules():
             if isinstance(module, (Conv2d, ConvTranspose2d)):
@@ -46,7 +61,7 @@ class Prior(Module):
 
         return sum(losses)
 
-    def update(self, force: bool = False) -> bool:
+    def update_bottleneck(self, force: bool = False) -> bool:
         updated = False
 
         for module in self.children():
@@ -62,33 +77,26 @@ class Prior(Module):
         state_dict: OrderedDict[str, Tensor],
         strict: bool = True,
     ):
-        self._resize_registered_buffers(
-            self.bottleneck,
-            "bottleneck",
-            [
-                "_quantized_cdf",
-                "_offset",
-                "_cdf_length",
-            ],
-            state_dict,
-        )
+        """Copies parameters and buffers from ``state_dict`` into this module
+        and its descendants. If strict is ``True``, then the keys of
+        ``state_dict`` must exactly match the keys returned by this module’s
+        ``torch.nn.Module.state_dict`` method.
 
-        super(Prior, self).load_state_dict(state_dict, strict)
+        Args:
+            state_dict: a ``dict`` containing parameters and persistent buffers.
+            strict: whether to strictly enforce that the keys in ``state_dict``
+                match the keys returned by this module’s
+                ``torch.nn.Module.state_dict`` method, defaults to ``True``.
+        """
+        for bottleneck_buffer_name in self._bottleneck_buffer_names:
+            name = f"{self._bottleneck_module_name}.{bottleneck_buffer_name}"
 
-    @staticmethod
-    def _resize_registered_buffers(
-        module: Module,
-        module_name: str,
-        buffer_names: List[str],
-        state_dict: OrderedDict,
-    ):
-        for buffer_name in buffer_names:
-            size = state_dict[f"{module_name}.{buffer_name}"].size()
+            size = state_dict[name].size()
 
             registered_buffers = []
 
-            for name, buffer in module.named_buffers():
-                if name == buffer_name:
+            for name, buffer in self._bottleneck_module.named_buffers():
+                if name == bottleneck_buffer_name:
                     registered_buffers += [buffer]
 
             if registered_buffers:
@@ -96,3 +104,5 @@ class Prior(Module):
 
                 if registered_buffer.numel() == 0:
                     registered_buffer.resize_(size)
+
+        super(Prior, self).load_state_dict(state_dict, strict)

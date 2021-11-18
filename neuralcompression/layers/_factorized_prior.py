@@ -23,7 +23,7 @@ class FactorizedPrior(Prior):
     def forward(self, x: Tensor):
         y = self.encode(x)
 
-        y_hat, y_probabilities = self.bottleneck(y)
+        y_hat, y_probabilities = self._bottleneck_module(y)
 
         x_hat = self.decode(y_hat)
 
@@ -43,9 +43,9 @@ class FactorizedPrior(Prior):
     def compress(self, x: Tensor) -> Tuple[List[List[str]], Size]:
         y = self.encode(x)
 
-        return [self.bottleneck.compress(y)], Size(y.size()[-2:])
+        return [self._bottleneck_module.compress(y)], Size(y.size()[-2:])
 
     def decompress(self, compressed: List[List[str]], size: Size) -> Tensor:
-        y_hat = self.bottleneck.decompress(compressed[0], size)
+        y_hat = self._bottleneck_module.decompress(compressed[0], size)
 
         return torch.clamp(self.decode(y_hat), 0, 1)

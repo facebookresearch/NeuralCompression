@@ -44,7 +44,7 @@ class FactorizedPrior(Prior):
     def forward(self, x: Tensor) -> _ForwardReturnType:
         y_hat = self._architecture.encode(x)
 
-        y_hat, y_scores = self._architecture.bottleneck(y_hat)
+        y_hat, y_scores = self._architecture._bottleneck_module(y_hat)
 
         x_hat = self._architecture.decode(y_hat)
 
