@@ -4,48 +4,75 @@
 # LICENSE file in the root directory of this source tree.
 
 import math
-from typing import Dict, NamedTuple
+from typing import List, NamedTuple
 
 import torch
 from torch import Tensor
 from torch.nn import Module, MSELoss
 
 
-class _ForwardReturnType(NamedTuple):
-    bpp: float
-    mse: float
+class RateDistortionLoss(NamedTuple):
+    distortion: float
+    rate: float
     rate_distortion: float
 
 
-class RateDistortionLoss(Module):
-    def __init__(self, smoothing: float = 1e-2):
-        super(RateDistortionLoss, self).__init__()
+class RateMSEDistortionLoss(Module):
+    """Rate-distortion loss.
 
-        self.mse = MSELoss()
+    The rate-distortion loss is the minimum transmission bit-rate for a
+    required quality. It can be obtained without consideration of a specific
+    coding method. Rate is expressed in bits per pixel (BPP) of the original,
+    ``x``, distortion is expressed as the mean squared error (MSE) between the
+    original, ``x``, and the target, ``x_hat``.
 
-        self.smoothness = smoothing
+    Args:
+        trade_off: rate-distortion trade-off. `trade_off = 1` is the solution
+            where the `(rate, distortion)` pair minimizes `rate + distortion`.
+            Increasing `trade_off` will penalize the distortion term so more
+            bits are spent.
+        maximum: dynamic range of the input (i.e. the difference between the
+            maximum the and minimum permitted values).
+    """
+
+    def __init__(self, trade_off: float = 1e-2, maximum: int = 255):
+        super(RateMSEDistortionLoss, self).__init__()
+
+        self._maximum = maximum
+
+        self._trade_off = trade_off
+
+        self._mse = MSELoss()
 
     def forward(
         self,
         x_hat: Tensor,
-        scores: Dict[str, Tensor],
-        target: Tensor,
-    ) -> _ForwardReturnType:
-        n, _, h, w = target.size()
+        probabilities: List[Tensor],
+        x: Tensor,
+    ) -> RateDistortionLoss:
+        """
+        Args:
+            x_hat: encoder output.
+            probabilities: reconstruction likelihoods.
+            x: encoder input.
+        """
+        n, _, h, w = x.size()
 
         bpps = []
 
-        for scores in scores.values():
-            bits = torch.log(scores).sum()
-
+        for probability in probabilities:
             pixels = -math.log(2) * (n * h * w)
 
-            bpps += [float(bits / pixels)]
+            bpps += [float(torch.log(probability).sum() / pixels)]
 
-        bpp = sum(bpps)
+        rate = sum(bpps)
 
-        mse = self.mse(x_hat, target)
+        distortion = self._mse(x_hat, x)
 
-        rate_distortion = self.smoothness * 255 ** 2 * mse + bpp
+        rate_distortion = rate + distortion
 
-        return _ForwardReturnType(bpp, mse, rate_distortion)
+        return RateDistortionLoss(
+            rate,
+            distortion,
+            self._trade_off * self._maximum ** 2 * rate_distortion,
+        )

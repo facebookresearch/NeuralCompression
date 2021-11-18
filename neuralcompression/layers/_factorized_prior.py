@@ -48,7 +48,7 @@ class FactorizedPrior(Prior):
         return prior
 
     def compress(self, x: Tensor) -> Tuple[List[List[str]], Size]:
-        y = self._encoder_module(x)
+        y = self._encoder_module.forward(x)
 
         return [self._bottleneck_module.compress(y)], Size(y.size()[-2:])
 

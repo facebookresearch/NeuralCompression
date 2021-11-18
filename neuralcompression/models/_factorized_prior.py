@@ -2,10 +2,12 @@
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-
-from typing import NamedTuple, Optional
+from collections import OrderedDict
+from typing import NamedTuple, Optional, Tuple, List, Any, Dict
 
 from compressai.entropy_models import EntropyBottleneck
+from pytorch_lightning.core.optimizer import LightningOptimizer
+from pytorch_lightning.utilities.types import STEP_OUTPUT
 from torch import Tensor
 
 import neuralcompression.layers as layers
@@ -28,62 +30,82 @@ class FactorizedPrior(Prior):
         m: int = 192,
         bottleneck_optimizer_lr: float = 1e-4,
         optimizer_lr: float = 1e-3,
-        rate_distortion_smoothing: Optional[float] = None,
+        rate_distortion_trade_off: float = 1e-2,
+        rate_distortion_maximum: int = 255,
     ):
+        self._autoencoder = layers.FactorizedPrior(n, m)
+
         super(FactorizedPrior, self).__init__(
+            self._autoencoder,
             bottleneck_optimizer_lr,
             optimizer_lr,
         )
 
-        self._architecture = layers.FactorizedPrior(n, m)
-
-        self._rate_distortion_loss = layers.RateDistortionLoss(
-            rate_distortion_smoothing,
+        self._rate_distortion_loss = layers.RateMSEDistortionLoss(
+            rate_distortion_trade_off,
+            rate_distortion_maximum,
         )
 
-    def forward(self, x: Tensor) -> _ForwardReturnType:
-        y_hat = self._architecture.encode(x)
+    def forward(self, *args, **kwargs) -> Tuple[Tensor, List[Tensor]]:
+        (x,) = args
 
-        y_hat, y_scores = self._architecture._bottleneck_module(y_hat)
+        y_hat = self._autoencoder._encoder_module(x)
 
-        x_hat = self._architecture.decode(y_hat)
+        y_hat, y_probabilities = self._autoencoder._bottleneck_module.forward(y_hat)
 
-        scores = _ForwardReturnTypeScores(y_scores)
+        x_hat = self._autoencoder._decoder_module(y_hat)
 
-        return _ForwardReturnType(scores, x_hat)
+        return x_hat, [y_probabilities]
 
-    def training_step(self, batch: Tensor, **kwargs):
-        optimizer, auxiliary_optimizer = self.optimizers()
+    def training_step(self, *args, **kwargs) -> STEP_OUTPUT:
+        batch: Tensor
+        batch_idx: int
+        optimizer_idx: int
 
-        optimizer.zero_grad()
-        auxiliary_optimizer.zero_grad()
-
-        outputs = self.forward(batch)
-
-        rate_distortion_losses = self._rate_distortion_loss.forward(
-            outputs.x_hat,
-            dict(outputs.scores),
+        (
             batch,
-        )
+            batch_idx,
+            optimizer_idx,
+        ) = args
 
-        optimizer.step()
+        step_output: Dict[str, Any] = {}
 
-        bottleneck_losses = []
+        if optimizer_idx == 0:
+            x_hat, probabilities = self.forward(batch)
 
-        for module in self.modules():
-            if isinstance(module, EntropyBottleneck):
-                bottleneck_losses += [module.loss()]
+            rate_distortion_losses = self._rate_distortion_loss.forward(
+                x_hat,
+                probabilities,
+                batch,
+            )
 
-        bottleneck_losses = sum(bottleneck_losses)
+            losses = {
+                "rate_loss": rate_distortion_losses.rate,
+                "distortion_loss": rate_distortion_losses.distortion,
+                "rate_distortion_loss": rate_distortion_losses.rate_distortion,
+            }
 
-        auxiliary_optimizer.step()
+            step_output = OrderedDict(
+                {
+                    "log": losses,
+                    "loss": rate_distortion_losses.rate_distortion,
+                    "progress_bar": losses,
+                }
+            )
 
-        self.log_dict(
-            {
-                "training_bottleneck": bottleneck_losses,
-                "training_bpp": rate_distortion_losses.bpp,
-                "training_mse": rate_distortion_losses.mse,
-                "training_rate_distortion": rate_distortion_losses.rate_distortion,
-            },
-            prog_bar=True,
-        )
+        if optimizer_idx == 1:
+            bottleneck_loss = self._autoencoder._bottleneck_loss
+
+            losses = {
+                "bottleneck_loss": bottleneck_loss,
+            }
+
+            step_output = OrderedDict(
+                {
+                    "log": losses,
+                    "loss": bottleneck_loss,
+                    "progress_bar": losses,
+                }
+            )
+
+        return step_output
