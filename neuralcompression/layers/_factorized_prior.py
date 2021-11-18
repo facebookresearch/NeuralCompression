@@ -13,35 +13,21 @@ from ._prior import Prior
 from ._synthesis_transformation_2d import SynthesisTransformation2D
 
 
-class _ForwardOutputScores(NamedTuple):
-    y: Tensor
-
-
-class _ForwardOutput(NamedTuple):
-    scores: _ForwardOutputScores
-    x_hat: Tensor
-
-
 class FactorizedPrior(Prior):
     def __init__(self, n: int = 128, m: int = 192):
         super(FactorizedPrior, self).__init__(n, m)
 
-        self.encode = AnalysisTransformation2D(n, m)
-        self.decode = SynthesisTransformation2D(n, m)
+        self.encode = AnalysisTransformation2D(self._n, self._m)
+        self.decode = SynthesisTransformation2D(self._n, self._m)
 
-        self.n = n
-        self.m = m
-
-    def forward(self, x: Tensor) -> _ForwardOutput:
+    def forward(self, x: Tensor):
         y = self.encode(x)
 
         y_hat, y_probabilities = self.bottleneck(y)
 
-        probabilities = _ForwardOutputScores(y_probabilities)
-
         x_hat = self.decode(y_hat)
 
-        return _ForwardOutput(probabilities, x_hat)
+        return x_hat, [y_probabilities]
 
     @classmethod
     def from_state_dict(cls, state_dict: OrderedDict[str, Tensor]):
