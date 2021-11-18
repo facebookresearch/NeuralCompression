@@ -34,36 +34,36 @@ class Prior(Module):
     (``HyperSynthesisTransformation2D``).
 
     Args:
-        encoder_module:
-        decoder_module:
-        bottleneck_module:
+        encoder:
+        decoder:
+        bottleneck:
         bottleneck_module_name:
         bottleneck_buffer_names:
-        hyper_encoder_module:
-        hyper_decoder_module:
+        hyper_encoder:
+        hyper_decoder:
     """
 
     def __init__(
         self,
-        encoder_module: Module,
-        decoder_module: Module,
-        bottleneck_module: Module,
+        encoder: Module,
+        decoder: Module,
+        bottleneck: Module,
         bottleneck_module_name: str,
         bottleneck_buffer_names: List[str],
-        hyper_encoder_module: Optional[Module] = None,
-        hyper_decoder_module: Optional[Module] = None,
+        hyper_encoder: Optional[Module] = None,
+        hyper_decoder: Optional[Module] = None,
     ):
         super(Prior, self).__init__()
 
-        self._encoder_module = encoder_module
-        self._decoder_module = decoder_module
+        self.encoder = encoder
+        self.decoder = decoder
 
-        self._bottleneck_module = bottleneck_module
-        self._bottleneck_module_name = bottleneck_module_name
-        self._bottleneck_buffer_names = bottleneck_buffer_names
+        self.bottleneck = bottleneck
+        self.bottleneck_module_name = bottleneck_module_name
+        self.bottleneck_buffer_names = bottleneck_buffer_names
 
-        self._hyper_encoder_module = hyper_encoder_module
-        self._hyper_decoder_module = hyper_decoder_module
+        self.hyper_encoder = hyper_encoder
+        self.hyper_decoder = hyper_decoder
 
         for module in self.modules():
             if isinstance(module, (Conv2d, ConvTranspose2d)):
@@ -73,7 +73,7 @@ class Prior(Module):
                     torch.nn.init.zeros_(module.bias)
 
     @property
-    def _bottleneck_loss(self) -> float:
+    def bottleneck_loss(self) -> float:
         losses = []
 
         for module in self.modules():
@@ -109,14 +109,14 @@ class Prior(Module):
                 match the keys returned by this module’s
                 ``torch.nn.Module.state_dict`` method, defaults to ``True``.
         """
-        for bottleneck_buffer_name in self._bottleneck_buffer_names:
-            name = f"{self._bottleneck_module_name}.{bottleneck_buffer_name}"
+        for bottleneck_buffer_name in self.bottleneck_buffer_names:
+            name = f"{self.bottleneck_module_name}.{bottleneck_buffer_name}"
 
             size = state_dict[name].size()
 
             registered_buffers = []
 
-            for name, buffer in self._bottleneck_module.named_buffers():
+            for name, buffer in self.bottleneck.named_buffers():
                 if name == bottleneck_buffer_name:
                     registered_buffers += [buffer]
 

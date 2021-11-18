@@ -32,7 +32,7 @@ class Prior(LightningModule):
     (``HyperSynthesisTransformation2D``).
 
     Args:
-        autoencoder: an autoencoder with an encoder and decoder modules (e.g.
+        architecture: an autoencoder with an encoder and decoder modules (e.g.
             the ``FactorizedPrior``, ``ScaleHyperprior``, or
             ``MeanScaleHyperprior`` modules from ``neuralcompression.models``).
         bottleneck_optimizer_lr: the learning rate for the bottleneck module.
@@ -41,13 +41,13 @@ class Prior(LightningModule):
 
     def __init__(
         self,
-        autoencoder: neuralcompression.layers.Prior,
+        architecture: neuralcompression.layers.Prior,
         bottleneck_optimizer_lr: float = 1e-4,
         optimizer_lr: float = 1e-3,
     ):
         super(Prior, self).__init__()
 
-        self.autoencoder = autoencoder
+        self.autoencoder = architecture
 
         self.bottleneck_optimizer_lr = bottleneck_optimizer_lr
 

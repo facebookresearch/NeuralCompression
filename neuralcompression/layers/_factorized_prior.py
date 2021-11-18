@@ -23,23 +23,23 @@ class FactorizedPrior(Prior):
             AnalysisTransformation2D(self._n, self._m),
             SynthesisTransformation2D(self._n, self._m),
             EntropyBottleneck(m),
-            "_bottleneck_module",
+            "bottleneck",
             ["_cdf_length", "_offset", "_quantized_cdf"],
         )
 
     def forward(self, x: Tensor):
-        y = self._encoder_module(x)
+        y = self.encoder.forward(x)
 
-        y_hat, y_probabilities = self._bottleneck_module(y)
+        y_hat, y_probabilities = self.bottleneck.forward(y)
 
-        x_hat = self._decoder_module(y_hat)
+        x_hat = self.decoder.forward(y_hat)
 
         return x_hat, [y_probabilities]
 
     @classmethod
     def from_state_dict(cls, state_dict: OrderedDict[str, Tensor]):
-        n = state_dict["_encoder_module.sequence.0.weight"].size()[0]
-        m = state_dict["_encoder_module.sequence.6.weight"].size()[0]
+        n = state_dict["encoder.sequence.0.weight"].size()[0]
+        m = state_dict["encoder.sequence.6.weight"].size()[0]
 
         prior = cls(n, m)
 
@@ -48,11 +48,11 @@ class FactorizedPrior(Prior):
         return prior
 
     def compress(self, x: Tensor) -> Tuple[List[List[str]], Size]:
-        y = self._encoder_module.forward(x)
+        y = self.encoder.forward(x)
 
-        return [self._bottleneck_module.compress(y)], Size(y.size()[-2:])
+        return [self.bottleneck.compress(y)], Size(y.size()[-2:])
 
     def decompress(self, strings: List[List[str]], size: Size) -> Tensor:
-        y_hat = self._bottleneck_module.decompress(strings[0], size)
+        y_hat = self.bottleneck.decompress(strings[0], size)
 
-        return torch.clamp(self._decoder_module(y_hat), 0, 1)
+        return torch.clamp(self.decoder(y_hat), 0, 1)
