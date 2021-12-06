@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -6,6 +6,7 @@
 import PIL
 import numpy
 import numpy as np
+import tensorflow as tf
 import torch
 
 
@@ -23,3 +24,16 @@ def create_random_image(file_path, shape):
     img = PIL.Image.fromarray(img)
     img.save(file_path)
     return res
+
+
+def tf_ms_ssim(x, y):
+    # Converting NCHW image format to NHWC
+    x = tf.convert_to_tensor(x.permute(0, 2, 3, 1))
+    y = tf.convert_to_tensor(y.permute(0, 2, 3, 1))
+    return torch.tensor(tf.image.ssim_multiscale(x, y, max_val=1).numpy())
+
+
+def rand_im(shape, rng=None):
+    if rng is None:
+        rng = np.random.default_rng()
+    return torch.tensor(rng.uniform(size=shape), dtype=torch.get_default_dtype())

@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -8,11 +8,9 @@ from typing import Any, Callable, Optional, Sequence
 import torch
 from torchmetrics import Metric
 
-from neuralcompression.functional.distortion import (
-    MS_SSIM_FACTORS,
-    multiscale_structural_similarity,
-    _load_lpips_model,
-)
+import neuralcompression.functional as ncF
+from neuralcompression.functional._ms_ssim import MS_SSIM_FACTORS
+from neuralcompression.functional._lpips import _load_lpips_model
 
 
 class MultiscaleStructuralSimilarity(Metric):
@@ -72,7 +70,7 @@ class MultiscaleStructuralSimilarity(Metric):
 
     def update(self, preds, target):
 
-        self.score_sum += multiscale_structural_similarity(
+        self.score_sum += ncF.ms_ssim(
             preds,
             target,
             data_range=self.data_range,

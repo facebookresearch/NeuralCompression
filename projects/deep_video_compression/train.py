@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -10,14 +10,15 @@ import numpy as np
 import pytorch_lightning as pl
 import torch
 import wandb
+
+import _optical_flow_to_color
 from data_module import Vimeo90kSeptupletLightning
 from dvc_module import DvcModule
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
 
-import neuralcompression.functional as ncF
-from neuralcompression.models import DVC
+from neuralcompression.models import DeepVideoCompression
 
 
 class WandbImageCallback(pl.Callback):
@@ -53,7 +54,9 @@ class WandbImageCallback(pl.Callback):
                 mosaic = torch.cat(image_dict[key], dim=-1)
                 mosaic = torch.cat(list(mosaic), dim=-2)
                 if key == "flow":
-                    mosaic = ncF.optical_flow_to_color(mosaic.unsqueeze(0))[0]
+                    mosaic = _optical_flow_to_color.optical_flow_to_color(
+                        mosaic.unsqueeze(0)
+                    )[0]
                 mosaic = torch.clip(mosaic, min=0, max=1.0)
                 trainer.logger.experiment.log(
                     {
@@ -137,7 +140,7 @@ def run_training_stage(stage, root, model, data, logger, image_logger, cfg):
 @hydra.main(config_path="config", config_name="base")
 def main(cfg: DictConfig):
     root = Path(cfg.logging.save_root)  # if relative, uses Hydra outputs dir
-    model = DVC(**cfg.model)
+    model = DeepVideoCompression(**cfg.model)
     logger = WandbLogger(
         save_dir=str(root.absolute()),
         project="DVC",

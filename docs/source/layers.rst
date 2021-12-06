@@ -3,72 +3,56 @@ neuralcompression.layers
 
 .. currentmodule:: neuralcompression.layers
 
+AbsoluteValue
+~~~~~~~~~~~~~
+
+.. autoclass:: AbsoluteValue
+   :members:
+
 AnalysisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: AnalysisTransformation
-  :members: __getitem__
-  :special-members:
+.. autoclass:: AnalysisTransformation2D
+   :members:
+
+ContinuousEntropy
+~~~~~~~~~~~~~~~~~
+
+.. autoclass:: ContinuousEntropy
+   :members:
 
 GeneralizedDivisiveNormalization
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: GeneralizedDivisiveNormalization
-  :members: __getitem__
-  :special-members:
-
-NonNegativeParameterization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autoclass:: NonNegativeParameterization
-  :members: __getitem__
-  :special-members:
+   :members:
 
 HyperAnalysisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: HyperAnalysisTransformation2D
-  :members: __getitem__
-  :special-members:
+   :members:
 
 HyperSynthesisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: HyperSynthesisTransformation2D
-  :members: __getitem__
-  :special-members:
+   :members:
 
 NonNegativeParameterization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: NonNegativeParameterization
-  :members: __getitem__
-  :special-members:
+   :members:
 
 RateMSEDistortionLoss
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: RateMSEDistortionLoss
-  :members: __getitem__
-  :special-members:
-
-SimplifiedGDN
-~~~~~~~~~~~~~
-
-.. autoclass:: SimplifiedGDN
-  :members: __getitem__
-  :special-members:
-
-SimplifiedInverseGDN
-~~~~~~~~~~~~~~~~~~~~
-
-.. autoclass:: SimplifiedInverseGDN
-  :members: __getitem__
-  :special-members:
+   :members:
 
 SynthesisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: SynthesisTransformation2D
-  :members: __getitem__
-  :special-members:
+   :members:

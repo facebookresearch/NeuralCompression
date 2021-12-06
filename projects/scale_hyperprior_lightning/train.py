@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@ import hydra
 from omegaconf import DictConfig
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
-from scale_hyperprior import ScaleHyperpriorLightning
+from scale_hyperprior_lightning import ScaleHyperpriorLightning
 from vimeo import Vimeo90kSeptupletLightning
 
 from neuralcompression.models import ScaleHyperprior

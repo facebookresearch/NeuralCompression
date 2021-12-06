@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@ from pytorch_lightning import Trainer
 from torch.utils.data import DataLoader
 
 from neuralcompression.models import ScaleHyperprior
-from projects.scale_hyperprior_lightning.scale_hyperprior import (
+from projects.scale_hyperprior_lightning.scale_hyperprior_lightning import (
     ScaleHyperpriorLightning,
 )
 

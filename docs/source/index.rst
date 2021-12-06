@@ -1,9 +1,5 @@
-NeuralCompression
-=================
-
-The :mod:`neuralcompression` package consists of datasets, metrics, and models
-for data compression.
-
+.. include:: ../../README.md
+   :parser: myst_parser.sphinx_
 
 .. toctree::
 

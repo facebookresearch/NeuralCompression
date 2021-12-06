@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -20,9 +20,9 @@ def upper_tail(distribution: Distribution, tail_mass: float) -> Tensor:
     handling, because range coding can only handle alphabets with a finite
     number of symbols. This method returns a cut-off location for the upper
     tail, such that approximately ``tail_mass`` probability mass is contained
-    in the tails (together). The tails are then handled by using the
-    ``overflow`` functionality of the range coder implementation (using a
-    Golomb-like universal code).
+    in the tails (together). The tails are then handled by using the overflow
+    functionality of the range coder implementation (using a Golomb-like
+    universal code).
 
     Args:
         distribution: an object representing a continuous-valued random

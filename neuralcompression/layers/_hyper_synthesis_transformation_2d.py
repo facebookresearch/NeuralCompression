@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -21,21 +21,53 @@ class HyperSynthesisTransformation2D(Module):
         | https://arxiv.org/abs/1802.01436
 
     Args:
-        in_channels: number of channels in the input signal.
-        features: number of inferred latent features.
+        network_channels: number of channels in the input signal.
+        compression_channels: number of inferred latent features.
     """
 
-    def __init__(self, in_channels: int, features: int):
+    def __init__(
+        self,
+        network_channels: int,
+        compression_channels: int,
+        in_channels: int = 3,
+        activation: Module = ReLU(inplace=True),
+    ):
         super(HyperSynthesisTransformation2D, self).__init__()
 
-        self.model = Sequential(
-            ConvTranspose2d(features, features, (5, 5), (2, 2), (2, 2), (1, 1)),
-            ReLU(inplace=True),
-            ConvTranspose2d(features, features, (5, 5), (2, 2), (2, 2), (1, 1)),
-            ReLU(inplace=True),
-            Conv2d(features, in_channels, (3, 3), (1, 1), 1),
-            ReLU(inplace=True),
+        self.decode = Sequential(
+            ConvTranspose2d(
+                network_channels,
+                network_channels,
+                (5, 5),
+                (2, 2),
+                (5 // 2, 5 // 2),
+                (1, 1),
+            ),
+            activation,
+            ConvTranspose2d(
+                network_channels,
+                network_channels,
+                (5, 5),
+                (2, 2),
+                (5 // 2, 5 // 2),
+                (1, 1),
+            ),
+            activation,
+            Conv2d(
+                network_channels,
+                compression_channels,
+                (in_channels, in_channels),
+                (1, 1),
+                (in_channels // 2, in_channels // 2),
+            ),
+            activation,
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        return self.model(x)
+        """
+        Args:
+            x:
+
+        Returns:
+        """
+        return self.decode(x)

@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -35,7 +35,7 @@ def log_ndtr(x: Tensor) -> Tensor:
 
     Returns:
         the log of the area under the standard Normal probability density
-            function (PDF), integrated from minus infinity to ``x``.
+        function (PDF), integrated from minus infinity to :math:`x`.
     """
     if x.dtype == torch.float32:
         m, n = -10.0, 5.0

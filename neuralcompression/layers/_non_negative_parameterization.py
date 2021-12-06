@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -7,7 +7,6 @@ from typing import Optional, Tuple
 
 import torch
 import torch.nn
-
 from torch import Tensor
 
 import neuralcompression.functional as ncF
@@ -88,6 +87,12 @@ class NonNegativeParameterization(torch.nn.Module):
             )
 
     def forward(self, x: Tensor) -> Tensor:
+        """
+        Args:
+            x:
+
+        Returns:
+        """
         lower_bound = ncF.lower_bound(
             x,
             self._bound,
