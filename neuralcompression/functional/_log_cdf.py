@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -19,11 +19,11 @@ def log_cdf(
     Args:
         x: the input tensor.
         distribution: an object representing a continuous-valued random
-        variable.
+            variable.
 
     Returns:
         the log of the area under the distribution’s probability density
-        function (PDF), integrated from minus infinity to ``x``.
+        function (PDF), integrated from minus infinity to :math:`x`.
     """
     if isinstance(distribution, Normal):
         standardized = (x - distribution.loc) / distribution.scale

@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -14,15 +14,15 @@ def log_survival_function(
     x: Tensor,
     distribution: Distribution,
 ) -> Tensor:
-    """Logarithm of ``x`` for a distribution’s survival function.
+    """Logarithm of :math:`x` for a distribution’s survival function.
 
     Args:
         x: the input tensor.
         distribution: an object representing a continuous-valued random
-        variable.
+            variable.
 
     Returns:
-        the logarithm of ``x`` for a distribution’s survival function.
+        the logarithm of :math:`x` for a distribution’s survival function.
     """
 
     if isinstance(distribution, Normal):
