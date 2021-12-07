@@ -55,35 +55,36 @@ def lower_bound(
     bound: Union[float, Tensor],
     gradient: str = "identity_if_towards",
 ) -> Tensor:
-    """``torch.maximum`` with a gradient for ``x`` < ``bound``.
+    """``torch.maximum`` with a gradient for :math:`x < bound`.
 
     This function is semantically equivalent to ``torch.maximum`` except the
-    behavior of the gradient with respect to ``x`` for input values that reach
-    the ``bound`` depends on the ``gradient`` option:
+    behavior of the gradient with respect to :math:`x` for input values that
+    reach the :math:`bound` depends on the ``gradient`` option:
 
-        * ``disconnected``, the returned gradient is zero for values that reach
-            the bound. This behavior is identical to the behavior of
-            ``torch.maximum``.
+        * ``"disconnected"``, the returned gradient is zero for values that
+          reach the :math:`bound`. This behavior is identical to the behavior
+          of ``torch.maximum``.
 
-        * ``identity``, the gradient is unconditionally replaced with the
-            identity function.
+        * ``"identity"``, the gradient is unconditionally replaced with the
+          identity function.
 
-        * ``identity_if_towards``, the gradient is replaced with the identity
-            function, but only if applying gradient descent would push the
-            values of inputs towards the bound. For gradient values that push
-            away from the bound, the returned gradient is still zero.
+        * ``"identity_if_towards"``, the gradient is replaced with the identity
+          function, but only if applying gradient descent would push the values
+          of inputs towards the :math:`bound`. For gradient values that push
+          away from the :math:`bound`, the returned gradient is still zero.
 
-    In the latter two cases, ``identity`` and ``identity_if_towards``, no
-    gradient is returned for ``bound``. Also, the implementation of
-    ``identity_if_towards`` assumes the shape of ``x`` is the same as the shape
-    of the output (i.e. it won’t work reliably for all possible broadcasting
-    scenarios).
+    In the latter two cases, ``"identity"`` and ``"identity_if_towards"``, no
+    gradient is returned for :math:`bound`. Also, the implementation of
+    ``"identity_if_towards"`` assumes the shape of :math:`x` is the same as the
+    shape of the output (i.e. it won’t work reliably for all possible
+    broadcasting scenarios).
 
     Args:
         x: the input tensor.
-        bound: upper bound for ``x``.
-        gradient: The gradient to use. One of {``disconnected``, ``identity``,
-            ``identity_if_towards``}. Defaults to ``identity_if_towards``.
+        bound: upper bound for :math:`x`.
+        gradient: The gradient to use. One of {``"disconnected"``,
+            ``"identity"``, ``"identity_if_towards"``}. Defaults to
+            ``"identity_if_towards"``.
 
     Returns:
         the output tensor.

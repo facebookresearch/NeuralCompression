@@ -12,13 +12,13 @@ def log_expm1(
 ) -> Tensor:
     r"""Logarithm of :math:`e^{x} - 1`.
 
-    If ``x`` is large, ``torch.exp(x)`` returns ``float("inf")`` whereas:
+    If :math:`x` is large, ``torch.exp(x)`` returns ``float("inf")`` whereas:
 
     .. math::
-        \log e^{x} - 1 \approx x
+        \log e^{x} - 1 \approx x.
 
     Therefore, an approximation for :math:`x > 15` is used, such that the
-    output is not infinity for all positive values of ``x``.
+    output is not infinity for all positive values of :math:`x`.
 
     Args:
         x: the input tensor.

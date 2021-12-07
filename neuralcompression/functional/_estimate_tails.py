@@ -17,31 +17,28 @@ def estimate_tails(
 ) -> torch.Tensor:
     """Estimates approximate tail quantiles.
 
-    This runs a simple Adam iteration to determine tail quantiles. The
-        objective is to find an ``x`` such that:
+    A simple Adam iteration is ran to determine tail quantiles. The objective
+    is to find an :math:`x` such that :math:`func(x) = target`. For instance,
+    if :math:`func` is a CDF and :math:`target` is a quantile value, this would
+    find the approximate location of that quantile. Note that :math:`func` is
+    assumed to be monotonic.
 
-    ```
-    func(x) == target
-    ```
-
-    For instance, if ``func`` is a CDF and the target is a quantile value, this
-        would find the approximate location of that quantile. Note that
-        ``func`` is assumed to be monotonic. When each tail estimate has passed
-        the optimal value of ``x``, the algorithm does 100 additional
-        iterations and then stops. This operation is vectorized. The tensor
-        shape of ``x`` is given by `shape`, and `target` must have a shape that
-        is broadcastable to the output of ``func(x)``.
+    When each tail estimate has passed the optimal value of :math:`x`, the
+    algorithm does 100 additional iterations and then stops. This operation is
+    vectorized. The tensor shape of :math:`x` is given by :math:`shape`, and
+    :math:`target` must have a shape that is broadcastable to the output of
+    :math:`func(x)`.
 
     Args:
-        func: a function that computes cumulative distribution function,
-            survival function, or similar
-        target: desired target value
-        shape: shape representing ``x``
-        device: PyTorch device
-        dtype: PyTorch ``dtype`` of the computation and the return value
+        func: a function that computes the cumulative distribution function,
+            survival function, or similar.
+        target: desired target value.
+        shape: shape representing :math:`x`.
+        device: PyTorch device.
+        dtype: PyTorch dtype of the computation and the return value.
 
     Returns:
-        the solution, ``x``
+        the solution, :math:`x`.
     """
     if not device:
         if torch.cuda.is_available():

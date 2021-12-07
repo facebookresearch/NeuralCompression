@@ -14,17 +14,17 @@ def survival_function(
     x: Tensor,
     distribution: Distribution,
 ) -> Tensor:
-    """Survival function of ``x``. Generally defined as
+    """Survival function of :math:`x`. Generally defined as
     ``1 - distribution.cdf(x)``.
 
     Args:
         x: the input tensor.
         distribution: an object representing a continuous-valued random
-        variable.
+            variable.
 
     Returns:
-        the survival function of ``x`` for the continuous-valued random
-        variable ``distribution``.
+        the survival function of :math:`x` for the continuous-valued random
+        variable distribution.
     """
     if isinstance(distribution, Normal):
         standardized = torch.div((x - distribution.loc), distribution.scale)

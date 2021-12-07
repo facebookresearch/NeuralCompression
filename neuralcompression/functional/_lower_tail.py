@@ -19,7 +19,7 @@ def lower_tail(distribution: Distribution, tail_mass: float) -> Tensor:
     For range coding of random variables, the distribution tails need special
     handling, because range coding can only handle alphabets with a finite
     number of symbols. This method returns a cut-off location for the lower
-    tail, such that approximately `tail_mass` probability mass is contained in
+    tail, such that approximately ``tail_mass`` probability mass is contained in
     the tails (together). The tails are then handled by using the `overflow`
     functionality of the range coder implementation (using a Golomb-like
     universal code).

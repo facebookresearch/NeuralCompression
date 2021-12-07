@@ -19,11 +19,11 @@ def log_cdf(
     Args:
         x: the input tensor.
         distribution: an object representing a continuous-valued random
-        variable.
+            variable.
 
     Returns:
         the log of the area under the distribution’s probability density
-        function (PDF), integrated from minus infinity to ``x``.
+        function (PDF), integrated from minus infinity to :math:`x`.
     """
     if isinstance(distribution, Normal):
         standardized = (x - distribution.loc) / distribution.scale

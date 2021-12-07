@@ -17,7 +17,7 @@ def ndtr(x: Tensor) -> Tensor:
 
     Returns:
         the area under the standard Normal probability density function (PDF),
-            integrated from negative infinity to ``x``.
+        integrated from negative infinity to :math:`x`.
     """
     x = x.to(torch.float) * math.sqrt(0.5)
 
