@@ -25,7 +25,7 @@ import torch.nn.functional as F
 import torchvision.transforms.functional as tvtF
 from compressai.entropy_models import EntropyBottleneck, GaussianConditional
 from compressai.layers import GDN as GeneralizedDivisiveNormalization
-from compressai.models.priors import get_scale_table
+from compressai.models.google import get_scale_table
 from compressai.models.utils import update_registered_buffers
 from torch import Tensor
 from torch.nn.parameter import Parameter
