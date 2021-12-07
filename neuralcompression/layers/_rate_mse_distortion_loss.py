@@ -65,7 +65,7 @@ class RateMSEDistortionLoss(Module):
 
             bpps += [float(torch.log(probability).sum() / pixels)]
 
-        rate = torch.tensor(sum(bpps), device=x.device)
+        rate = torch.tensor(torch.sum(torch.tensor(bpps)), device=x.device)
 
         distortion = self.mse.forward(x_hat, x)
 
