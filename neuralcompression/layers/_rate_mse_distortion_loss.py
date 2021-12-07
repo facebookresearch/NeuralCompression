@@ -4,7 +4,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import math
-from typing import List, NamedTuple
+from typing import NamedTuple, Tuple
 
 import torch
 from torch import Tensor
@@ -12,9 +12,9 @@ from torch.nn import Module, MSELoss
 
 
 class RateDistortionLoss(NamedTuple):
-    distortion: float
-    rate: float
-    rate_distortion: float
+    distortion: Tensor
+    rate: Tensor
+    rate_distortion: Tensor
 
 
 class RateMSEDistortionLoss(Module):
@@ -23,14 +23,14 @@ class RateMSEDistortionLoss(Module):
     The rate-distortion loss is the minimum transmission bit-rate for a
     required quality. It can be obtained without consideration of a specific
     coding method. Rate is expressed in bits per pixel (BPP) of the original,
-    ``x``, distortion is expressed as the mean squared error (MSE) between the
-    original, ``x``, and the target, ``x_hat``.
+    :math:`x`, distortion is expressed as the mean squared error (MSE) between
+    the original, :math:`x`, and the target, :math:`\\hat{x}`.
 
     Args:
-        trade_off: rate-distortion trade-off. `trade_off = 1` is the solution
-            where the `(rate, distortion)` pair minimizes `rate + distortion`.
-            Increasing `trade_off` will penalize the distortion term so more
-            bits are spent.
+        trade_off: rate-distortion trade-off. :math:`trade = 1` is the solution
+            where :math:`(rate, distortion)` minimizes
+            :math:`rate + distortion`. Increasing `trade_off` will penalize the
+            distortion term so more bits are spent.
         maximum: dynamic range of the input (i.e. the difference between the
             maximum the and minimum permitted values).
     """
@@ -38,16 +38,16 @@ class RateMSEDistortionLoss(Module):
     def __init__(self, trade_off: float = 1e-2, maximum: int = 255):
         super(RateMSEDistortionLoss, self).__init__()
 
-        self._maximum = maximum
+        self.maximum = maximum
 
-        self._trade_off = trade_off
+        self.trade_off = trade_off
 
-        self._mse = MSELoss()
+        self.mse = MSELoss()
 
     def forward(
         self,
         x_hat: Tensor,
-        probabilities: List[Tensor],
+        probabilities: Tuple[Tensor, ...],
         x: Tensor,
     ) -> RateDistortionLoss:
         """
@@ -65,14 +65,14 @@ class RateMSEDistortionLoss(Module):
 
             bpps += [float(torch.log(probability).sum() / pixels)]
 
-        rate = sum(bpps)
+        rate = torch.tensor(torch.sum(torch.tensor(bpps)), device=x.device)
 
-        distortion = self._mse(x_hat, x)
+        distortion = self.mse.forward(x_hat, x)
 
         rate_distortion = rate + distortion
 
         return RateDistortionLoss(
             rate,
             distortion,
-            self._trade_off * self._maximum ** 2 * rate_distortion,
+            Tensor([self.trade_off * self.maximum ** 2 * rate_distortion]),
         )

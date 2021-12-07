@@ -15,12 +15,12 @@ import neuralcompression.functional as ncF
 
 class UniformNoise(Distribution):
     r"""Adapts a continuous distribution via additive identically distributed
-        (i.i.d.) uniform noise.
+    (i.i.d.) uniform noise.
 
-    For a ``distribution``, ``UniformNoise`` models ``distribution`` after the
-    addition of independent uniform noise. Effectively, the base density
-    function is convolved with a box kernel of width one. The resulting density
-    can be efficiently evaluated via the relation:
+    The provided distribution is modeled after the addition of independent
+    uniform noise. Effectively, the base density function is convolved with a
+    box kernel of width one. The resulting density can be efficiently evaluated
+    via the relation:
 
     .. math::
         p_{\widetilde{y}}(\widetilde{y}) =

@@ -7,7 +7,6 @@ from typing import Optional, Tuple
 
 import torch
 import torch.nn
-
 from torch import Tensor
 
 import neuralcompression.functional as ncF

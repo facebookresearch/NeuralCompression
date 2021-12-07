@@ -10,18 +10,68 @@ from ._generalized_divisive_normalization import GeneralizedDivisiveNormalizatio
 
 
 class SynthesisTransformation2D(Module):
-    def __init__(self, m: int, n: int):
+    """Applies the 2D synthesis transformation over an input signal.
+
+    The synthesis transformation is used to infer the latent representation of
+    an input signal.
+
+    The method is described in:
+
+        | End-to-end Optimized Image Compression
+        | Johannes Ballé, Valero Laparra, Eero P. Simoncelli
+        | https://arxiv.org/abs/1611.01704
+
+    Args:
+        network_channels: number of channels in the input signal.
+        compression_channels: number of inferred latent features.
+        in_channels: number of channels in the input image.
+    """
+
+    def __init__(
+        self,
+        network_channels: int,
+        compression_channels: int,
+        in_channels: int = 3,
+    ):
         super(SynthesisTransformation2D, self).__init__()
 
-        self.model = Sequential(
-            ConvTranspose2d(m, n, (5, 5), (2, 2), (2, 2), (1, 1)),
-            GeneralizedDivisiveNormalization(n, inverse=True),
-            ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
-            GeneralizedDivisiveNormalization(n, inverse=True),
-            ConvTranspose2d(n, n, (5, 5), (2, 2), (2, 2), (1, 1)),
-            GeneralizedDivisiveNormalization(n, inverse=True),
-            ConvTranspose2d(n, 3, (5, 5), (2, 2), (2, 2), (1, 1)),
+        self.decode = Sequential(
+            ConvTranspose2d(
+                compression_channels,
+                network_channels,
+                (5, 5),
+                (2, 2),
+                (2, 2),
+                (1, 1),
+            ),
+            GeneralizedDivisiveNormalization(network_channels, inverse=True),
+            ConvTranspose2d(
+                network_channels,
+                network_channels,
+                (5, 5),
+                (2, 2),
+                (2, 2),
+                (1, 1),
+            ),
+            GeneralizedDivisiveNormalization(network_channels, inverse=True),
+            ConvTranspose2d(
+                network_channels,
+                network_channels,
+                (5, 5),
+                (2, 2),
+                (2, 2),
+                (1, 1),
+            ),
+            GeneralizedDivisiveNormalization(network_channels, inverse=True),
+            ConvTranspose2d(
+                network_channels,
+                in_channels,
+                (5, 5),
+                (2, 2),
+                (2, 2),
+                (1, 1),
+            ),
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        return self.model(x)
+        return self.decode(x)

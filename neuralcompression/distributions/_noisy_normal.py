@@ -13,7 +13,7 @@ from ._uniform_noise import UniformNoise
 
 class NoisyNormal(UniformNoise):
     r"""Normal distribution with additive identically distributed (i.i.d.)
-        uniform noise.
+    uniform noise.
 
     The method is described in Appendix 6.2. of:
 
