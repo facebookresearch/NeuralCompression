@@ -3,16 +3,38 @@ neuralcompression.models
 
 .. currentmodule:: neuralcompression.models
 
-DVC
-~~~
+DeepVideoCompression
+~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: DVC
-  :members: __getitem__
-  :special-members:
+.. autoclass:: DeepVideoCompression
+   :members:
 
-ScaleHyperprior
-~~~~~~~~~~~~~~~
+FactorizedPriorAutoencoder
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: ScaleHyperprior
-  :members: __getitem__
-  :special-members:
+.. autoclass:: FactorizedPriorAutoencoder
+   :members:
+
+HyperpriorAutoencoder
+~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: HyperpriorAutoencoder
+   :members:
+
+MeanScaleHyperpriorAutoencoder
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: MeanScaleHyperpriorAutoencoder
+   :members:
+
+PriorAutoencoder
+~~~~~~~~~~~~~~~~
+
+.. autoclass:: PriorAutoencoder
+   :members:
+
+ScaleHyperpriorAutoencoder
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: ScaleHyperpriorAutoencoder
+   :members:
