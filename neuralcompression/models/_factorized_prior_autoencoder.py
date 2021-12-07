@@ -12,6 +12,18 @@ from ._prior_autoencoder import PriorAutoencoder
 
 
 class FactorizedPriorAutoencoder(PriorAutoencoder):
+    """Factorized prior autoencoder described in:
+
+        | End-to-end Optimized Image Compression
+        | Johannes Ballé, Valero Laparra, Eero P. Simoncelli
+        | https://arxiv.org/abs/1611.01704
+
+    Args:
+        network_channels: number of channels in the network.
+        compression_channels: number of inferred latent compression features.
+        in_channels: number of channels in the input image.
+    """
+
     def __init__(
         self,
         network_channels: int = 128,
@@ -46,11 +58,50 @@ class FactorizedPriorAutoencoder(PriorAutoencoder):
         return prior
 
     def compress(self, bottleneck: Tensor) -> Tuple[List[List[str]], Size]:
+        """Compresses a floating-point tensor.
+
+        Compresses the tensor to bit strings. ``bottleneck`` is first quantized
+        and then compressed using the probability tables in
+        ``self.bottleneck._quantized_cdf`` derived from ``self.bottleneck``.
+        The quantized tensor can later be recovered by calling
+        ``decompress()``.
+
+        Note:
+            The innermost coding rank dimensions are treated as one coding unit
+            (i.e. compressed into one string each). Any additional dimensions
+            to the left are treated as batch dimensions.
+
+        Args:
+            bottleneck: the data to be compressed.
+
+        Returns:
+            the compressed data.
+        """
         y = self.encoder(bottleneck)
 
         return [self.bottleneck.compress(y)], Size(y.size()[-2:])
 
-    def decompress(self, strings: List[List[str]], broadcast_size: Size) -> Tensor:
+    def decompress(
+        self,
+        strings: List[List[str]],
+        broadcast_size: Size,
+    ) -> Tensor:
+        """Decompresses a tensor.
+
+        Reconstructs the quantized tensor from bit strings produced by
+        ``compress()``. It is necessary to provide a part of the output shape
+        in ``broadcast_size``.
+
+        Args:
+            strings: the compressed bit strings.
+            broadcast_size: the part of the output tensor shape between the
+                shape of ``strings`` on the left and the prior shape on the
+                right. This must match the shape of the input to
+                ``compress()``.
+
+        Returns:
+            the decompressed data.
+        """
         return torch.clamp(
             self.decoder(
                 self.bottleneck.decompress(
