@@ -23,14 +23,14 @@ class RateMSEDistortionLoss(Module):
     The rate-distortion loss is the minimum transmission bit-rate for a
     required quality. It can be obtained without consideration of a specific
     coding method. Rate is expressed in bits per pixel (BPP) of the original,
-    ``x``, distortion is expressed as the mean squared error (MSE) between the
-    original, ``x``, and the target, ``x_hat``.
+    :math:`x`, distortion is expressed as the mean squared error (MSE) between
+    the original, :math:`x`, and the target, :math:`\\hat{x}`.
 
     Args:
-        trade_off: rate-distortion trade-off. `trade_off = 1` is the solution
-            where the `(rate, distortion)` pair minimizes `rate + distortion`.
-            Increasing `trade_off` will penalize the distortion term so more
-            bits are spent.
+        trade_off: rate-distortion trade-off. :math:`trade = 1` is the solution
+            where :math:`(rate, distortion)` minimizes
+            :math:`rate + distortion`. Increasing `trade_off` will penalize the
+            distortion term so more bits are spent.
         maximum: dynamic range of the input (i.e. the difference between the
             maximum the and minimum permitted values).
     """
