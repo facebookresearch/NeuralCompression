@@ -15,17 +15,21 @@ from ._non_negative_parameterization import NonNegativeParameterization
 
 
 class GeneralizedDivisiveNormalization(Module):
-    """Generalized divisive normalization
+    """Applies generalized divisive normalization for each channel across a
+    batch of data.
 
     Implements an activation function that is a multivariate generalization of
     the following sigmoid-like function:
 
-        y[i] = x[i] / (beta[i] + sum_j(gamma[j, i] * |x[j]|^alpha))^epsilon
+    .. math::
+        y_{i}=\\frac{x_{i}}{(\\beta_{i}+\\sum_{j}\\gamma_{ij}|x_{j}|^{\\alpha_{ij}})^{\\epsilon_{i}}}
 
-    where ``i`` and ``j`` map over channels. This implementation never sums
-    across spatial dimensions. It is similar to local response normalization,
-    but much more flexible, as ``alpha``, ``beta``, ``gamma``, and ``epsilon``
-    are trainable parameters.
+    where :math:`i` and :math:`j` map over channels.
+
+    This implementation never sums across spatial dimensions. It is similar to
+    local response normalization, but much more flexible, as :math:`\\alpha`,
+    :math:`\\beta`, :math:`\\gamma`, and :math:`\\epsilon` are trainable
+    parameters.
 
     The method was originally described in:
 

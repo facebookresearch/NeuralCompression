@@ -10,18 +10,47 @@ from ._generalized_divisive_normalization import GeneralizedDivisiveNormalizatio
 
 
 class AnalysisTransformation2D(Module):
-    def __init__(self, m: int, n: int):
+    def __init__(
+        self,
+        network_channels: int,
+        compression_channels: int,
+        in_channels: int = 3,
+    ):
         super(AnalysisTransformation2D, self).__init__()
 
-        self.model = Sequential(
-            Conv2d(3, m, (5, 5), (2, 2), 2),
-            GeneralizedDivisiveNormalization(m),
-            Conv2d(m, m, (5, 5), (2, 2), 2),
-            GeneralizedDivisiveNormalization(m),
-            Conv2d(m, m, (5, 5), (2, 2), 2),
-            GeneralizedDivisiveNormalization(m),
-            Conv2d(m, n, (5, 5), (2, 2), 2),
+        self.encode = Sequential(
+            Conv2d(
+                in_channels,
+                network_channels,
+                (5, 5),
+                (2, 2),
+                2,
+            ),
+            GeneralizedDivisiveNormalization(network_channels),
+            Conv2d(
+                network_channels,
+                network_channels,
+                (5, 5),
+                (2, 2),
+                2,
+            ),
+            GeneralizedDivisiveNormalization(network_channels),
+            Conv2d(
+                network_channels,
+                network_channels,
+                (5, 5),
+                (2, 2),
+                2,
+            ),
+            GeneralizedDivisiveNormalization(network_channels),
+            Conv2d(
+                network_channels,
+                compression_channels,
+                (5, 5),
+                (2, 2),
+                2,
+            ),
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        return self.model(x)
+        return self.encode(x)
