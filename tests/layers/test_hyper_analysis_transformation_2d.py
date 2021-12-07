@@ -14,4 +14,4 @@ class TestHyperAnalysisTransformation:
 
     x = torch.rand((28, 28, 5, 5))
 
-    assert transformation(x).shape == Size([28, 28, 2, 1])
+    assert transformation(x).shape == Size([28, 28, 2, 2])
