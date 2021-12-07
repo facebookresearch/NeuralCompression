@@ -10,6 +10,23 @@ from ._generalized_divisive_normalization import GeneralizedDivisiveNormalizatio
 
 
 class SynthesisTransformation2D(Module):
+    """Applies the 2D synthesis transformation over an input signal.
+
+    The synthesis transformation is used to infer the latent representation of
+    an input signal.
+
+    The method is described in:
+
+        | End-to-end Optimized Image Compression
+        | Johannes Ballé, Valero Laparra, Eero P. Simoncelli
+        | https://arxiv.org/abs/1611.01704
+
+    Args:
+        network_channels: number of channels in the input signal.
+        compression_channels: number of inferred latent features.
+        in_channels: number of channels in the input image.
+    """
+
     def __init__(
         self,
         network_channels: int,
@@ -57,10 +74,4 @@ class SynthesisTransformation2D(Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        """
-        Args:
-            x:
-
-        Returns:
-        """
         return self.decode(x)

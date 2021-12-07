@@ -3,6 +3,8 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+from typing import Optional
+
 from torch import Tensor
 from torch.nn import Conv2d, ConvTranspose2d, Module, ReLU, Sequential
 
@@ -23,6 +25,8 @@ class HyperSynthesisTransformation2D(Module):
     Args:
         network_channels: number of channels in the input signal.
         compression_channels: number of inferred latent features.
+        in_channels:
+        activation:
     """
 
     def __init__(
@@ -30,9 +34,12 @@ class HyperSynthesisTransformation2D(Module):
         network_channels: int,
         compression_channels: int,
         in_channels: int = 3,
-        activation: Module = ReLU(inplace=True),
+        activation: Optional[Module] = None,
     ):
         super(HyperSynthesisTransformation2D, self).__init__()
+
+        if activation is None:
+            activation = ReLU(inplace=True)
 
         self.decode = Sequential(
             ConvTranspose2d(
@@ -64,10 +71,4 @@ class HyperSynthesisTransformation2D(Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        """
-        Args:
-            x:
-
-        Returns:
-        """
         return self.decode(x)

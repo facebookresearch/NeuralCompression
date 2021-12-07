@@ -10,6 +10,23 @@ from ._generalized_divisive_normalization import GeneralizedDivisiveNormalizatio
 
 
 class AnalysisTransformation2D(Module):
+    """Applies the 2D analysis transformation over an input signal.
+
+    The analysis transformation is used to generate a reconstructed signal from
+    a latent representation.
+
+    The method is described in:
+
+        | End-to-end Optimized Image Compression
+        | Johannes Ballé, Valero Laparra, Eero P. Simoncelli
+        | https://arxiv.org/abs/1611.01704
+
+    Args:
+        network_channels: number of channels in the input signal.
+        compression_channels: number of inferred latent features.
+        in_channels: number of channels in the input image.
+    """
+
     def __init__(
         self,
         network_channels: int,
@@ -53,10 +70,4 @@ class AnalysisTransformation2D(Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        """
-        Args:
-            x:
-
-        Returns:
-        """
         return self.encode(x)

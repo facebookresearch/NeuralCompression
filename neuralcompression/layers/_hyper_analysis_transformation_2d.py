@@ -3,10 +3,11 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+from typing import Optional
+
+import torch
 from torch import Tensor
 from torch.nn import Conv2d, Module, ReLU, Sequential
-
-from ._absolute_value import AbsoluteValue
 
 
 class HyperAnalysisTransformation2D(Module):
@@ -25,6 +26,8 @@ class HyperAnalysisTransformation2D(Module):
     Args:
         network_channels: number of channels in the input signal.
         compression_channels: number of channels produced by the transformation.
+        in_channels:
+        activation:
     """
 
     def __init__(
@@ -32,12 +35,14 @@ class HyperAnalysisTransformation2D(Module):
         network_channels: int,
         compression_channels: int,
         in_channels: int = 3,
-        activation: Module = ReLU(inplace=True),
+        activation: Optional[Module] = None,
     ):
         super(HyperAnalysisTransformation2D, self).__init__()
 
+        if activation is None:
+            activation = ReLU(inplace=True)
+
         self.encode = Sequential(
-            AbsoluteValue(),
             Conv2d(
                 compression_channels,
                 network_channels,
@@ -64,10 +69,6 @@ class HyperAnalysisTransformation2D(Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        """
-        Args:
-            x:
+        x = torch.abs(x)
 
-        Returns:
-        """
         return self.encode(x)

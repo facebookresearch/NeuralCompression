@@ -3,56 +3,44 @@ neuralcompression.layers
 
 .. currentmodule:: neuralcompression.layers
 
-AbsoluteValue
-~~~~~~~~~~~~~
-
-.. autoclass:: AbsoluteValue
-   :members:
-
 AnalysisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: AnalysisTransformation2D
-   :members:
-
-ContinuousEntropy
-~~~~~~~~~~~~~~~~~
-
-.. autoclass:: ContinuousEntropy
-   :members:
+  :members:
 
 GeneralizedDivisiveNormalization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: GeneralizedDivisiveNormalization
-   :members:
+  :members: __getitem__
 
 HyperAnalysisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: HyperAnalysisTransformation2D
-   :members:
+  :members: __getitem__
 
 HyperSynthesisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: HyperSynthesisTransformation2D
-   :members:
+  :members: __getitem__
 
 NonNegativeParameterization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: NonNegativeParameterization
-   :members:
+  :members:
 
 RateMSEDistortionLoss
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: RateMSEDistortionLoss
-   :members:
+  :members:
 
 SynthesisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: SynthesisTransformation2D
-   :members:
+  :members:
