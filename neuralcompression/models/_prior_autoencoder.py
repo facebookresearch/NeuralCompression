@@ -103,11 +103,6 @@ class PriorAutoencoder(Module):
         return Tensor(losses).sum()
 
     def update_bottleneck(self, force: bool = False) -> bool:
-        """
-        Args:
-            force:
-        Returns:
-        """
         updated = False
 
         for module in self.children():

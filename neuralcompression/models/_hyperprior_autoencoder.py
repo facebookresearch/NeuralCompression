@@ -24,6 +24,7 @@ class HyperpriorAutoencoder(PriorAutoencoder):
     The class composes a bottleneck module (e.g. the ``EntropyBottleneck``
     module provided by the CompressAI package) with an autoencoder (i.e.
     encoder and decoder modules).
+
     Using the base class is as straightforward as inheriting from the class and
     defining an ``encoder_module`` and ``decoder_module``. You may optionally
     provide a ``hyper_encoder_module`` and ``hyper_decoder_module`` (e.g. for
@@ -32,6 +33,7 @@ class HyperpriorAutoencoder(PriorAutoencoder):
     (``SynthesisTransformation2D``), hyper encoder
     (``HyperAnalysisTransformation2D``), and hyper decoder
     (``HyperSynthesisTransformation2D``).
+
     Args:
         network_channels: number of channels in the network.
         compression_channels: number of inferred latent compression features.
@@ -94,11 +96,6 @@ class HyperpriorAutoencoder(PriorAutoencoder):
         cls,
         state_dict: OrderedDict,
     ):
-        """
-        Args:
-            state_dict:
-        Returns:
-        """
         network_channels = state_dict["encoder.encode.0.weight"].size()[0]
 
         compression_channels = state_dict["encoder.encode.6.weight"].size()[0]
@@ -146,9 +143,6 @@ class HyperpriorAutoencoder(PriorAutoencoder):
         super(HyperpriorAutoencoder, self).load_state_dict(state_dict)
 
     def scales(self) -> Tensor:
-        """
-        Returns:
-        """
         return torch.exp(torch.linspace(self.minimum, self.maximum, self.steps))
 
     def update_bottleneck(
@@ -156,12 +150,6 @@ class HyperpriorAutoencoder(PriorAutoencoder):
         force: bool = False,
         scales: Optional[Tensor] = None,
     ) -> bool:
-        """
-        Args:
-            force:
-            scales:
-        Returns:
-        """
         if scales is None:
             scales = self.scales()
 

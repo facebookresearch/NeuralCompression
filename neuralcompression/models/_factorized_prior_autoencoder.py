@@ -28,11 +28,6 @@ class FactorizedPriorAutoencoder(PriorAutoencoder):
         self.hyper_decoder = None
 
     def forward(self, x: Tensor) -> Tuple[Tensor, List[Tensor]]:
-        """
-        Args:
-            x:
-        Returns:
-        """
         y = self.encoder(x)
 
         y_hat, y_probabilities = self.bottleneck(y)
@@ -41,11 +36,6 @@ class FactorizedPriorAutoencoder(PriorAutoencoder):
 
     @classmethod
     def from_state_dict(cls, state_dict: OrderedDict[str, Tensor]):
-        """
-        Args:
-            state_dict:
-        Returns:
-        """
         n = state_dict["encoder.encode.0.weight"].size()[0]
         m = state_dict["encoder.encode.6.weight"].size()[0]
 
@@ -56,22 +46,11 @@ class FactorizedPriorAutoencoder(PriorAutoencoder):
         return prior
 
     def compress(self, bottleneck: Tensor) -> Tuple[List[List[str]], Size]:
-        """
-        Args:
-            bottleneck:
-        Returns:
-        """
         y = self.encoder(bottleneck)
 
         return [self.bottleneck.compress(y)], Size(y.size()[-2:])
 
     def decompress(self, strings: List[List[str]], broadcast_size: Size) -> Tensor:
-        """
-        Args:
-            strings:
-            broadcast_size:
-        Returns:
-        """
         return torch.clamp(
             self.decoder(
                 self.bottleneck.decompress(

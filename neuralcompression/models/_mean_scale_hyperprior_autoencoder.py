@@ -88,11 +88,6 @@ class MeanScaleHyperpriorAutoencoder(HyperpriorAutoencoder):
         self,
         x: Tensor,
     ) -> Tuple[Tensor, Tuple[Tensor, Tensor]]:
-        """
-        Args:
-            x:
-        Returns:
-        """
         y = self.encoder(x)
 
         z = self.hyper_encoder(y)
