@@ -10,7 +10,7 @@ from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 import neuralcompression.models
-from neuralcompression.models.lightning import FactorizedPriorAutoencoder
+from ..lightning import MeanScaleHyperpriorAutoencoder
 
 
 class TestMeanScaleHyperpriorAutoencoder:
@@ -20,7 +20,7 @@ class TestMeanScaleHyperpriorAutoencoder:
         in_channels = 3
         distortion_trade_off = 1e-2
 
-        lightning_module = FactorizedPriorAutoencoder(
+        lightning_module = MeanScaleHyperpriorAutoencoder(
             network_channels,
             compression_channels,
             in_channels,
@@ -29,7 +29,7 @@ class TestMeanScaleHyperpriorAutoencoder:
 
         assert isinstance(
             lightning_module.network,
-            neuralcompression.models.FactorizedPriorAutoencoder,
+            neuralcompression.models.MeanScaleHyperpriorAutoencoder,
         )
 
         assert lightning_module.network.network_channels == network_channels
@@ -44,7 +44,7 @@ class TestMeanScaleHyperpriorAutoencoder:
         in_channels = 3
         distortion_trade_off = 1e-2
 
-        lightning_module = FactorizedPriorAutoencoder(
+        lightning_module = MeanScaleHyperpriorAutoencoder(
             network_channels,
             compression_channels,
             in_channels,
@@ -83,7 +83,7 @@ class TestMeanScaleHyperpriorAutoencoder:
         in_channels = 3
         distortion_trade_off = 1e-2
 
-        lightning_module = FactorizedPriorAutoencoder(
+        lightning_module = MeanScaleHyperpriorAutoencoder(
             network_channels,
             compression_channels,
             in_channels,
@@ -96,9 +96,10 @@ class TestMeanScaleHyperpriorAutoencoder:
 
         assert x_hat.shape == (16, 3, 64, 64)
 
-        y_probabilities = probabilities[0]
+        y_probabilities, z_probabilities = probabilities
 
         assert y_probabilities.shape == (16, 192, 4, 4)
+        assert z_probabilities.shape == (16, 128, 1, 1)
 
     def test_training_step(self):
         network_channels = 128
@@ -106,7 +107,7 @@ class TestMeanScaleHyperpriorAutoencoder:
         in_channels = 3
         distortion_trade_off = 1e-2
 
-        lightning_module = FactorizedPriorAutoencoder(
+        lightning_module = MeanScaleHyperpriorAutoencoder(
             network_channels,
             compression_channels,
             in_channels,
@@ -129,7 +130,7 @@ class TestMeanScaleHyperpriorAutoencoder:
         in_channels = 3
         distortion_trade_off = 1e-2
 
-        lightning_module = FactorizedPriorAutoencoder(
+        lightning_module = MeanScaleHyperpriorAutoencoder(
             network_channels,
             compression_channels,
             in_channels,
