@@ -18,7 +18,6 @@ from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
 
-import neuralcompression.functional as ncF
 from neuralcompression.models import DVC
 
 
