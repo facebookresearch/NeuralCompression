@@ -23,3 +23,9 @@ def create_random_image(file_path, shape):
     img = PIL.Image.fromarray(img)
     img.save(file_path)
     return res
+
+
+def rand_im(shape, rng=None):
+    if rng is None:
+        rng = numpy.random.default_rng()
+    return torch.tensor(rng.uniform(size=shape), dtype=torch.get_default_dtype())
