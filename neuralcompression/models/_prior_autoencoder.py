@@ -14,7 +14,6 @@ from neuralcompression.layers import AnalysisTransformation2D, SynthesisTransfor
 
 class PriorAutoencoder(Module):
     """Base class for implementing prior autoencoder architectures.
-
     The class composes a bottleneck module (e.g. the ``EntropyBottleneck``
     module provided by the CompressAI package) with an autoencoder (i.e.
     encoder and decoder modules).
@@ -27,11 +26,11 @@ class PriorAutoencoder(Module):
     Args:
         network_channels: number of channels in the network.
         compression_channels: number of inferred latent compression features.
-        encoder:
-        decoder:
-        bottleneck:
-        bottleneck_name:
-        bottleneck_buffer_names:
+        encoder: prior autoencoder encoder.
+        decoder: prior autoencoder decoder.
+        bottleneck: entropy bottleneck.
+        bottleneck_name: name of entropy bottleneck.
+        bottleneck_buffer_names: names of bottleneck buffers to persist.
     """
 
     hyper_encoder: Optional[Module]
@@ -94,9 +93,6 @@ class PriorAutoencoder(Module):
             self.bottleneck_buffer_names = bottleneck_buffer_names
 
     def bottleneck_loss(self) -> Tensor:
-        """
-        Returns:
-        """
         losses = []
 
         for module in self.modules():
@@ -106,12 +102,6 @@ class PriorAutoencoder(Module):
         return Tensor(losses).sum()
 
     def update_bottleneck(self, force: bool = False) -> bool:
-        """
-        Args:
-            force:
-
-        Returns:
-        """
         updated = False
 
         for module in self.children():
@@ -123,21 +113,8 @@ class PriorAutoencoder(Module):
         return updated
 
     def load_state_dict(
-        self,
-        state_dict: OrderedDict[str, Tensor],
-        strict: bool = True,
+        self, state_dict: OrderedDict[str, Tensor], strict: bool = True
     ):
-        """Copies parameters and buffers from ``state_dict`` into this module
-        and its descendants. If strict is ``True``, then the keys of
-        ``state_dict`` must exactly match the keys returned by this module’s
-        ``torch.nn.Module.state_dict`` method.
-
-        Args:
-            state_dict: a ``dict`` containing parameters and persistent buffers.
-            strict: whether to strictly enforce that the keys in ``state_dict``
-                match the keys returned by this module’s
-                ``torch.nn.Module.state_dict`` method, defaults to ``True``.
-        """
         for bottleneck_buffer_name in self.bottleneck_buffer_names:
             name = f"{self.bottleneck_name}.{bottleneck_buffer_name}"
 
@@ -160,9 +137,6 @@ class PriorAutoencoder(Module):
     def group_parameters(
         self,
     ) -> Tuple[Dict[str, Parameter], Dict[str, Parameter]]:
-        """
-        Returns:
-        """
         parameters = {}
 
         for name, parameter in self.named_parameters():

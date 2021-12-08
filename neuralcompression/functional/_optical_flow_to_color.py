@@ -7,8 +7,7 @@ import math
 
 import torch
 from torch import Tensor
-
-from ._hsv_to_rgb import hsv2rgb
+from ._hsv_to_rgb import hsv_to_rgb
 
 
 def optical_flow_to_color(flow: Tensor, eps: float = 1e-5) -> Tensor:
@@ -43,4 +42,4 @@ def optical_flow_to_color(flow: Tensor, eps: float = 1e-5) -> Tensor:
     mag = mag / (mag.max() + eps)
     hsv[:, 2] = mag
 
-    return hsv2rgb(hsv)
+    return hsv_to_rgb(hsv)

@@ -8,7 +8,7 @@ import numpy
 import pytest
 import torch
 
-import neuralcompression.functional as ncF
+from neuralcompression.functional import hsv_to_rgb
 
 
 @pytest.mark.parametrize(
@@ -21,7 +21,7 @@ def test_hsv_to_rgb(shape, seed):
     hsvs[:, 0] *= 360.0
     hsvs = torch.tensor(hsvs, dtype=torch.float32)
 
-    rgb_torch = ncF.hsv2rgb(hsvs)
+    rgb_torch = hsv_to_rgb(hsvs)
 
     for i, hsv in enumerate(hsvs):
         bgr = numpy.flip(

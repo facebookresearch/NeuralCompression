@@ -3,10 +3,10 @@ neuralcompression.models
 
 .. currentmodule:: neuralcompression.models
 
-DeepVideoCompression
-~~~~~~~~~~~~~~~~~~~~
+DVC
+~~~
 
-.. autoclass:: DeepVideoCompression
+.. autoclass:: DVC
    :members:
 
 FactorizedPriorAutoencoder

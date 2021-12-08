@@ -7,7 +7,7 @@ import numpy
 import pytest
 import torch
 
-import neuralcompression.functional as ncF
+from neuralcompression.functional import information_content
 
 
 @pytest.mark.parametrize(
@@ -38,6 +38,6 @@ def test_information_content(shape, seed):
         for reduction in ("sum", "batch_el", "none"):
             torch_cost = -1 * reduction_ops[reduction](base_ops[base](probabilities))
             assert torch.allclose(
-                ncF.information_content(probabilities, reduction=reduction, base=base),
+                information_content(probabilities, reduction=reduction, base=base),
                 torch_cost,
             )

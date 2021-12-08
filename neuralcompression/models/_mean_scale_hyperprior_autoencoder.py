@@ -55,6 +55,22 @@ class _HyperSynthesisTransformation2D(Module):
 
 
 class MeanScaleHyperpriorAutoencoder(HyperpriorAutoencoder):
+    """Mean scale hyperprior autoencoder described in:
+
+        | “Variational Image Compression with a Scale Hyperprior”
+        | Johannes Ballé, David Minnen, Saurabh Singh, Sung Jin Hwang,
+            Nick Johnston
+        | https://arxiv.org/abs/1802.01436
+
+    Args:
+        network_channels: number of channels in the network.
+        compression_channels: number of inferred latent compression features.
+        in_channels: number of channels in the input image.
+        minimum: minimum scale size.
+        maximum: maximum scale size.
+        steps: number of scale steps.
+    """
+
     def __init__(
         self,
         network_channels: int = 128,
@@ -68,6 +84,8 @@ class MeanScaleHyperpriorAutoencoder(HyperpriorAutoencoder):
             network_channels,
             compression_channels,
             in_channels,
+            None,
+            None,
             HyperAnalysisTransformation2D(
                 network_channels,
                 compression_channels,
@@ -88,12 +106,6 @@ class MeanScaleHyperpriorAutoencoder(HyperpriorAutoencoder):
         self,
         x: Tensor,
     ) -> Tuple[Tensor, Tuple[Tensor, Tensor]]:
-        """
-        Args:
-            x:
-
-        Returns:
-        """
         y = self.encoder(x)
 
         z = self.hyper_encoder(y)
@@ -112,17 +124,24 @@ class MeanScaleHyperpriorAutoencoder(HyperpriorAutoencoder):
         self,
         bottleneck: Tensor,
     ) -> Tuple[List[List[str]], Size]:
-        """Compresses a ``Tensor`` to bit strings.
+        """Compresses a floating-point tensor.
 
-        ``bottleneck`` is quantized then compressed using probability tables.
-        The quantized ``Tensor`` can be recovered by calling the
-        ``decompress()`` method.
+        Compresses the tensor to bit strings. ``bottleneck`` is first quantized
+        and then compressed using the probability tables in
+        ``self.bottleneck._quantized_cdf`` derived from ``self.bottleneck``.
+        The quantized tensor can later be recovered by calling
+        ``decompress()``.
+
+        Note:
+            The innermost coding rank dimensions are treated as one coding unit
+            (i.e. compressed into one string each). Any additional dimensions
+            to the left are treated as batch dimensions.
 
         Args:
             bottleneck: the data to be compressed.
 
         Returns:
-            a string for each coding unit.
+            the compressed data.
         """
         y = self.encoder.forward(bottleneck)
 
@@ -149,21 +168,21 @@ class MeanScaleHyperpriorAutoencoder(HyperpriorAutoencoder):
         strings: List[str],
         broadcast_size: Size,
     ) -> Tensor:
-        """Decompresses a ``Tensor``.
+        """Decompresses a tensor.
 
-        Reconstructs the quantized ``Tensor`` from bit strings produced by the
-        ``compress()`` method. It is necessary to provide a part of the output
-        shape in ``broadcast_shape``.
+        Reconstructs the quantized tensor from bit strings produced by
+        ``compress()``. It is necessary to provide a part of the output shape
+        in ``broadcast_size``.
 
         Args:
             strings: the compressed bit strings.
-            broadcast_size: the part of the output ``Tensor`` size between the
+            broadcast_size: the part of the output tensor shape between the
                 shape of ``strings`` on the left and the prior shape on the
-                right. This must match the shape of the input passed to
+                right. This must match the shape of the input to
                 ``compress()``.
 
         Returns:
-            has the size ``Size([*strings.size(), *broadcast_shape])``.
+            the decompressed data.
         """
         assert isinstance(strings, list) and len(strings) == 2
 

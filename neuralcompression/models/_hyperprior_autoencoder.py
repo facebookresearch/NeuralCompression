@@ -20,30 +20,31 @@ from ._prior_autoencoder import PriorAutoencoder
 
 
 class HyperpriorAutoencoder(PriorAutoencoder):
-    """Base class for implementing prior autoencoder architectures.
-
-    The class composes a bottleneck module (e.g. the ``EntropyBottleneck``
-    module provided by the CompressAI package) with an autoencoder (i.e.
-    encoder and decoder modules).
+    """Base class for implementing hyperprior autoencoder architectures. The
+    class composes a bottleneck module (e.g. the ``EntropyBottleneck`` module
+    provided by the CompressAI package) with two autoencoders (i.e. a prior
+    encoder and prior decoder pair of modules and a hyperprior encoder and
+    hyperprior decoder pair of modules).
 
     Using the base class is as straightforward as inheriting from the class and
-    defining an ``encoder_module`` and ``decoder_module``. You may optionally
-    provide a ``hyper_encoder_module`` and ``hyper_decoder_module`` (e.g. for
-    implementing hyperprior architectures). The ``neuralcompression.layers``
-    package includes a standard encoder (``AnalysisTransformation2D``), decoder
-    (``SynthesisTransformation2D``), hyper encoder
-    (``HyperAnalysisTransformation2D``), and hyper decoder
+    optionally providing ``encoder``, ``decoder``, ``hyper_encoder`` and
+    ``hyper_decoder`` modules. The ``neuralcompression.layers`` package
+    includes a standard prior encoder (``AnalysisTransformation2D``), prior
+    decoder (``SynthesisTransformation2D``), hyperprior encoder
+    (``HyperAnalysisTransformation2D``), and hyperprior decoder
     (``HyperSynthesisTransformation2D``).
 
     Args:
         network_channels: number of channels in the network.
         compression_channels: number of inferred latent compression features.
-        in_channels:
-        hyper_encoder:
-        hyper_decoder:
-        minimum:
-        maximum:
-        steps:
+        in_channels: number of channels in the input image.
+        encoder: prior encoder.
+        decoder: prior decoder.
+        hyper_encoder: hyperprior encoder.
+        hyper_decoder: hyperprior decoder.
+        minimum: minimum scale size.
+        maximum: maximum scale size.
+        steps: number of scale steps.
     """
 
     hyper_encoder: Module
@@ -54,6 +55,8 @@ class HyperpriorAutoencoder(PriorAutoencoder):
         network_channels: int = 128,
         compression_channels: int = 192,
         in_channels: int = 3,
+        encoder: Optional[Module] = None,
+        decoder: Optional[Module] = None,
         hyper_encoder: Optional[Module] = None,
         hyper_decoder: Optional[Module] = None,
         minimum: Union[int, float] = 0.11,
@@ -64,7 +67,9 @@ class HyperpriorAutoencoder(PriorAutoencoder):
             network_channels,
             compression_channels,
             in_channels,
-            bottleneck=EntropyBottleneck(network_channels),
+            encoder,
+            decoder,
+            EntropyBottleneck(network_channels),
         )
 
         if hyper_encoder is not None:
@@ -97,12 +102,6 @@ class HyperpriorAutoencoder(PriorAutoencoder):
         cls,
         state_dict: OrderedDict,
     ):
-        """
-        Args:
-            state_dict:
-
-        Returns:
-        """
         network_channels = state_dict["encoder.encode.0.weight"].size()[0]
 
         compression_channels = state_dict["encoder.encode.6.weight"].size()[0]
@@ -118,11 +117,6 @@ class HyperpriorAutoencoder(PriorAutoencoder):
         state_dict: OrderedDict[str, Tensor],
         strict: bool = True,
     ):
-        """
-        Args:
-            state_dict:
-            strict:
-        """
         bottleneck_buffer_names = [
             "_quantized_cdf",
             "_offset",
@@ -150,9 +144,6 @@ class HyperpriorAutoencoder(PriorAutoencoder):
         super(HyperpriorAutoencoder, self).load_state_dict(state_dict)
 
     def scales(self) -> Tensor:
-        """
-        Returns:
-        """
         return torch.exp(torch.linspace(self.minimum, self.maximum, self.steps))
 
     def update_bottleneck(
@@ -160,13 +151,6 @@ class HyperpriorAutoencoder(PriorAutoencoder):
         force: bool = False,
         scales: Optional[Tensor] = None,
     ) -> bool:
-        """
-        Args:
-            force:
-            scales:
-
-        Returns:
-        """
         if scales is None:
             scales = self.scales()
 

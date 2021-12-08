@@ -7,7 +7,7 @@ import torch
 from torch import Tensor
 
 
-def hsv2rgb(hsv: Tensor) -> Tensor:
+def hsv_to_rgb(hsv: Tensor) -> Tensor:
     """
     Convert from HSV colorspace to RGB.
 
