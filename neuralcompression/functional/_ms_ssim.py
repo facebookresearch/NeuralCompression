@@ -184,7 +184,7 @@ def _pad_and_downsample(x: Tensor) -> Tensor:
     return F.avg_pool2d(padded, kernel_size=2)
 
 
-def multiscale_structural_similarity(
+def ms_ssim(
     preds: Tensor,
     target: Tensor,
     data_range: float = 1.0,

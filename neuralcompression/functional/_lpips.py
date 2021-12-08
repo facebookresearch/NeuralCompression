@@ -6,7 +6,7 @@
 import lpips as lpips_package
 from torch import Tensor
 
-from _multiscale_structural_similarity import _get_reduction_op
+from ._ms_ssim import _get_reduction_op
 
 
 def _load_lpips_model(
@@ -26,7 +26,7 @@ def _load_lpips_model(
     return model
 
 
-def learned_perceptual_image_patch_similarity(
+def lpips(
     preds: Tensor,
     target: Tensor,
     base_network: str = "alex",

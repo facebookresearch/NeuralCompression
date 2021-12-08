@@ -3,70 +3,15 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import cv2
 import numpy as np
 import pytest
 import tensorflow as tf
 import tensorflow_addons as tfa
 import torch
 
-import _hsv2rgb
-import _optical_flow_to_color
-from utils import create_input
-
 import neuralcompression.functional as ncF
-
-
-@pytest.mark.parametrize(
-    "shape, seed", [((5, 3, 64, 64), 0), ((2, 3, 76, 55), 1), ((10, 3, 32, 64), 2)]
-)
-def test_hsv2rgb(shape, seed):
-    # verify correctness of hsv2rgb function by comparing to OpenCV impl.
-    rng = np.random.default_rng(seed)
-    hsvs = rng.uniform(low=0.0, high=1.0, size=shape)
-    hsvs[:, 0] *= 360.0
-    hsvs = torch.tensor(hsvs, dtype=torch.float32)
-
-    rgb_torch = _hsv2rgb.hsv2rgb(hsvs)
-
-    for i, hsv in enumerate(hsvs):
-        bgr = np.flip(cv2.cvtColor(hsv.permute(1, 2, 0).numpy(), cv2.COLOR_HSV2BGR), 2)
-
-        # low atol due to float32
-        assert np.allclose(bgr, rgb_torch[i].permute(1, 2, 0).numpy(), atol=1e-6)
-
-
-@pytest.mark.parametrize(
-    "shape, seed",
-    [
-        ((3, 72, 64, 5), 0),
-        ((5, 55, 18, 2), 1),
-        ((6, 73, 35, 10), 2),
-    ],
-)
-def test_information_content(shape, seed):
-    # test all reductions of coding cost
-    # also check base-2 and base-10
-    rng = np.random.default_rng(seed)
-    probabilities = torch.tensor(rng.uniform(size=shape))
-
-    def batch_el_reduction(x):
-        return torch.stack([torch.sum(el) for el in x])
-
-    base_ops = {2: torch.log2, 10: torch.log10}
-    reduction_ops = {
-        "sum": torch.sum,
-        "batch_el": batch_el_reduction,
-        "none": lambda x: x,
-    }
-
-    for base in (2, 10):
-        for reduction in ("sum", "batch_el", "none"):
-            torch_cost = -1 * reduction_ops[reduction](base_ops[base](probabilities))
-            assert torch.allclose(
-                ncF.information_content(probabilities, reduction=reduction, base=base),
-                torch_cost,
-            )
+from neuralcompression.functional import optical_flow_to_color
+from utils import create_input
 
 
 @pytest.mark.parametrize(
@@ -131,6 +76,6 @@ def test_optical_flow_to_rgb(shape, seed):
         flow = torch.tensor(rng.normal(size=shape))
 
     flow = flow / flow.abs().max()  # max abs value must be 1
-    rgb_flow = _optical_flow_to_color.optical_flow_to_color(flow)
+    rgb_flow = optical_flow_to_color(flow)
 
     assert tuple(rgb_flow.shape) == (shape[0], 3, shape[2], shape[3])
