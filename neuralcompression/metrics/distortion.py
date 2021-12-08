@@ -8,11 +8,11 @@ from typing import Any, Callable, Optional, Sequence
 import torch
 from torchmetrics import Metric
 
-from neuralcompression.functional.distortion import (
-    MS_SSIM_FACTORS,
-    multiscale_structural_similarity,
+from neuralcompression.functional._learned_perceptual_image_patch_similarity import (
     _load_lpips_model,
 )
+from functional import multiscale_structural_similarity
+from _multiscale_structural_similarity import MS_SSIM_FACTORS
 
 
 class MultiscaleStructuralSimilarity(Metric):

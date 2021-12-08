@@ -9,6 +9,9 @@ import pytest
 import tensorflow as tf
 import tensorflow_addons as tfa
 import torch
+
+import _hsv2rgb
+import _optical_flow_to_color
 from utils import create_input
 
 import neuralcompression.functional as ncF
@@ -24,7 +27,7 @@ def test_hsv2rgb(shape, seed):
     hsvs[:, 0] *= 360.0
     hsvs = torch.tensor(hsvs, dtype=torch.float32)
 
-    rgb_torch = ncF.hsv2rgb(hsvs)
+    rgb_torch = _hsv2rgb.hsv2rgb(hsvs)
 
     for i, hsv in enumerate(hsvs):
         bgr = np.flip(cv2.cvtColor(hsv.permute(1, 2, 0).numpy(), cv2.COLOR_HSV2BGR), 2)
@@ -128,6 +131,6 @@ def test_optical_flow_to_rgb(shape, seed):
         flow = torch.tensor(rng.normal(size=shape))
 
     flow = flow / flow.abs().max()  # max abs value must be 1
-    rgb_flow = ncF.optical_flow_to_color(flow)
+    rgb_flow = _optical_flow_to_color.optical_flow_to_color(flow)
 
     assert tuple(rgb_flow.shape) == (shape[0], 3, shape[2], shape[3])

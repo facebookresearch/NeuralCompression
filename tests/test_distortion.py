@@ -10,8 +10,8 @@ import torch
 
 from neuralcompression.functional import (
     learned_perceptual_image_patch_similarity,
-    multiscale_structural_similarity,
 )
+from functional import multiscale_structural_similarity
 from neuralcompression.metrics import (
     LearnedPerceptualImagePatchSimilarity,
     MultiscaleStructuralSimilarity,
