@@ -8,7 +8,7 @@ import pytest
 import tensorflow
 import torch
 
-from neuralcompression.functional import ms_ssim
+from neuralcompression.functional import multiscale_structural_similarity
 from neuralcompression.metrics import MultiscaleStructuralSimilarity
 from utils import rand_im
 
@@ -32,15 +32,23 @@ def test_ms_ssim_functional(num_channels, img_size, batch_size, seed):
     img1 = rand_im([batch_size, num_channels, img_size, img_size], rng)
     img2 = rand_im([batch_size, num_channels, img_size, img_size], rng)
 
-    assert torch.allclose(ms_ssim(img1, img1), torch.tensor(1.0))
-
-    assert ms_ssim(img1, img1, reduction="none").shape == torch.Size([batch_size])
     assert torch.allclose(
-        ms_ssim(img1, img1, reduction="sum"), torch.tensor(batch_size).float()
+        multiscale_structural_similarity(img1, img1), torch.tensor(1.0)
     )
-    assert torch.allclose(ms_ssim(img1, img1, reduction="mean"), torch.tensor(1.0))
 
-    score = ms_ssim(img1, img2, reduction="none")
+    assert multiscale_structural_similarity(
+        img1, img1, reduction="none"
+    ).shape == torch.Size([batch_size])
+    assert torch.allclose(
+        multiscale_structural_similarity(img1, img1, reduction="sum"),
+        torch.tensor(batch_size).float(),
+    )
+    assert torch.allclose(
+        multiscale_structural_similarity(img1, img1, reduction="mean"),
+        torch.tensor(1.0),
+    )
+
+    score = multiscale_structural_similarity(img1, img2, reduction="none")
 
     reference = tf_ms_ssim(img1, img2)
 
@@ -71,8 +79,11 @@ def test_ms_ssim_module(num_channels, img_size, batch_sizes, seed):
 
     for img1, img2 in zip(imgs1, imgs2):
         score = metric(img1, img2)
-        assert torch.allclose(score, ms_ssim(img1, img2))
+        assert torch.allclose(score, multiscale_structural_similarity(img1, img2))
 
     assert torch.allclose(
-        metric.compute(), ms_ssim(torch.cat(imgs1, dim=0), torch.cat(imgs2, dim=0))
+        metric.compute(),
+        multiscale_structural_similarity(
+            torch.cat(imgs1, dim=0), torch.cat(imgs2, dim=0)
+        ),
     )

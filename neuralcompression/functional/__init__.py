@@ -15,7 +15,7 @@ from ._log_survival_function import log_survival_function
 from ._lower_bound import lower_bound
 from ._lower_tail import lower_tail
 from ._lpips import lpips
-from ._ms_ssim import ms_ssim
+from ._multiscale_structural_similarity import multiscale_structural_similarity
 from ._ndtr import ndtr
 from ._optical_flow_to_color import optical_flow_to_color
 from ._pmf_to_quantized_cdf import pmf_to_quantized_cdf

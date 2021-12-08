@@ -5,15 +5,15 @@ neuralcompression.functional
 
 .. autofunction:: count_flops
 .. autofunction:: dense_image_warp
-.. autofunction:: hsv2rgb
+.. autofunction:: hsv_to_rgb
 .. autofunction:: information_content
-.. autofunction:: learned_perceptual_image_patch_similarity,
 .. autofunction:: log_cdf
 .. autofunction:: log_expm1
 .. autofunction:: log_ndtr
 .. autofunction:: log_survival_function
 .. autofunction:: lower_bound
 .. autofunction:: lower_tail
+.. autofunction:: lpips
 .. autofunction:: multiscale_structural_similarity
 .. autofunction:: ndtr
 .. autofunction:: optical_flow_to_color

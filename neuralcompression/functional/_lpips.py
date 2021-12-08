@@ -6,7 +6,7 @@
 import lpips as lpips_package
 from torch import Tensor
 
-from ._ms_ssim import _get_reduction_op
+from ._multiscale_structural_similarity import _get_reduction_op
 
 
 def _load_lpips_model(

@@ -9,8 +9,10 @@ import torch
 from torchmetrics import Metric
 
 from neuralcompression.functional._lpips import _load_lpips_model
-from neuralcompression.functional import ms_ssim
-from neuralcompression.functional._ms_ssim import MS_SSIM_FACTORS
+from neuralcompression.functional import multiscale_structural_similarity
+from neuralcompression.functional._multiscale_structural_similarity import (
+    MS_SSIM_FACTORS,
+)
 
 
 class MultiscaleStructuralSimilarity(Metric):
@@ -70,7 +72,7 @@ class MultiscaleStructuralSimilarity(Metric):
 
     def update(self, preds, target):
 
-        self.score_sum += ms_ssim(
+        self.score_sum += multiscale_structural_similarity(
             preds,
             target,
             data_range=self.data_range,
