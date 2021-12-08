@@ -4,10 +4,6 @@
 # LICENSE file in the root directory of this source tree.
 
 from ._factorized_prior_autoencoder import FactorizedPriorAutoencoder
-from ._hific import HiFiCDiscriminator, HiFiCEncoder, HiFiCGenerator
-from ._hyperprior_autoencoder import HyperpriorAutoencoder
 from ._mean_scale_hyperprior_autoencoder import MeanScaleHyperpriorAutoencoder
-from ._prior_autoencoder import PriorAutoencoder
+from ._prior_autoencoder import _PriorAutoencoder
 from ._scale_hyperprior_autoencoder import ScaleHyperpriorAutoencoder
-from .deep_video_compression import DVC
-from .scale_hyperprior import ScaleHyperprior
