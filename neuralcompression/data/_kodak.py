@@ -6,11 +6,12 @@
 import hashlib
 import shutil
 import urllib
+import urllib.request
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
 
-import torch
 from torch import Tensor
+from torch.utils.data import Dataset
 from torchvision.datasets.folder import default_loader
 from tqdm import tqdm
 
@@ -19,7 +20,7 @@ SHA_HASH = "076e2a5fd4515b5fda677f15fe63dd112d266bc5"
 DEFAULT_URL = "http://r0k.us/graphics/kodak/kodak/"
 
 
-class Kodak(torch.utils.data.Dataset):
+class Kodak(Dataset):
     """
     Data loader for the Kodak image data set.
 
@@ -98,7 +99,7 @@ class Kodak(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         path = self.im_list[idx]
-        image = default_loader(path)
+        image = default_loader(str(path))
 
         if self.transform is not None:
             image = self.transform(image)

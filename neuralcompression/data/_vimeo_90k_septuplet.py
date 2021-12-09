@@ -9,11 +9,12 @@ from typing import Any, Callable, Optional, Sequence, Union
 
 import torch
 from torch import Tensor
+from torch.utils.data import Dataset
 from torchvision.datasets.folder import default_loader
 from torchvision.transforms import ToTensor
 
 
-class Vimeo90kSeptuplet(torch.utils.data.Dataset):
+class Vimeo90kSeptuplet(Dataset):
     """
     Loads images or videos from the Vimeo-90k septuplet dataset [1]. The dataset
     consists of a set of septuplet directories, where each directory contains
@@ -108,7 +109,7 @@ class Vimeo90kSeptuplet(torch.utils.data.Dataset):
             return len(self.folder_list) * self.frames_per_group
 
     def load_image(self, septuplet: Path, frame_number: int) -> Tensor:
-        img_path = default_loader(septuplet / f"im{frame_number}.png")
+        img_path = default_loader(str(septuplet / f"im{frame_number}.png"))
         img = self.pil_transform(img_path)
         if not isinstance(img, Tensor):
             raise RuntimeError(

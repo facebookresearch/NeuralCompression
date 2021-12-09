@@ -5,5 +5,5 @@
 
 from ._clic_2020_image import CLIC2020Image
 from ._clic_2020_video import CLIC2020Video
-from .kodak import Kodak
-from .vimeo90k import Vimeo90kSeptuplet
+from ._kodak import Kodak
+from ._vimeo_90k_septuplet import Vimeo90kSeptuplet
