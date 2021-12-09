@@ -371,7 +371,7 @@ def convert_to_embedded(
     Embed a truncated list of byte arrays into equal-size arrays.
 
     Args:
-        compressed_message: Packed message to embed into a standard-length.
+        compressed_messages: Packed message to embed into a standard-length.
         message_shape: Shape of unpacked message.
         tail_capacity: Desired size of the tail.
 

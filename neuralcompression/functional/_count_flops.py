@@ -86,66 +86,60 @@ def count_flops(
     counter_overrides: Optional[Dict[str, Handle]] = None,
     use_single_flop_estimates: bool = False,
 ) -> Tuple[float, Dict[str, float], Dict[str, int]]:
-    """
-    Counts the flops in the forward function of an ``nn.Module``.
+    """Counts the flops in the forward function of an ``nn.Module``.
 
-    Given a model, this counter first uses TorchScript to trace the
-    model's forward function into a series of linear algebra operations
-    (e.g. matmuls, convolutions, etc.). Then the flops of each operation
-    are counted, provided that the operator type has a corresponding flop
-    counting function registered. Note that a multiply-accumulate is
-    considered one flop, not two.
+    Given a model, this counter first uses TorchScript to trace the model's
+    forward function into a series of linear algebra operations (e.g. matmuls,
+    convolutions, etc.). Then the flops of each operation are counted, provided
+    that the operator type has a corresponding flop counting function
+    registered. Note that a multiply-accumulate is considered one flop, not
+    two.
 
-    If an operator does not have a registered counter, it is ignored in the
-    flop count and is logged as an unregistered op in the function's return
-    value (see below). Most common operations already have
-    registered counters, but it may be necessary to register additional
-    operators in the counter_overrides field.
+    This function relies on the
+    `fvcore flop counter <https://github.com/facebookresearch/fvcore>`_.
 
-    This function relies on the fvcore flop counter, accessible here:
-    https://github.com/facebookresearch/fvcore
+    Note:
+        If an operator does not have a registered counter, it is ignored in the
+        flop count and is logged as an unregistered op in the function's return
+        value (see below). Most common operations already have registered
+        counters, but it may be necessary to register additional operators in
+        the ``counter_overrides`` field.
 
     Args:
         module: The ``nn.Module`` whose forward function will be profiled.
-        inputs: A sequence of variables to pass as inputs to ``module``
-            when it is traced.
-        counter_overrides: A dictionary mapping operator names to
-            flop-counting functions, to extend/override the default
-            registered operators. A counting function's signature
-            should take in a list of operator inputs and a list
-            of operator outputs (in that order), and return the
-            operator's flop count. See the fvcore documentation
-            for more details.
+        inputs: A sequence of variables to pass as inputs to ``module`` when it
+            is traced.
+        counter_overrides: A dictionary mapping operator names to flop-counting
+            functions, to extend/override the default registered operators. A
+            counting function's signature should take in a list of operator
+            inputs and a list of operator outputs (in that order), and return
+            the operator's flop count. See the fvcore documentation for more
+            details.
         use_single_flop_estimates: Dictates whether to use approximate
-            flop-counting functions for many elementwise ops not
-            supported by fvcore. Many ops, like sqrt, log, pow, etc.,
-            are by default ignored by fvcore, since their true flop count
-            can vary by platform op implementation. For correctness'
-            sake, we too ignore these ops by default. However, if your
-            model has lots of these types of operations and you wish to
-            obtain a rough estimate of their contributions to
-            total model complexity, passing this flag as ``True`` will
-            register conservative counter estimates
-            for these ops that count 1 flop per output tensor element
-            (e.g. 1 sqrt = 1 flop). The full list of ops that this flag
-            registers counters for can be found in
-            ``_SINGLE_FLOP_ESTIMATES_TO_ADD``. If you know exactly how many
-            flops some of these ops should have on your platform, use the
+            flop-counting functions for many elementwise ops not supported by
+            fvcore. Many ops, like sqrt, log, pow, etc., are by default ignored
+            by fvcore, since their true flop count can vary by platform op
+            implementation. For correctness' sake, we too ignore these ops by
+            default. However, if your model has lots of these types of
+            operations and you wish to obtain a rough estimate of their
+            contributions to total model complexity, passing this flag as
+            ``True`` will register conservative counter estimates for these ops
+            that count 1 flop per output tensor element (e.g. 1 sqrt = 1 flop).
+            The full list of ops that this flag registers counters for can be
+            found in ``_SINGLE_FLOP_ESTIMATES_TO_ADD``. If you know exactly how
+            many flops some of these ops should have on your platform, use the
             ``counter_overrides`` argument.
 
-
     Returns:
-        A 3-tuple of:
-            - The total number of flops recorded in the model's
-            forward function (returned as a float).
-            - A dictionary breaking down the total model flops by
-            operator (i.e. a dictionary mapping from operator names
-            to the total flops performed by all calls to that operator
-            in the model).
-            - A dictionary recording all the unsupported model operations,
-            i.e. operations who don't have associated flop-counting
-            functions. This dictionary maps the names of unsupported operators
-            to the number of times that operator was invoked by the model.
+        * The total number of flops recorded in the model's forward
+          function (returned as a float).
+        * A dictionary breaking down the total model flops by operator
+          (i.e. a dictionary mapping from operator names to the total flops
+          performed by all calls to that operator in the model).
+        * A dictionary recording all the unsupported model operations, i.e.
+          operations who don't have associated flop-counting functions.
+          This dictionary maps the names of unsupported operators to the
+          number of times that operator was invoked by the model.
     """
 
     # fvcore requires a tuple of inputs and

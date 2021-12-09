@@ -7,12 +7,10 @@ NoisyNormal
 ~~~~~~~~~~~
 
 .. autoclass:: NoisyNormal
-  :members: __getitem__
-  :special-members:
+  :members:
 
 UniformNoise
 ~~~~~~~~~~~~
 
 .. autoclass:: UniformNoise
-  :members: __getitem__
-  :special-members:
+  :members:

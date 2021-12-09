@@ -13,19 +13,19 @@ GeneralizedDivisiveNormalization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: GeneralizedDivisiveNormalization
-  :members: __getitem__
+  :members:
 
 HyperAnalysisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: HyperAnalysisTransformation2D
-  :members: __getitem__
+  :members:
 
 HyperSynthesisTransformation2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: HyperSynthesisTransformation2D
-  :members: __getitem__
+  :members:
 
 NonNegativeParameterization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
