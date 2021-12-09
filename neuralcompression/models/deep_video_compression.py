@@ -21,7 +21,7 @@ from compressai.entropy_models import EntropyBottleneck
 from torch import Tensor, nn
 
 import neuralcompression.functional as ncF
-from neuralcompression.layers import SimplifiedGDN, SimplifiedInverseGDN
+from neuralcompression.layers import GeneralizedDivisiveNormalization
 
 
 class CompressedPFrame(NamedTuple):
@@ -356,7 +356,9 @@ class DVCCompressionDecoder(nn.Module):
                 )
             )
             if use_gdn:
-                self.layers.append(SimplifiedInverseGDN(filter_channels))
+                self.layers.append(
+                    GeneralizedDivisiveNormalization(filter_channels, inverse=True)
+                )
             else:
                 self.layers.append(nn.BatchNorm2d(filter_channels))
                 self.layers.append(nn.ReLU())
@@ -442,7 +444,7 @@ class DVCCompressionEncoder(nn.Module):
                 )
             )
             if use_gdn:
-                self.layers.append(SimplifiedGDN(filter_channels))
+                self.layers.append(GeneralizedDivisiveNormalization(filter_channels))
             else:
                 self.layers.append(nn.BatchNorm2d(filter_channels))
                 self.layers.append(nn.ReLU())
