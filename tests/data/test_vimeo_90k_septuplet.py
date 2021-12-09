@@ -11,7 +11,7 @@ import torch
 from PIL import Image
 from torchvision.transforms import Compose, ToTensor
 
-from neuralcompression.data.vimeo90k import Vimeo90kSeptuplet
+from neuralcompression.data._vimeo_90k_septuplet import Vimeo90kSeptuplet
 
 
 def setup_dummy_dataset(root_dir: Path):
