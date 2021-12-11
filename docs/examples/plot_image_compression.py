@@ -9,28 +9,32 @@ Image compression
 """
 
 import matplotlib.pyplot
-import numpy
 import torch
+from PIL import Image
+from torchvision.transforms import Compose, ConvertImageDtype, PILToTensor
 
 from neuralcompression.models import FactorizedPriorAutoencoder
-import skimage.data
-import skimage.transform
 
-image = skimage.data.cat()
+x = Image.open("./image.png")
 
-image = skimage.transform.resize(image, (256, 256))
+transform = Compose(
+    [
+        PILToTensor(),
+        ConvertImageDtype(torch.float32),
+    ]
+)
 
-input_shape = image.shape
+x = transform(x).unsqueeze(0)
 
-r, c, channels = image.shape
+matplotlib.pyplot.imshow(x.squeeze().permute(1, 2, 0))
 
-matplotlib.pyplot.imshow(image)
+matplotlib.pyplot.tight_layout()
 
 matplotlib.pyplot.show()
 
 # %%
-# Using an image compression model
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Model usage
+# ~~~~~~~~~~~
 #
 # The neuralcompression.models module provides a variety of popular image
 # compression models. For example,  FactorizedPrior, ScaleHyperprior, and
@@ -48,7 +52,7 @@ matplotlib.pyplot.show()
 # FactorizedPrior model (128 compression filters, 192 network filters, and a
 # distortion trade-off of 0.01):
 
-network = FactorizedPriorAutoencoder(128, 192)
+network = FactorizedPriorAutoencoder()
 
 # %%
 # Pre-training
@@ -66,12 +70,6 @@ url = "https://dl.fbaipublicfiles.com/neuralcompression/models/factorized_prior_
 state_dict = torch.hub.load_state_dict_from_url(url)
 
 network.load_state_dict(state_dict, strict=False)
-
-image = numpy.reshape(image, (channels, r, c))
-
-image = numpy.expand_dims(image, 0)
-
-x = torch.tensor(image).to(torch.float32)
 
 # %%
 # Compress an image to a bit-stream
@@ -95,10 +93,12 @@ with torch.no_grad():
 with torch.no_grad():
     x_hat = network.decompress(strings, broadcast_size)
 
-x_hat = x_hat.squeeze()
+matplotlib.pyplot.imshow(x_hat.squeeze().permute(1, 2, 0))
 
-x_hat = torch.reshape(x_hat, input_shape)
-
-matplotlib.pyplot.imshow(x_hat)
+matplotlib.pyplot.tight_layout()
 
 matplotlib.pyplot.show()
+
+# %%
+# Evaluation
+# ~~~~~~~~~~
