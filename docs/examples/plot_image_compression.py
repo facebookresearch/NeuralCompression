@@ -147,7 +147,3 @@ matplotlib.pyplot.imshow(x_hat.squeeze().permute(1, 2, 0))
 matplotlib.pyplot.tight_layout()
 
 matplotlib.pyplot.show()
-
-# %%
-# Evaluation
-# ~~~~~~~~~~
