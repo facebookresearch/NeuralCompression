@@ -61,6 +61,55 @@ network = FactorizedPriorAutoencoder()
 # NeuralCompression includes pre-trained weights for popular quality values.
 # For the FactorizedPrior model, the following weights are available:
 #
+# .. list-table::
+#    :header-rows: 1
+#
+#    * - Data
+#      - :math:`N`
+#      - :math:`M`
+#      - Metric
+#      - :math:`\lambda`
+#    * - Vimeo90kSeptuplet
+#      - :math:`128`
+#      - :math:`192`
+#      - MSE
+#      - :math:`0.0015625`
+#    * - Vimeo90kSeptuplet
+#      - :math:`128`
+#      - :math:`192`
+#      - MSE
+#      - :math:`0.003125`
+#    * - Vimeo90kSeptuplet
+#      - :math:`128`
+#      - :math:`192`
+#      - MSE
+#      - :math:`0.00625`
+#    * - Vimeo90kSeptuplet
+#      - :math:`128`
+#      - :math:`192`
+#      - MSE
+#      - :math:`0.0125`
+#    * - Vimeo90kSeptuplet
+#      - :math:`128`
+#      - :math:`192`
+#      - MSE
+#      - :math:`0.025`
+#    * - Vimeo90kSeptuplet
+#      - :math:`192`
+#      - :math:`320`
+#      - MSE
+#      - :math:`0.05`
+#    * - Vimeo90kSeptuplet
+#      - :math:`192`
+#      - :math:`320`
+#      - MSE
+#      - :math:`0.1`
+#    * - Vimeo90kSeptuplet
+#      - :math:`192`
+#      - :math:`320`
+#      - MSE
+#      - :math:`0.2`
+#
 # For other models, see the appropriate model documentation. Each model’s
 # documentation includes a rate-distortion curve to illustrate the performance
 # of the weights.
