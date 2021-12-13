@@ -6,7 +6,7 @@
 import torch.hub
 
 import neuralcompression.models
-from ._prior_autoencoder import _PriorAutoencoder
+from projects.variational_image_compression.lightning import _PriorAutoencoder
 
 
 class FactorizedPriorAutoencoder(_PriorAutoencoder):
@@ -75,6 +75,8 @@ class FactorizedPriorAutoencoder(_PriorAutoencoder):
                 + str(distortion_trade_off).replace(".", "_")
                 + ".pth"
             )
+
+            print(url)
 
             state_dict = torch.hub.load_state_dict_from_url(url)
 
