@@ -3,9 +3,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.10"
       - run: conda init bash && exec $SHELL && conda activate base
       - run: conda run pip install --editable ".[dev, docs]"
       - run: conda run python setup.py build sdist
