@@ -9,5 +9,10 @@ jobs:
       - run: conda init bash && exec $SHELL && conda activate base
       - run: conda run pip install --editable ".[dev, docs]"
       - run: conda run python setup.py build sdist
+      - uses: pypa/gh-action-pypi-publish@v1.4.2
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip_existing: true
+          user: __token__
 on:
   pull_request:
