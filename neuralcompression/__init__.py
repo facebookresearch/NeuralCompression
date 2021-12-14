@@ -8,5 +8,3 @@ __author__ = "Facebook AI Research"
 __license__ = "MIT"
 __homepage__ = ""
 __docs__ = "A collection of tools for neural compression enthusiasts."
-
-from . import data, entropy_coders, functional, layers, metrics, models

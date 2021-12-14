@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import scipy
 
-import neuralcompression as nc
+import neuralcompression.entropy_coders
 
 
 def freqs_to_cdf(freqs, precision=16):
@@ -77,8 +77,10 @@ def test_arithmetic_coder_identity(shape, alphabet_size):
         symbol = jnp.argmin(value >= cdf_state[0]) - 1
         return cdf_state[0][symbol], cdf_state[0][symbol + 1], symbol, cdf_state
 
-    compressed = nc.entropy_coders.jac.encode(messages, cdf_fun, cdf_state)
-    decompressed = nc.entropy_coders.jac.decode(
+    compressed = neuralcompression.entropy_coders.jac.encode(
+        messages, cdf_fun, cdf_state
+    )
+    decompressed = neuralcompression.entropy_coders.jac.decode(
         compressed, jnp.array([message_len] * batch_size), inverse_cdf_fun, cdf_state
     )
 
@@ -116,8 +118,10 @@ def test_arithmetic_coder_entropy(shape, alphabet_size):
         symbol = jnp.argmin(value >= cdf_state[0]) - 1
         return cdf_state[0][symbol], cdf_state[0][symbol + 1], symbol, cdf_state
 
-    compressed = nc.entropy_coders.jac.encode(messages, cdf_fun, cdf_state)
-    decompressed = nc.entropy_coders.jac.decode(
+    compressed = neuralcompression.entropy_coders.jac.encode(
+        messages, cdf_fun, cdf_state
+    )
+    decompressed = neuralcompression.entropy_coders.jac.decode(
         compressed, jnp.array([message_len] * batch_size), inverse_cdf_fun, cdf_state
     )
 
@@ -157,8 +161,10 @@ def test_arithmetic_coder_adaptive(shape, alphabet_size):
         symbol = jnp.argmin(value >= cdf) - 1
         return cdf[symbol], cdf[symbol + 1], symbol, (freqs.at[symbol].add(1),)
 
-    compressed = nc.entropy_coders.jac.encode(messages, cdf_fun, cdf_state)
-    decompressed = nc.entropy_coders.jac.decode(
+    compressed = neuralcompression.entropy_coders.jac.encode(
+        messages, cdf_fun, cdf_state
+    )
+    decompressed = neuralcompression.entropy_coders.jac.decode(
         compressed, jnp.array([message_len] * batch_size), inverse_cdf_fun, cdf_state
     )
 
@@ -193,8 +199,10 @@ def test_arithmetic_coder_skewed(base_mass, batch_size, alphabet_size):
         symbol = jnp.argmin(value >= cdf) - 1
         return cdf[symbol], cdf[symbol + 1], symbol, cdf_state
 
-    compressed = nc.entropy_coders.jac.encode(messages, cdf_fun, cdf_state)
-    decompressed = nc.entropy_coders.jac.decode(
+    compressed = neuralcompression.entropy_coders.jac.encode(
+        messages, cdf_fun, cdf_state
+    )
+    decompressed = neuralcompression.entropy_coders.jac.decode(
         compressed, jnp.array([message_len] * batch_size), inverse_cdf_fun, cdf_state
     )
 
@@ -229,14 +237,14 @@ def test_craystack_coder_identity(shape, alphabet_size, skewed):
             rng.integers(low=0, high=alphabet_size, size=shape, dtype=np.uint8)
         )
 
-    codec = nc.entropy_coders.craystack.fixed_array_cdf_codec(
+    codec = neuralcompression.entropy_coders.craystack.fixed_array_cdf_codec(
         jnp.tile(freqs_to_cdf(freqs), (batch_size, interleave_level, 1)).astype(
             jnp.uint32
         )
     )
 
-    compressed = nc.entropy_coders.craystack.encode(messages, codec)[0]
-    decompressed = nc.entropy_coders.craystack.decode(
+    compressed = neuralcompression.entropy_coders.craystack.encode(messages, codec)[0]
+    decompressed = neuralcompression.entropy_coders.craystack.decode(
         compressed,
         message_len,
         messages.shape[2:],
@@ -268,35 +276,35 @@ def test_partial_code_decode(shape1, shape2, alphabet_size):
         rng.integers(low=0, high=alphabet_size, size=shape2, dtype=np.uint8)
     )
 
-    codec1 = nc.entropy_coders.craystack.fixed_array_cdf_codec(
+    codec1 = neuralcompression.entropy_coders.craystack.fixed_array_cdf_codec(
         jnp.tile(freqs_to_cdf(freqs), (batch_size, interleave_level1, 1)).astype(
             jnp.uint32
         )
     )
 
-    codec2 = nc.entropy_coders.craystack.fixed_array_cdf_codec(
+    codec2 = neuralcompression.entropy_coders.craystack.fixed_array_cdf_codec(
         jnp.tile(freqs_to_cdf(freqs), (batch_size, interleave_level2, 1)).astype(
             jnp.uint32
         )
     )
 
-    compressed = nc.entropy_coders.craystack.encode(
+    compressed = neuralcompression.entropy_coders.craystack.encode(
         messages1, codec1, tail_capacity=tail_capacity
     )[0]
-    compressed = nc.entropy_coders.craystack.encode(
+    compressed = neuralcompression.entropy_coders.craystack.encode(
         messages2,
         codec2,
         start_buffers=compressed,
         tail_capacity=tail_capacity,
     )[0]
-    decompressed2, compressed, _ = nc.entropy_coders.craystack.decode(
+    decompressed2, compressed, _ = neuralcompression.entropy_coders.craystack.decode(
         compressed,
         message_len2,
         messages2.shape[2:],
         codec2,
         tail_capacity=tail_capacity,
     )
-    decompressed1, _, _ = nc.entropy_coders.craystack.decode(
+    decompressed1, _, _ = neuralcompression.entropy_coders.craystack.decode(
         compressed,
         message_len1,
         messages1.shape[2:],
@@ -347,15 +355,17 @@ def test_rans_coder_adaptive(shape, alphabet_size):
 
         return cdf[symbols], cdf[symbols + 1], symbols, (freqs,)
 
-    codec = nc.entropy_coders.craystack.default_rans_codec(
+    codec = neuralcompression.entropy_coders.craystack.default_rans_codec(
         cdf_fun, inverse_cdf_fun, cdf_state
     )
 
-    compressed, cdf_state = nc.entropy_coders.craystack.encode(messages, codec)
-    codec = nc.entropy_coders.craystack.default_rans_codec(
+    compressed, cdf_state = neuralcompression.entropy_coders.craystack.encode(
+        messages, codec
+    )
+    codec = neuralcompression.entropy_coders.craystack.default_rans_codec(
         cdf_fun, inverse_cdf_fun, cdf_state
     )
-    decompressed = nc.entropy_coders.craystack.decode(
+    decompressed = neuralcompression.entropy_coders.craystack.decode(
         compressed,
         message_len,
         messages.shape[2:],
@@ -382,7 +392,9 @@ def test_distinct_interleaved_freqs(
             size=(batch_size, interleave_levels, alphabet_size),
         )
     )
-    codec = nc.entropy_coders.craystack.fixed_array_cdf_codec(freqs_to_cdf(freqs))
+    codec = neuralcompression.entropy_coders.craystack.fixed_array_cdf_codec(
+        freqs_to_cdf(freqs)
+    )
     messages = jnp.array(
         rng.integers(
             low=0,
@@ -391,8 +403,8 @@ def test_distinct_interleaved_freqs(
             dtype=np.int64,
         )
     )
-    decompressed = nc.entropy_coders.craystack.decode(
-        nc.entropy_coders.craystack.encode(messages, codec)[0],
+    decompressed = neuralcompression.entropy_coders.craystack.decode(
+        neuralcompression.entropy_coders.craystack.encode(messages, codec)[0],
         message_len,
         messages.shape[2:],
         codec,
@@ -458,23 +470,25 @@ def test_bitsback_ans_codec_identity(
         )
     )
 
-    latent_prior_codec = nc.entropy_coders.craystack.fixed_array_cdf_codec(
-        cdf_latent_prior, message_dtype=message_dtype
+    latent_prior_codec = (
+        neuralcompression.entropy_coders.craystack.fixed_array_cdf_codec(
+            cdf_latent_prior, message_dtype=message_dtype
+        )
     )
 
     def latent_posterior_codec_maker(symbols):
-        return nc.entropy_coders.craystack.fixed_array_cdf_codec(
+        return neuralcompression.entropy_coders.craystack.fixed_array_cdf_codec(
             cdf_latent_posterior[symbols],
             allow_empty_pops=True,
             message_dtype=message_dtype,
         )
 
     def obs_codec_maker(latents):
-        return nc.entropy_coders.craystack.fixed_array_cdf_codec(
+        return neuralcompression.entropy_coders.craystack.fixed_array_cdf_codec(
             cdf_obs[latents], message_dtype=message_dtype
         )
 
-    codec = nc.entropy_coders.craystack.bitsback_ans_codec(
+    codec = neuralcompression.entropy_coders.craystack.bitsback_ans_codec(
         latent_prior_codec,
         latent_posterior_codec_maker,
         obs_codec_maker,
@@ -482,8 +496,8 @@ def test_bitsback_ans_codec_identity(
         message_dtype,
     )
 
-    decompressed = nc.entropy_coders.craystack.decode(
-        nc.entropy_coders.craystack.encode(messages, codec)[0],
+    decompressed = neuralcompression.entropy_coders.craystack.decode(
+        neuralcompression.entropy_coders.craystack.encode(messages, codec)[0],
         message_len,
         messages.shape[2:],
         codec,
