@@ -4,6 +4,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: conda init bash && exec $SHELL && conda activate base
+      - run: conda run pip install --upgrade build pip setuptools wheel
       - run: conda run pip install --editable ".[dev, docs]"
       - run: conda run python -m build
       - uses: pypa/gh-action-pypi-publish@v1.4.2
