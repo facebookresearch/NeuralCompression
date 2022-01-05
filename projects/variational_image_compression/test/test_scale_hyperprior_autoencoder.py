@@ -10,6 +10,7 @@ from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 import neuralcompression.models
+
 from ..lightning import ScaleHyperpriorAutoencoder
 
 

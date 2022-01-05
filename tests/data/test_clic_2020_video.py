@@ -7,13 +7,14 @@ import random
 
 import pytest
 import pytorchvideo.data.clip_sampling
+from utils import create_random_image
 
 from neuralcompression.data import CLIC2020Video
-from utils import create_random_image
 
 
 @pytest.fixture
 def data(tmp_path):
+    num_frames = 9
     videos = [
         "Animation_1080P-01b3",
         "Animation_1080P-05f8",
@@ -25,9 +26,7 @@ def data(tmp_path):
 
         directory.mkdir(parents=True)
 
-        frames = random.choice(range(16))
-
-        for index in range(frames):
+        for index in range(num_frames):
             path = directory.joinpath(f"{index}_y.png")
 
             create_random_image(path, (3, 224, 224))

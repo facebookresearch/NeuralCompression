@@ -5,13 +5,12 @@
 
 from pathlib import Path
 
+import _optical_flow_to_color
 import hydra
 import numpy as np
 import pytorch_lightning as pl
 import torch
 import wandb
-
-import _optical_flow_to_color
 from data_module import Vimeo90kSeptupletLightning
 from dvc_module import DvcModule
 from omegaconf import DictConfig, OmegaConf

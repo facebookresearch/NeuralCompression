@@ -10,6 +10,7 @@ from torch import Size, Tensor
 from torch.nn import Conv2d, ConvTranspose2d, LeakyReLU, Module, Sequential
 
 from neuralcompression.layers import HyperAnalysisTransformation2D
+
 from ._hyperprior_autoencoder import HyperpriorAutoencoder
 
 

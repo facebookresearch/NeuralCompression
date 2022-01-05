@@ -4,14 +4,14 @@
 # LICENSE file in the root directory of this source tree.
 
 import math
-from typing import Any, Tuple, List
+from typing import Any, List, Tuple
 
 import torch
 import torch.nn.functional as F
 from compressai.entropy_models import EntropyBottleneck
 from pytorch_lightning import LightningModule
 from pytorch_lightning.utilities.types import EVAL_DATALOADERS, TRAIN_DATALOADERS
-from torch import Tensor, Size
+from torch import Size, Tensor
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 

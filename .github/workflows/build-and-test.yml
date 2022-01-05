@@ -77,7 +77,7 @@ jobs:
           flake8 --version
           flake8 neuralcompression tests projects
           isort --version
-          isort neuralcompression tests projects
+          isort --check-only neuralcompression tests projects
       - name: Install NeuralCompression
         run: |
           python setup.py bdist_wheel

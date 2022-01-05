@@ -16,6 +16,7 @@ from neuralcompression.layers import (
     HyperAnalysisTransformation2D,
     HyperSynthesisTransformation2D,
 )
+
 from ._prior_autoencoder import PriorAutoencoder
 
 

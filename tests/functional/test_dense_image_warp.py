@@ -8,9 +8,9 @@ import pytest
 import tensorflow
 import tensorflow_addons
 import torch
+from utils import create_input
 
 from neuralcompression.functional import dense_image_warp
-from utils import create_input
 
 
 @pytest.mark.parametrize(

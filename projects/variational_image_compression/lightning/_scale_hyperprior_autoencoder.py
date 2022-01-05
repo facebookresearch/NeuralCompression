@@ -6,6 +6,7 @@
 import torch.hub
 
 import neuralcompression.models
+
 from ._prior_autoencoder import _PriorAutoencoder
 
 

@@ -7,10 +7,10 @@ import numpy
 import pytest
 import tensorflow
 import torch
+from utils import rand_im
 
 from neuralcompression.functional import multiscale_structural_similarity
 from neuralcompression.metrics import MultiscaleStructuralSimilarity
-from utils import rand_im
 
 
 def tf_ms_ssim(x, y):
