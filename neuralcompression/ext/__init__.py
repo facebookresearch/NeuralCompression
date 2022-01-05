@@ -7,8 +7,10 @@ from torch.utils.cpp_extension import load
 from pathlib import Path
 
 print(str(Path(__file__).resolve().parent / "pmf_to_quantized_cdf_py.cc"))
-pmf_to_quantized_cdf = load(
-    name="pmf_to_quantized_cdf",
+_pmf_to_quantized_cdf = load(
+    name="_pmf_to_quantized_cdf",
     sources=[str(Path(__file__).resolve().parent / "pmf_to_quantized_cdf_py.cc")],
     verbose=True,
 )
+
+from _pmf_to_quantized_cdf import pmf_to_quantized_cdf
