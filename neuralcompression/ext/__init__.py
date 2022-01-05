@@ -13,4 +13,4 @@ _pmf_to_quantized_cdf = load(
     verbose=True,
 )
 
-from _pmf_to_quantized_cdf import pmf_to_quantized_cdf
+from _pmf_to_quantized_cdf import pmf_to_quantized_cdf  # noqa: E402
