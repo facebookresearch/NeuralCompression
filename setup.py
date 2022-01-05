@@ -5,8 +5,4 @@
 
 from setuptools import setup
 
-setup(
-    packages=["neuralcompression"],
-    package_dir={"neuralcompression": "neuralcompression"},
-    package_data={"neuralcompression": ["ext/*.cc"]},
-)
+setup()
