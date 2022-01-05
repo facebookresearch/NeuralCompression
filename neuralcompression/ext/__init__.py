@@ -3,4 +3,12 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from ._pmf_to_quantized_cdf import pmf_to_quantized_cdf
+from torch.utils.cpp_extension import load
+from pathlib import Path
+
+print(str(Path(__file__).resolve().parent / "pmf_to_quantized_cdf_py.cc"))
+pmf_to_quantized_cdf = load(
+    name="pmf_to_quantized_cdf",
+    sources=[str(Path(__file__).resolve().parent / "pmf_to_quantized_cdf_py.cc")],
+    verbose=True,
+)
