@@ -3,8 +3,6 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import random
-
 import pytest
 import pytorchvideo.data.clip_sampling
 from utils import create_random_image
