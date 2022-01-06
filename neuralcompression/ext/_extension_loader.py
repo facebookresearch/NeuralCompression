@@ -4,8 +4,9 @@
 # LICENSE file in the root directory of this source tree.
 
 from pathlib import Path
-from torch.utils.cpp_extension import load
 from typing import List
+
+from torch.utils.cpp_extension import load
 
 
 def load_extension(extension_name: str, extension_folder: Path, file_names: List[str]):
