@@ -8,8 +8,8 @@ import torch
 import torch.testing
 from torch import Size
 
-from neuralcompression.layers import ContinuousEntropy
 from neuralcompression.distributions import NoisyNormal
+from neuralcompression.layers import ContinuousEntropy
 
 
 class TestContinuousEntropy:

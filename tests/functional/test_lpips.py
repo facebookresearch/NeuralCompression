@@ -6,10 +6,10 @@
 import numpy as np
 import pytest
 import torch
+from utils import rand_im
 
 from neuralcompression.functional import lpips
 from neuralcompression.metrics import LearnedPerceptualImagePatchSimilarity
-from utils import rand_im
 
 
 @pytest.mark.parametrize(

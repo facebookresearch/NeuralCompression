@@ -6,11 +6,7 @@
 from compressai.entropy_models import EntropyBottleneck
 from torch import Tensor
 
-from neuralcompression.layers import (
-    AnalysisTransformation2D,
-    SynthesisTransformation2D,
-)
-
+from neuralcompression.layers import AnalysisTransformation2D, SynthesisTransformation2D
 from neuralcompression.models import PriorAutoencoder
 
 

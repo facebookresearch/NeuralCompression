@@ -8,10 +8,10 @@ import pytest
 import tensorflow as tf
 import tensorflow_addons as tfa
 import torch
+from utils import create_input
 
 import neuralcompression.functional as ncF
 from neuralcompression.functional import optical_flow_to_color
-from utils import create_input
 
 
 @pytest.mark.parametrize(
