@@ -41,11 +41,11 @@ First, clone the repository and navigate to the NeuralCompression root
 directory and install the package in development mode by running:
 
 ```bash
-pip install --editable ".[dev, docs]"
+pip install --editable ".[tests]"
 ```
 
-If you are not interested in matching the test environment, then you only need
-to apply the second step to install.
+If you are not interested in matching the test environment, then you can just
+apply `pip install -e .`.
 
 ## Repository Structure
 
