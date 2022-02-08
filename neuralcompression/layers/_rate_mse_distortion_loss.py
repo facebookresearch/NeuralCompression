@@ -63,7 +63,9 @@ class RateMSEDistortionLoss(Module):
         factor = -math.log(2) * x.shape[0] * x.shape[2] * x.shape[3]
 
         rate = (
-            torch.stack([torch.sum(probability) for probability in probabilities]).sum()
+            torch.stack(
+                [torch.log(probability).sum() for probability in probabilities]
+            ).sum()
             / factor
         )
 
