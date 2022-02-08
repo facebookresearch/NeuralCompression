@@ -56,16 +56,16 @@ class RateMSEDistortionLoss(Module):
             probabilities: reconstruction likelihoods.
             x: encoder input.
         """
-        n, _, h, w = x.size()
+        if not x.ndim == 4:
+            raise ValueError("RateMSEDistortionLoss only defined for 4D inputs.")
 
-        bpps = []
+        # log-2 conversion and number of pixels
+        factor = -math.log(2) * x.shape[0] * x.shape[2] * x.shape[3]
 
-        for probability in probabilities:
-            pixels = -math.log(2) * (n * h * w)
-
-            bpps += [float(torch.log(probability).sum() / pixels)]
-
-        rate = torch.tensor(torch.sum(torch.tensor(bpps)), device=x.device)
+        rate = (
+            torch.cat([torch.sum(probability) for probability in probabilities]).sum()
+            / factor
+        )
 
         distortion = self.mse.forward(x_hat, x)
 
