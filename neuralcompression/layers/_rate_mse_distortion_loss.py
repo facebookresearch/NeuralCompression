@@ -71,10 +71,6 @@ class RateMSEDistortionLoss(Module):
 
         distortion = self.mse.forward(x_hat, x)
 
-        rate_distortion = rate + distortion
-
         return RateDistortionLoss(
-            rate,
-            distortion,
-            Tensor([self.trade_off * self.maximum ** 2 * rate_distortion]),
+            rate, distortion, self.trade_off * self.maximum ** 2 * distortion + rate
         )
