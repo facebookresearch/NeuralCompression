@@ -8,13 +8,13 @@ from typing import Optional, Tuple, Union
 
 import torch
 import torch.nn
+from compressai.entropy_models.entropy_models import pmf_to_quantized_cdf
 from torch import IntTensor, Size, Tensor
 from torch.distributions import Distribution
 from torch.nn import Module
 
 import neuralcompression.functional as ncF
 from neuralcompression.distributions import UniformNoise
-from compressai.entropy_models.entropy_models import pmf_to_quantized_cdf
 
 
 class ContinuousEntropy(Module):
