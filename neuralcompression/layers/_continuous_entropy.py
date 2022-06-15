@@ -14,6 +14,7 @@ from torch.nn import Module
 
 import neuralcompression.functional as ncF
 from neuralcompression.distributions import UniformNoise
+from compressai.entropy_models.entropy_models import pmf_to_quantized_cdf
 
 
 class ContinuousEntropy(Module):
@@ -362,7 +363,7 @@ class ContinuousEntropy(Module):
 
             pmf = torch.cat([pmf, overflow], dim=0)
 
-            cdf = ncF.pmf_to_quantized_cdf(
+            cdf = pmf_to_quantized_cdf(
                 pmf,
                 self._range_coder_precision,
             )
