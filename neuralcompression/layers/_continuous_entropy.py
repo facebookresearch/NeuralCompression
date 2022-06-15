@@ -8,6 +8,7 @@ from typing import Optional, Tuple, Union
 
 import torch
 import torch.nn
+from compressai.entropy_models.entropy_models import pmf_to_quantized_cdf
 from torch import IntTensor, Size, Tensor
 from torch.distributions import Distribution
 from torch.nn import Module
@@ -362,7 +363,7 @@ class ContinuousEntropy(Module):
 
             pmf = torch.cat([pmf, overflow], dim=0)
 
-            cdf = ncF.pmf_to_quantized_cdf(
+            cdf = pmf_to_quantized_cdf(
                 pmf,
                 self._range_coder_precision,
             )

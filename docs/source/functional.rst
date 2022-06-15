@@ -17,6 +17,5 @@ neuralcompression.functional
 .. autofunction:: multiscale_structural_similarity
 .. autofunction:: ndtr
 .. autofunction:: optical_flow_to_color
-.. autofunction:: pmf_to_quantized_cdf
 .. autofunction:: quantization_offset
 .. autofunction:: survival_function
