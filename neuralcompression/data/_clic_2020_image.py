@@ -90,7 +90,7 @@ class CLIC2020Image(Dataset):
         if download:
             self.download()
 
-        self.paths = [*self.root.joinpath(self.split).glob("*.png")]
+        self.paths = sorted([*self.root.joinpath(self.split).glob("*.png")])
 
     def __getitem__(self, index: int) -> Image:
         path = self.paths[index]
