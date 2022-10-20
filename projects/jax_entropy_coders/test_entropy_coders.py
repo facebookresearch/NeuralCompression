@@ -3,13 +3,12 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+import craystack
 import jax.numpy as jnp
+import jax_arithmetic_coder as jac
 import numpy as np
 import pytest
 import scipy
-
-import jax_arithmetic_coder as jac
-import craystack
 
 
 def freqs_to_cdf(freqs, precision=16):
