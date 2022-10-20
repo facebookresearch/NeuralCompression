@@ -1,0 +1,3 @@
+neuralcompression
+jaxlib==0.1.75
+jax==0.2.26
