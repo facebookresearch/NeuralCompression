@@ -1,0 +1,6 @@
+num_samples: 10000
+model_path: outputs/pretrained/cifar_vlb.pt
+
+defaults:
+- imagenet
+- _self_

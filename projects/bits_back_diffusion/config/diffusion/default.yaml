@@ -1,0 +1,10 @@
+_target_: bits_back_diffusion.script_util.create_gaussian_diffusion
+steps: 4000
+learn_sigma: true
+sigma_small: false
+noise_schedule: cosine
+use_kl: true
+predict_xstart: false
+rescale_timesteps: true
+rescale_learned_sigmas: true
+timestep_respacing:

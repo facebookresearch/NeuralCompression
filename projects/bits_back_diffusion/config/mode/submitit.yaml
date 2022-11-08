@@ -1,0 +1,17 @@
+# @package _global_
+defaults:
+- override /hydra/launcher: submitit_slurm
+
+hydra:
+  callbacks:
+    log_job_return:
+      _target_: hydra.experimental.callbacks.LogJobReturnCallback
+  launcher:
+    gpus_per_node: 1
+    tasks_per_node: ${hydra.launcher.gpus_per_node}
+    nodes: 1
+    stderr_to_stdout: true
+    max_num_timeout: 4
+    timeout_min: 4320
+    additional_parameters:
+      export: PATH,USER,SUBMITIT_EXECUTOR,SLURM_MPI_TYPE=pmi2,HYDRA_FULL_ERROR=1

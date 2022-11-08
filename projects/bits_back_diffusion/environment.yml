@@ -1,0 +1,25 @@
+name: bits_back_diffusion
+channels:
+- plotly
+- conda-forge
+- pytorch
+- defaults
+dependencies:
+- cudatoolkit=11.3.1
+- mpi4py=3.1.3
+- mpich=4.0.2
+- pillow=9.2.0
+- pip=22.1.2
+- plotly=5.10.0
+- python=3.8.13
+- pytest=7.1.2
+- pytorch=1.12.1
+- torchmetrics=0.9.3
+- torchvision=0.13.1
+- wandb=0.13.1
+- pip:
+  - hydra-core==1.2.0
+  - hydra-submitit-launcher==1.2.0
+  - kaggle==1.5.12
+  - --editable=git+https://github.com/openai/improved-diffusion.git@783b6740edb79fdb7d063250db2c51cc9545dcd1#egg=improved_diffusion
+  - --editable=git+https://github.com/j-towns/craystack.git@f1b68511bbcb24dde3bc6b6d374ca62e038fba27#egg=craystack

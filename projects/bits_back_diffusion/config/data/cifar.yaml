@@ -1,0 +1,10 @@
+train:
+  image_size: 32
+  data_dir: datasets/cifar10/train_32x32
+
+val:
+  data_dir: datasets/cifar10/valid_32x32
+
+defaults:
+- imagenet
+- _self_

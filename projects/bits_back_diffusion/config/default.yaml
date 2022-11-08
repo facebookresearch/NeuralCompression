@@ -1,0 +1,17 @@
+hydra:
+  run:
+    dir: outputs/${hydra.job.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ${hydra.run.dir}
+    subdir: ${hydra.job.override_dirname}
+  job:
+    chdir: true
+    config:
+      override_dirname:
+        exclude_keys:
+        - evaluator.model_path
+        - trainer.resume_checkpoint
+        - encode_checkpoint
+        - decode_checkpoint
+        - mode
+        kv_sep: .

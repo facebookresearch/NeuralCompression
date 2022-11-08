@@ -1,0 +1,31 @@
+check: true
+save_interval: 5000
+decode_checkpoint:
+encode_checkpoint:
+
+codec:
+  _target_: bits_back_diffusion.codec.BitsBackCodec
+  model:
+    _target_: bits_back_diffusion.codec.DiffusionModel
+    use_log_variance: false
+  data_shape:
+  - ${data.val.batch_size}
+  - 3
+  - ${data.val.image_size}
+  - ${data.val.image_size}
+  latent_prec: 18
+  prior_prec: 10
+  obs_prec: 24
+  data_prec: 8
+  data_min: -1.0
+  data_max: 1.0
+  clip_stdd: 1e-6
+  track: false
+
+defaults:
+- default
+- data: cifar
+- model: ${data}
+- diffusion: respaced
+- evaluator: ${data}
+- _self_
