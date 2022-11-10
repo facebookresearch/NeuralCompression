@@ -133,7 +133,7 @@ We obtain the following results (in bits-per-dimension) using the pretrained mod
 |----------------------|-------|----------------|
 | 100 steps            | 3.648 | 3.649          |
 | 250 steps            | 3.600 | 3.600          |
-| 500 steps            | 3.581 | xxxxx          |
-| 1000 steps           | 3.565 |                |
-| 2000 steps           | xxxxx |                |
+| 500 steps            | 3.581 | 3.582          |
+| 1000 steps           | 3.565 | 3.567          |
+| 2000 steps           | 3.552 |                |
 | 4000 steps           | 3.544 |                |
