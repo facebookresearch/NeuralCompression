@@ -1,0 +1,15 @@
+train:
+  _target_: improved_diffusion.image_datasets.load_data
+  batch_size: ${divide_by_n_proc:128}
+  image_size: 64
+  data_dir: datasets/imagenet/train_64x64
+  class_cond: ${model.class_cond}
+  deterministic: false
+
+val:
+  _target_: ${data.train._target_}
+  batch_size: 250
+  image_size: ${data.train.image_size}
+  data_dir: datasets/imagenet/valid_64x64
+  class_cond: ${model.class_cond}
+  deterministic: true

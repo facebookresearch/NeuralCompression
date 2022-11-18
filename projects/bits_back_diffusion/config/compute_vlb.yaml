@@ -1,0 +1,7 @@
+defaults:
+- default
+- data: cifar
+- model: ${data}
+- diffusion: respaced
+- evaluator: ${data}
+- _self_

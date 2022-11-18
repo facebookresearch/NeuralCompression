@@ -1,0 +1,6 @@
+dropout: 0.3
+num_res_blocks: 3
+
+defaults:
+- imagenet
+- _self_

@@ -1,0 +1,23 @@
+trainer:
+  _target_: bits_back_diffusion.script_util.TrainLoop
+  batch_size: ${data.train.batch_size}
+  microbatch: -1  # -1 disables microbatches
+  lr: 1e-4
+  ema_rate: '0.9999' # comma-separated list of EMA values
+  log_interval: 10
+  save_interval: 10000
+  resume_checkpoint:
+  use_fp16: false
+  fp16_scale_growth: 1e-3
+  schedule_sampler:
+    _target_: improved_diffusion.resample.create_named_schedule_sampler
+    name: loss-second-moment
+  weight_decay: 0.0
+  lr_anneal_steps: 0
+
+defaults:
+- default
+- data: cifar
+- model: ${data}
+- diffusion: default
+- _self_
