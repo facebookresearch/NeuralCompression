@@ -21,8 +21,6 @@ from typing import Dict, List, Optional, Sequence, Tuple
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torchvision.transforms.functional as tvtF
 from compressai.entropy_models import EntropyBottleneck, GaussianConditional
 from compressai.layers import GDN as GeneralizedDivisiveNormalization
 from compressai.models.google import get_scale_table
@@ -58,40 +56,6 @@ def _deconv(
     )
 
 
-def _resize(x: Tensor, target_shape: Sequence[int]) -> Tensor:
-    """
-    Resizes a tensor to the target shape.
-
-    Given a tensor of shape [batch_size, num_channels, height, width] and
-    a [height, width] target_shape, this function resizes the input
-    tensor to the taget shape using center cropping if the input is larger
-    than the target shape, and using nearest neighbour interpolation if
-    the input is smaller than the target shape.
-
-    Args:
-        x: the tensor to resize, of shape [batch_size, num_channels,
-            height, width].
-        target_shape: a [height, width] pair to reshape the input to.
-
-    Returns:
-        the resized tensor.
-    """
-
-    height, width = x.shape[2:]
-    target_height, target_width = target_shape
-
-    if height >= target_height and width >= target_width:
-        return tvtF.center_crop(x, target_shape)
-    elif height <= target_height and width <= target_width:
-        return F.interpolate(x, target_shape, mode="nearest")
-    else:
-        raise ValueError(
-            f"Input tensor (with shape {x.shape}) is larger than the"
-            f" target shape of {target_shape} along one height/width axis"
-            " and is smaller than the target shape along the other axis."
-        )
-
-
 class _AbsoluteValue(nn.Module):
     def forward(self, inp: Tensor) -> Tensor:
         return torch.abs(inp)
@@ -105,7 +69,7 @@ class ScaleHyperpriorImageAnalysis(nn.Module):
         network_channels, compression_channels: see ScaleHyperprior
     """
 
-    def __init__(self, network_channels: int, compression_channels: int):
+    def __init__(self, network_channels: int, compression_channels: int) -> None:
         super().__init__()
         self.model = nn.Sequential(
             _conv(3, network_channels, kernel_size=5, stride=2),
@@ -116,6 +80,11 @@ class ScaleHyperpriorImageAnalysis(nn.Module):
             GeneralizedDivisiveNormalization(network_channels),
             _conv(network_channels, compression_channels, kernel_size=5, stride=2),
         )
+        self._num_down = 4
+
+    @property
+    def num_downsampling_layers(self) -> int:
+        return self._num_down
 
     def forward(self, x: Tensor) -> Tensor:
         return self.model(x)
@@ -153,7 +122,7 @@ class ScaleHyperpriorHyperAnalysis(nn.Module):
         network_channels, compression_channels: see ScaleHyperprior
     """
 
-    def __init__(self, network_channels: int, compression_channels: int):
+    def __init__(self, network_channels: int, compression_channels: int) -> None:
         super().__init__()
         self.model = nn.Sequential(
             _AbsoluteValue(),
@@ -163,6 +132,11 @@ class ScaleHyperpriorHyperAnalysis(nn.Module):
             nn.ReLU(inplace=True),
             _conv(network_channels, network_channels, kernel_size=5, stride=2),
         )
+        self._num_down = 3
+
+    @property
+    def num_downsampling_layers(self) -> int:
+        return self._num_down
 
     def forward(self, x: Tensor) -> Tensor:
         return self.model(x)
@@ -263,7 +237,6 @@ class ScaleHyperprior(nn.Module):
                 image_analysis,
                 image_synthesis,
                 hyper_analysis,
-                hyper_analysis,
                 hyper_synthesis,
             ]
             and None in [network_channels, compression_channels]
@@ -320,7 +293,14 @@ class ScaleHyperprior(nn.Module):
         if hyper_bottleneck is not None:
             self.hyper_bottleneck = hyper_bottleneck
         else:
+            assert (
+                network_channels is not None
+            ), "<network_channels> and <hyper_bottleneck> cannot both be None"
             self.hyper_bottleneck = EntropyBottleneck(channels=network_channels)
+
+    def _pad(self, images: Tensor, sizes: Sequence[int], factor: int):
+        pad_h, pad_w = [(factor - (s % factor)) % factor for s in sizes]
+        return torch.nn.functional.pad(images, (0, pad_w, 0, pad_h), "reflect")
 
     def forward(self, images: Tensor) -> Tuple[Tensor, Tensor, Tensor]:
         """
@@ -349,7 +329,6 @@ class ScaleHyperprior(nn.Module):
                 3.  The likelihoods assigned by the hyper bottleneck layer
                     to the quantized hyper latent.
         """
-
         latent = self.image_analysis(images)
         hyper_latent = self.hyper_analysis(latent)
         noisy_hyper_latent, hyper_latent_likelihoods = self.hyper_bottleneck(
@@ -357,15 +336,8 @@ class ScaleHyperprior(nn.Module):
         )
         scales = self.hyper_synthesis(noisy_hyper_latent)
 
-        if scales.shape != latent.shape:
-            scales = _resize(scales, latent.shape[2:])
-
         noisy_latent, latent_likelihoods = self.image_bottleneck(latent, scales)
         reconstruction = self.image_synthesis(noisy_latent)
-
-        if reconstruction.shape != images.shape:
-            reconstruction = _resize(reconstruction, images.shape[2:])
-
         return reconstruction, latent_likelihoods, hyper_latent_likelihoods
 
     def update(self, force=False):
@@ -387,9 +359,15 @@ class ScaleHyperprior(nn.Module):
                 get_scale_table(), force=force
             )
         else:
-            image_bottleneck_updated = self.image_bottleneck.update(force=force)
+            assert hasattr(
+                self.image_bottleneck, "update"
+            ), "<image_bottleneck> module has no <update> method"
+            image_bottleneck_updated = self.image_bottleneck.update(force=force)  # type: ignore
 
-        hyper_bottleneck_updated = self.hyper_bottleneck.update(force=force)
+        assert hasattr(
+            self.hyper_bottleneck, "update"
+        ), "<hyper_bottleneck> module has no <update> method"
+        hyper_bottleneck_updated = self.hyper_bottleneck.update(force=force)  # type: ignore
         return image_bottleneck_updated | hyper_bottleneck_updated
 
     def _on_cpu(self):
@@ -402,7 +380,7 @@ class ScaleHyperprior(nn.Module):
     # TODO: Switch to named tuple
     def compress(
         self, images: Tensor, force_cpu: bool = True
-    ) -> Tuple[List[str], List[str], Sequence[int], Sequence[int], Sequence[int]]:
+    ) -> Tuple[List[str], List[str], Sequence[int], Sequence[int]]:
         """
         Compress a batch of images into strings.
 
@@ -420,13 +398,16 @@ class ScaleHyperprior(nn.Module):
                 string for each image in the batch.
             image_shape: list storing the height and width of the
                 original images, for use during decoding.
-            latent_shape: list storing the height and width of the
-                image latent, for use during decoding.
             hyper_latent_shape: list storing the height and width of the
                 hyperprior, for use during decoding.
         """
         if not self._on_cpu() and force_cpu:
             raise ValueError("Compress not supported on GPU.")
+        down_image_analysis = getattr(self.image_analysis, "num_downsampling_layers")
+        down_hyper_analysis = getattr(self.image_analysis, "num_downsampling_layers")
+        factor = 2 ** (down_image_analysis + down_hyper_analysis)
+        image_shape = images.shape[-2:]
+        images = self._pad(images, image_shape, factor)
 
         latent = self.image_analysis(images)
         hyper_latent = self.hyper_analysis(latent)
@@ -436,16 +417,12 @@ class ScaleHyperprior(nn.Module):
         )
         scales = self.hyper_synthesis(hyper_latent_decoded)
 
-        if scales.shape != latent.shape:
-            scales = _resize(scales, latent.shape[2:])
-
         indexes = self.image_bottleneck.build_indexes(scales)  # type: ignore
         latent_strings = self.image_bottleneck.compress(latent, indexes)  # type: ignore
         return (
             latent_strings,
             hyper_latent_strings,
-            images.shape[2:],
-            latent.shape[2:],
+            image_shape,
             hyper_latent.shape[2:],
         )
 
@@ -454,7 +431,6 @@ class ScaleHyperprior(nn.Module):
         latent_strings: List[str],
         hyper_latent_strings: List[str],
         image_shape: Sequence[int],
-        latent_shape: Sequence[int],
         hyper_latent_shape: Sequence[int],
         force_cpu: bool = True,
     ) -> Tensor:
@@ -468,8 +444,6 @@ class ScaleHyperprior(nn.Module):
                 string for each image in the batch.
             image_shape: list storing the height and width of the
                 original images.
-            latent_shape: list storing the height and width of the
-                image latent.
             hyper_latent_shape: list storing the height and width of
                 the hyperprior.
             force_cpu: whether to throw an error if the model is
@@ -487,18 +461,11 @@ class ScaleHyperprior(nn.Module):
             hyper_latent_strings, hyper_latent_shape
         )
         scales = self.hyper_synthesis(hyper_latent_decoded)
-
-        if scales.shape[2:] != tuple(latent_shape):
-            scales = _resize(scales, latent_shape)
-
         indexes = self.image_bottleneck.build_indexes(scales)  # type: ignore
         latent_decoded = self.image_bottleneck.decompress(latent_strings, indexes)  # type: ignore
         reconstruction = self.image_synthesis(latent_decoded).clamp_(0, 1)
-
-        if reconstruction.shape[2:] != tuple(image_shape):
-            reconstruction = _resize(reconstruction, image_shape)
-
-        return reconstruction
+        h, w = image_shape
+        return reconstruction[..., :h, :w]
 
     def load_state_dict(self, state_dict):
         """
