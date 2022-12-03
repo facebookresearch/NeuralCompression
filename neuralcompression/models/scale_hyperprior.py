@@ -298,7 +298,11 @@ class ScaleHyperprior(nn.Module):
             ), "<network_channels> and <hyper_bottleneck> cannot both be None"
             self.hyper_bottleneck = EntropyBottleneck(channels=network_channels)
 
-    def _pad(self, images: Tensor, sizes: Sequence[int], factor: int):
+    def _pad(self, images: Tensor, sizes: Sequence[int]) -> Tensor:
+        down_image_analysis = getattr(self.image_analysis, "num_downsampling_layers")
+        down_hyper_analysis = getattr(self.hyper_analysis, "num_downsampling_layers")
+        factor = 2 ** (down_image_analysis + down_hyper_analysis)
+
         pad_h, pad_w = [(factor - (s % factor)) % factor for s in sizes]
         return torch.nn.functional.pad(images, (0, pad_w, 0, pad_h), "reflect")
 
@@ -329,6 +333,12 @@ class ScaleHyperprior(nn.Module):
                 3.  The likelihoods assigned by the hyper bottleneck layer
                     to the quantized hyper latent.
         """
+        if not self.training:
+            images_shape = images.shape[-2:]
+            images = self._pad(images, images_shape)
+        else:
+            images_shape = None
+
         latent = self.image_analysis(images)
         hyper_latent = self.hyper_analysis(latent)
         noisy_hyper_latent, hyper_latent_likelihoods = self.hyper_bottleneck(
@@ -338,6 +348,12 @@ class ScaleHyperprior(nn.Module):
 
         noisy_latent, latent_likelihoods = self.image_bottleneck(latent, scales)
         reconstruction = self.image_synthesis(noisy_latent)
+
+        if not self.training:
+            assert images_shape is not None, "image_shape not found"
+            h, w = images_shape
+            reconstruction = reconstruction[..., :h, :w]
+
         return reconstruction, latent_likelihoods, hyper_latent_likelihoods
 
     def update(self, force=False):
@@ -403,11 +419,8 @@ class ScaleHyperprior(nn.Module):
         """
         if not self._on_cpu() and force_cpu:
             raise ValueError("Compress not supported on GPU.")
-        down_image_analysis = getattr(self.image_analysis, "num_downsampling_layers")
-        down_hyper_analysis = getattr(self.image_analysis, "num_downsampling_layers")
-        factor = 2 ** (down_image_analysis + down_hyper_analysis)
         image_shape = images.shape[-2:]
-        images = self._pad(images, image_shape, factor)
+        images = self._pad(images, image_shape)
 
         latent = self.image_analysis(images)
         hyper_latent = self.hyper_analysis(latent)
