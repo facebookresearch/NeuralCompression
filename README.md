@@ -5,6 +5,7 @@
 
 ## What's New
 
+- **November 2022 (image compression)** - Added [Bits-Back coding with diffusion models](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/bits_back_diffusion)!
 - **July 2021 (image compression)** - [Released implemenation of Scale Hyperprior](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/scale_hyperprior_lightning)
 - **July 2021 (video compression)** - [Released implementation of DVC](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/deep_video_compression)
 
