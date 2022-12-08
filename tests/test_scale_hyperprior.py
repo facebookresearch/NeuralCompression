@@ -26,6 +26,7 @@ def test_hyperprior_forward(network_channels, compression_channels, img_size):
     model = ScaleHyperprior(
         network_channels=network_channels, compression_channels=compression_channels
     )
+    model.eval()
     outputs = model(inp)
     assert outputs[0].shape == inp.shape
 
