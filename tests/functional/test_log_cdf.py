@@ -16,7 +16,7 @@ from neuralcompression.functional import log_cdf
 def test_log_cdf():
     rng = numpy.random.default_rng(0xFEEEFEEE)
 
-    x = rng.random((32,), dtype=numpy.float)
+    x = rng.random((32,), dtype=numpy.float64)
 
     actual = log_cdf(torch.tensor(x, dtype=torch.float), Normal(0.0, 1.0))
 

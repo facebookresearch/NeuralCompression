@@ -13,7 +13,7 @@ from neuralcompression.functional import log_expm1
 def test_log_expm1():
     rng = numpy.random.default_rng(0xFEEEFEEE)
 
-    x = rng.random((32,), dtype=numpy.float)
+    x = rng.random((32,), dtype=numpy.float64)
 
     actual = log_expm1(torch.tensor(x, dtype=torch.float))
 

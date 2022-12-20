@@ -17,11 +17,11 @@ def test_log_survival_function():
 
     batch_size = 32
 
-    loc = rng.standard_normal(batch_size, dtype=numpy.float)
+    loc = rng.standard_normal(batch_size, dtype=numpy.float64)
 
-    scale = rng.random(batch_size, dtype=numpy.float) + 1.0
+    scale = rng.random(batch_size, dtype=numpy.float64) + 1.0
 
-    x = numpy.linspace(-8.0, 8.0, batch_size, dtype=numpy.float)
+    x = numpy.linspace(-8.0, 8.0, batch_size, dtype=numpy.float64)
 
     torch.testing.assert_allclose(
         log_survival_function(

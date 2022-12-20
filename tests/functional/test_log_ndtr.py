@@ -14,7 +14,7 @@ from neuralcompression.functional import log_ndtr
 def test_log_ndtr():
     rng = numpy.random.default_rng(0xDEADBEEF)
 
-    x = rng.random((32,), dtype=numpy.float)
+    x = rng.random((32,), dtype=numpy.float64)
 
     actual = log_ndtr(torch.tensor(x, dtype=torch.float))
 

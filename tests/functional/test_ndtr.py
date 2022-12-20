@@ -19,7 +19,7 @@ def test_ndtr():
 
     rng = numpy.random.default_rng(0xDEADBEEF)
 
-    x = rng.random((32,), dtype=numpy.float)
+    x = rng.random((32,), dtype=numpy.float64)
 
     torch.testing.assert_close(
         ndtr(torch.tensor(x, dtype=torch.float)),
