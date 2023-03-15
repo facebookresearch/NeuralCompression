@@ -1,0 +1,2 @@
+_target_: neural.transforms.ELICAnalysis
+compression_channels: 192

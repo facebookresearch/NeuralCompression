@@ -1,0 +1,5 @@
+_target_: datamodules.uvg.UVGDataModule
+data_dir: ???
+num_frames: 50
+normalize: False
+num_workers: ${num_workers_per_task}

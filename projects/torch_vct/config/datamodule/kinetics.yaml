@@ -1,0 +1,9 @@
+_target_: datamodules.kinetics.KineticsDataModule
+data_dir: ???
+train_batch_size: ${training_loop.train_batch_size}
+val_batch_size: ${training_loop.val_batch_size}
+clip_duration: 1 # seconds
+video_num_subsampled: 3
+normalize: False
+train_clip_sampler: uniform
+num_workers: ${num_workers_per_task}

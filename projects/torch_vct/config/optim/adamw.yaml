@@ -1,0 +1,3 @@
+_target_: torch.optim.AdamW
+lr: ${training_loop.learning_rate}
+weight_decay: 0.01 # default
