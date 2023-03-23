@@ -76,6 +76,7 @@ jobs:
           mypy --version
           mypy neuralcompression
           flake8 --version
+          flake8 neuralcompression tests
           isort --version
           isort --check-only neuralcompression tests projects
       - name: Install NeuralCompression
