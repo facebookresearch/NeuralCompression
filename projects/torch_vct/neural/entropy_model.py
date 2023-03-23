@@ -20,20 +20,15 @@
 import itertools
 import sys
 from typing import Dict, List, NamedTuple, Optional, Sequence, Tuple
-import torch
-from torch import Tensor
-import torch.nn as nn
 
-from .entropy_model_layers import (
-    Transformer,
-    EncoderSection,
-    StartSym,
-    LearnedPosition,
-)
-from .layers_utils import make_embedding
-from .patcher import Patcher
+import torch
+import torch.nn as nn
+from torch import Tensor
 
 from .bottlenecks import GsnConditionalLocScaleShift
+from .entropy_model_layers import EncoderSection, LearnedPosition, StartSym, Transformer
+from .layers_utils import make_embedding
+from .patcher import Patcher
 
 _LATENT_NORM_FAC: float = 35.0  # factor to scale latents by
 

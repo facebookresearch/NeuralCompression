@@ -6,30 +6,28 @@
 import os
 from typing import List, Optional, Union
 
+import pytorchvideo.data
 import torch
 import torch.nn as nn
-from pytorch_lightning import LightningDataModule
-import pytorchvideo.data
 import torch.utils.data
-
+import torchvision
+from datamodules.video_data_api import KineticsDataset
+from pytorch_lightning import LightningDataModule
 from pytorchvideo.transforms import (
     ApplyTransformToKey,
     Normalize,
     RemoveKey,
     UniformTemporalSubsample,
 )
-
-import torchvision
 from torchvision.transforms import (
+    CenterCrop,
     Compose,
     Lambda,
     RandomChoice,
-    CenterCrop,
     RandomCrop,
-    RandomResizedCrop,
     RandomHorizontalFlip,
+    RandomResizedCrop,
 )
-from datamodules.video_data_api import KineticsDataset
 
 
 class KineticsDataModule(LightningDataModule):

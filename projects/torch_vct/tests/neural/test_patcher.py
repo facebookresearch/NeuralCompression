@@ -1,5 +1,6 @@
-import torch
 import pytest
+import torch
+
 from projects.torch_vct.neural.patcher import Patcher
 
 

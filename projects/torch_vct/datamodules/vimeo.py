@@ -5,20 +5,20 @@
 
 from typing import List, Optional, Sequence, Union
 
+import torchvision
+from datamodules.video_data_api import VimeoDataset
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, default_collate
-import torchvision
 from torchvision.transforms import (
+    CenterCrop,
     Compose,
     RandomChoice,
-    CenterCrop,
     RandomCrop,
-    RandomResizedCrop,
     RandomHorizontalFlip,
+    RandomResizedCrop,
 )
 
 from neuralcompression.data import Vimeo90kSeptuplet
-from datamodules.video_data_api import VimeoDataset
 
 
 class VimeoDataModule(LightningDataModule):

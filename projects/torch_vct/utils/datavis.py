@@ -4,9 +4,10 @@
 # LICENSE file in the root directory of this source tree.
 
 import math
+
+import matplotlib.pyplot as plt
 import torch
 from torch import Tensor
-import matplotlib.pyplot as plt
 
 
 def show_image(

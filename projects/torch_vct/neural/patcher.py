@@ -19,12 +19,13 @@
 
 ## This module roughly corresponds to patcher.py in VCT
 
-from typing import NamedTuple, Optional, Tuple, Union
 import math
+from typing import NamedTuple, Optional, Tuple, Union
+
 import torch
-from torch import Tensor
 import torch.nn as nn
 import torch.nn.functional as F
+from torch import Tensor
 
 
 class Patched(NamedTuple):

@@ -3,16 +3,15 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import List, Any, Optional, Tuple
 import math
+from typing import Any, List, Optional, Tuple
+
 import scipy.stats as sps
-
 import torch
-from torch import Tensor
 import torch.nn as nn
-
 from compressai.entropy_models import EntropyModel
 from compressai.ops import LowerBound
+from torch import Tensor
 
 
 class Scaler:

@@ -3,14 +3,14 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+import datetime
 import sys
-import torch
-from model_pipeline import VCTPipeline
 
 import hydra
+import torch
 import yaml
+from model_pipeline import VCTPipeline
 from omegaconf import DictConfig
-import datetime
 
 
 def load_model_checkpoint_from_config(

@@ -18,13 +18,13 @@
 # limitations under the License.
 
 from functools import partial
-from typing import Optional, Callable
+from typing import Callable, Optional
 
 import torch
-from torch import Tensor
 import torch.nn as nn
+from torch import Tensor
 
-from .layers_utils import WindowMultiHeadAttention, StochasticDepth, MLP
+from .layers_utils import MLP, StochasticDepth, WindowMultiHeadAttention
 
 
 class LearnedPosition(nn.Module):

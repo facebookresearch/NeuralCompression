@@ -21,16 +21,16 @@
 
 import itertools
 import math
-from typing import Generator, List, Sequence, Tuple, Optional, NamedTuple, Union
+from typing import Generator, List, NamedTuple, Optional, Sequence, Tuple, Union
 
 import torch
-from torch import Tensor
 import torch.nn as nn
+import utils.memoize as memoize
 
 # Compression modules
-from datamodules.video_data_api import VideoData, Scenes
-from neural.entropy_model import VCTEntropyModel, PreviousLatent
-import utils.memoize as memoize
+from datamodules.video_data_api import Scenes, VideoData
+from neural.entropy_model import PreviousLatent, VCTEntropyModel
+from torch import Tensor
 
 State = Tuple[PreviousLatent, ...]
 

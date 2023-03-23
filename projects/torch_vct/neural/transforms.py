@@ -6,13 +6,12 @@
 ## This module contains modules implementing standard synthesis and analysis transforms
 
 from typing import List, Optional
+
 import torch
-from torch import Tensor
 import torch.nn as nn
-
-from compressai.layers import AttentionBlock, GDN
-
+from compressai.layers import GDN, AttentionBlock
 from neural.layers_utils import make_conv, make_deconv
+from torch import Tensor
 
 
 class ConvGDNAnalysis(nn.Module):

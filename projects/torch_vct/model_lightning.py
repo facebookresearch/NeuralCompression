@@ -3,22 +3,18 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import Any, List, Tuple, Optional, Union
-
-import torch
-from torch import Tensor
-
-import torch.nn.functional as F
-from torchmetrics.functional import peak_signal_noise_ratio
-
-import pytorch_lightning
+from typing import Any, List, Optional, Tuple, Union
 
 import hydra
-from utils.hydra_tools import OmegaConf  #! Needed for resolvets to take effect
-from omegaconf import DictConfig
-
-from model_pipeline import VCTPipeline
+import pytorch_lightning
+import torch
+import torch.nn.functional as F
 from datamodules.video_data_api import VideoData
+from model_pipeline import VCTPipeline
+from omegaconf import DictConfig
+from torch import Tensor
+from torchmetrics.functional import peak_signal_noise_ratio
+from utils.hydra_tools import OmegaConf  # ! Needed for resolvets to take effect
 
 
 class VCTModule(pytorch_lightning.LightningModule):

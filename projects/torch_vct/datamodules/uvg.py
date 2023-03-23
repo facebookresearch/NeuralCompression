@@ -6,15 +6,12 @@
 from typing import Optional
 
 import torch
-from pytorch_lightning import LightningDataModule
 import torch.utils.data
-
-from pytorchvideo.transforms import Normalize
-
 import torchvision
-from torchvision.transforms import ToTensor, Compose
-
 from datamodules.video_data_api import VideoDataset
+from pytorch_lightning import LightningDataModule
+from pytorchvideo.transforms import Normalize
+from torchvision.transforms import Compose, ToTensor
 
 
 class UVGDataModule(LightningDataModule):

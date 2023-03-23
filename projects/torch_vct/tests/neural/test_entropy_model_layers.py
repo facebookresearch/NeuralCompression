@@ -1,12 +1,11 @@
 import pytest
-
 import torch
 
 from projects.torch_vct.neural.entropy_model_layers import (
-    StartSym,
     LearnedPosition,
-    TransformerBlock,
+    StartSym,
     Transformer,
+    TransformerBlock,
 )
 
 

@@ -6,8 +6,8 @@
 from typing import Optional, Tuple
 
 import torch
-from torch import Tensor
 import torch.nn as nn
+from torch import Tensor
 
 
 def make_conv(

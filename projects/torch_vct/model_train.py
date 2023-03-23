@@ -8,24 +8,19 @@ from pathlib import Path
 from typing import Dict
 
 import hydra
-from omegaconf import DictConfig
-from pytorch_lightning import Trainer, LightningDataModule, seed_everything
+import pytorch_lightning as pl
 import torch
 import torch.distributed
-from torch import Tensor
-
-import pytorch_lightning as pl
+import wandb
+from datamodules.video_data_api import VideoData, VideoDataset
+from model_lightning import VCTModule
+from omegaconf import DictConfig
+from pytorch_lightning import LightningDataModule, Trainer, seed_everything
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 from pytorch_lightning.loggers.wandb import WandbLogger
-from datamodules.video_data_api import VideoData, VideoDataset
-
-from model_lightning import VCTModule
-
-from utils.hydra_tools import OmegaConf
-
-import wandb
-
+from torch import Tensor
 from torchvision.utils import make_grid
+from utils.hydra_tools import OmegaConf
 
 
 class WandbImageCallback(pl.Callback):

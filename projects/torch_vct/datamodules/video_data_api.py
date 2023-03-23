@@ -3,7 +3,8 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import NamedTuple, List, Union, Optional
+from typing import List, NamedTuple, Optional, Union
+
 import torch
 from torch import Tensor
 
