@@ -2,13 +2,17 @@
 
 ## Introduction
 This is a PyTorch implementation of the recent paper
-[VCT: A Video Compression Transformer](ttps://arxiv.org/abs/2206.07307) by Fabian Mentzer, George Toderici, David Minnen, Sung Jin Hwang, Segi Caelles, Mario Lucic and Eirikur Agustsson, code for which was released in TensorFlow and can be found in the [Google research repo](https://github.com/google-research/google-research/tree/master/vct).
+[VCT: A Video Compression Transformer](https://arxiv.org/abs/2206.07307) by Fabian Mentzer, George Toderici, David Minnen, Sung Jin Hwang, Segi Caelles, Mario Lucic and Eirikur Agustsson, code for which was released in TensorFlow and can be found in the [Google research repo](https://github.com/google-research/google-research/tree/master/vct).
 
 The aim is to reproduce the results from the VCT paper as closely as possible using PyTorch and *publicly* available data. We use the official TensorFlow code along with the original paper as sources.
 
 ### Reproduction results
 
-[TODO] Coming!
+The PSNR and BPP of VCT are from the [VCT repo](https://github.com/google-research/google-research/tree/master/vct#uvg-psnr). Green dot is our reproduction with distortion lambda $\lambda=0.01$.
+
+<p align='center'>
+    <img src="fig/vct_rd.png" width="500" center>
+</p>
 
 ## Running the code
 To facilitate training we use `pytorch_lightning` and `hydra` to manage model configurations.
@@ -19,6 +23,8 @@ Then create a new `conda` environment by running:
 conda env create -f environment.yml
 conda activate torch_vct
 ```
+
+You can train a model with `model_train.py` but remember to modify the the training configuration (`config/train_config.yaml`) and include paths to an appropriate training dataset.
 
 ### Checkpoint
 
@@ -62,7 +68,7 @@ to perform the actual entropy coding.
 
 VCT is trained on a proprietary dataset with one million internet video clips, each comprising 9 frames. A training batch consists of randomly selected triplets of adjacent frames, cropped to $256\times256$
 
-- We use `kinetics 400`, a publicly available video dataset. Similarly, we crop frames to $256\times256$ and use uniform subsampling to form a batch of 3 frames.
+- We use the publcicly available Vimeo-90k dataset ([Xue et al., 2019](https://arxiv.org/abs/1711.09078)), which is commonly used dataset for both image and video compression. We apply random crop or a random resized crop (one of the two is picked with equal probability) to obtain frames of size $256\times256$. We do not apply subsampling, i.e. a training batch consists of 7 frames.
 
 #### Padding
 Inputs are padded to ensure their dimensions are divisible by the down-scaling factor in the analysis transform and patch (window) sizes when tokenizing (discussed below).
@@ -123,11 +129,9 @@ In other words, decoding is done in a standard autoregressive 'left-to-right' wa
 ### Optimizer
 
 The original version of the VCT model is trained for a total of 3.25M steps (stages 1, 2 and 3, where only stage 3 optimizes all components, see Table 1 in the paper).
-According to the Appendix A.2, the updated model is trained for 750K steps (all components optimized jointly) with a learning rate $1e^{-4}$, with 10K steps warm-up, followed by linear annealing to $1e^{-5}$.
+According to the Appendix A.2, the updated model is trained for 750K steps (all components optimized jointly) with a learning rate $1e^{-4}$, with 10K steps warm-up, followed by linear annealing to $1e^{-5}$. Training is done on 3 Google Cloud TPUv4 chips.
 
-- We follow roughly the same training procedure: we train with AdamW optimizer with weight decay=0.1.
-We use linear warm-up for the first $5\%$ of training.
-The learning rate of $1e^{-4}$ is annealed to $1e^{-5}$ using a cosine scheduler, applied every 2K steps.
+- We train with Lion optimizer ([Chen et al., 2023](https://arxiv.org/abs/2302.06675)) with weight decay=0.1. The learning rate of $1e^{-4}$ is annealed to $1e^{-5}$ using a cosine scheduler. We train for a total of 400K steps. Training is done on 32 V100 (32GB) cards.
 
 ### Evaluation
 
@@ -154,3 +158,17 @@ The VCT model is evaluated on standard benchmarks: UVG and MCL-JCV, reporting th
 ## Acknowledgements
 We use [compressai](https://github.com/InterDigitalInc/CompressAI) for actual entropy coding.
 We thank the VCT authors, particularly Fabian Mentzer, for the clarifications provided.
+
+-----
+
+References:
+
+Balle, J., Minnen, D., Singh, S., Hwang, S. J., & Johnston, N. (2018). Variational image compression with a scale hyperprior. ICLR. arXiv:1802.01436.
+
+Chen, X., Liang, C., Huang, D., Real, E., Wang, K., Liu, Y., ... & Le, Q. V. (2023). Symbolic discovery of optimization algorithms. arXiv preprint arXiv:2302.06675.
+
+Mentzer, F., Toderici, G., Minnen, D., Hwang, S. J., Caelles, S., Lucic, M., & Agustsson, E. (2022). Vct: A video compression transformer. NeurIPS. arXiv:2206.07307.
+
+Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., ... & Polosukhin, I. (2017). Attention is all you need. Advances in neural information processing systems, 30.
+
+Xue, T., Chen, B., Wu, J., Wei, D., & Freeman, W. T. (2019). Video enhancement with task-oriented flow. International Journal of Computer Vision, 127, 1106-1125.
