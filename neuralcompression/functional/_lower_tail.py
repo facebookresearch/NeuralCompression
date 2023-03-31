@@ -39,7 +39,7 @@ def lower_tail(distribution: Distribution, tail_mass: float) -> Tensor:
             x = estimate_tails(
                 lambda _x: log_cdf(_x, distribution),
                 math.log(tail_mass / 2),
-                distribution.batch_shape,
+                int(distribution.batch_shape),
             )
         except NotImplementedError:
             message = """

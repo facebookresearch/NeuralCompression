@@ -36,11 +36,10 @@ def upper_tail(distribution: Distribution, tail_mass: float) -> Tensor:
         x = distribution.icdf(torch.tensor([1 - tail_mass / 2]))
     except (AttributeError, NotImplementedError):
         try:
-            assert type(distribution.batch_shape) is int
             x = estimate_tails(
                 lambda _x: log_survival_function(_x, distribution),
                 math.log(tail_mass / 2),
-                distribution.batch_shape,
+                int(distribution.batch_shape),
             )
         except NotImplementedError:
             error = """
