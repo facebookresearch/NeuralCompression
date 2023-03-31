@@ -16,7 +16,7 @@ def freqs_to_cdf(freqs, precision=16):
     # between [0, 2**precision)
     pdf = freqs / freqs.sum(axis=-1, keepdims=True)
     cdf = jnp.append(jnp.zeros((*pdf.shape[:-1], 1)), pdf.cumsum(axis=-1), axis=-1)
-    return jnp.round(cdf * 2 ** precision).astype(jnp.uint32)
+    return jnp.round(cdf * 2**precision).astype(jnp.uint32)
 
 
 def cdf_to_pdf(cdf):

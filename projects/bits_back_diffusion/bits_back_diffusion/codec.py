@@ -111,7 +111,6 @@ class DiffusionModel(BaseHLVModel):
         clip_denoised: bool = True,
         device: Union[torch.device, str, None] = None,
     ):
-
         self.model = model
         self.diffusion = diffusion
         self.use_log_variance = use_log_variance
