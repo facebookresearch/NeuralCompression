@@ -26,7 +26,7 @@ class TestGeneralizedDivisiveNormalization:
         assert x.grad.shape == x.shape
 
         torch.testing.assert_allclose(
-            x / torch.sqrt(1 + 0.1 * (x ** 2)),
+            x / torch.sqrt(1 + 0.1 * (x**2)),
             normalized,
         )
 
@@ -46,6 +46,6 @@ class TestGeneralizedDivisiveNormalization:
         assert x.grad.shape == x.shape
 
         torch.testing.assert_allclose(
-            x * torch.sqrt(1 + 0.1 * (x ** 2)),
+            x * torch.sqrt(1 + 0.1 * (x**2)),
             normalized,
         )

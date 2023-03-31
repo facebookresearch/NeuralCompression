@@ -27,7 +27,7 @@ class MultiscaleStructuralSimilarity(Metric):
         compute_on_step: bool = True,
         dist_sync_on_step: bool = False,
         process_group: Optional[Any] = None,
-        dist_sync_fn: Callable = None,
+        dist_sync_fn: Optional[Callable] = None,
     ):
         """
         Computes the multi-scale structural similarity index measure.
@@ -71,7 +71,6 @@ class MultiscaleStructuralSimilarity(Metric):
         self.add_state("total", default=torch.tensor(0), dist_reduce_fx="sum")
 
     def update(self, preds, target):
-
         self.score_sum += multiscale_structural_similarity(
             preds,
             target,
@@ -129,9 +128,8 @@ class LearnedPerceptualImagePatchSimilarity(Metric):
         compute_on_step: bool = True,
         dist_sync_on_step: bool = False,
         process_group: Optional[Any] = None,
-        dist_sync_fn: Callable = None,
+        dist_sync_fn: Optional[Callable] = None,
     ):
-
         if base_network not in ("alex", "vgg", "squeeze"):
             raise ValueError(
                 f"Unknown base network {base_network}"

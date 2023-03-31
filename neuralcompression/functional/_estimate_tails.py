@@ -47,13 +47,9 @@ def estimate_tails(
             device = "cpu"
 
     eps = torch.finfo(torch.float32).eps
-
     counts = torch.zeros(shape, dtype=torch.int32)
-
     tails = torch.zeros(shape, device=device, dtype=dtype, requires_grad=True)
-
     mean = torch.zeros(shape, dtype=dtype)
-
     variance = torch.ones(shape, dtype=dtype)
 
     while torch.min(counts) < 100:
@@ -66,7 +62,7 @@ def estimate_tails(
 
             variance = 0.99 * variance + (1.0 - 0.99) * torch.square(gradient)
 
-            tails -= (1e-2 * mean / (torch.sqrt(variance) + eps)).to(device)
+            tails = tails - (1e-2 * mean / (torch.sqrt(variance) + eps)).to(device)
 
         condition = torch.logical_or(counts > 0, gradient.cpu() * tails.cpu() > 0)
 
