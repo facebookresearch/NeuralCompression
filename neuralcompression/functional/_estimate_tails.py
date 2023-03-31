@@ -40,6 +40,8 @@ def estimate_tails(
     Returns:
         the solution, :math:`x`.
     """
+    tails: torch.Tensor
+
     if not device:
         if torch.cuda.is_available():
             device = "cuda"
@@ -55,6 +57,7 @@ def estimate_tails(
     while torch.min(counts) < 100:
         abs(func(tails) - target).backward(torch.ones_like(tails))
 
+        assert tails.grad is not None
         gradient = tails.grad.cpu()
 
         with torch.no_grad():
@@ -68,6 +71,7 @@ def estimate_tails(
 
         counts = torch.where(condition, counts + 1, counts)
 
+        assert tails.grad is not None
         tails.grad.zero_()
 
     return tails
