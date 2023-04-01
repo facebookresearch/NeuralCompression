@@ -108,7 +108,7 @@ class ContinuousEntropy(Module):
             self._prior_shape = Size(prior_shape)
             self._prior_dtype = prior_dtype
         else:
-            self._prior_shape = Size([prior.batch_shape])
+            self._prior_shape = prior.batch_shape
             self._prior_dtype = torch.float32
 
         if self.compressible:

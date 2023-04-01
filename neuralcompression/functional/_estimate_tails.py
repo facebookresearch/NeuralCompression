@@ -11,7 +11,7 @@ import torch
 def estimate_tails(
     func: typing.Callable[[torch.Tensor], torch.Tensor],
     target: float,
-    shape: int,
+    shape: torch.Size,
     device: typing.Union[torch.device, str, None] = None,
     dtype: torch.dtype = torch.float32,
 ) -> torch.Tensor:
