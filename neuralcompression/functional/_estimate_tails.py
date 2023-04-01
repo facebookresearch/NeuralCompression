@@ -57,6 +57,7 @@ def estimate_tails(
     while torch.min(counts) < 100:
         abs(func(tails) - target).backward(torch.ones_like(tails))
 
+        assert tails.grad is not None
         gradient = tails.grad.cpu()
 
         with torch.no_grad():
