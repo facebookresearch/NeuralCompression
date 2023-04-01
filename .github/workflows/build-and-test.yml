@@ -74,7 +74,6 @@ jobs:
           black --version
           black neuralcompression tests projects --check
           mypy --version
-          rm -f -r .mypy_cache
           mypy neuralcompression
           flake8 --version
           flake8 neuralcompression tests projects
