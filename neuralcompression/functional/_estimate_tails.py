@@ -57,7 +57,6 @@ def estimate_tails(
     while torch.min(counts) < 100:
         abs(func(tails) - target).backward(torch.ones_like(tails))
 
-        assert tails.grad is not None
         gradient = tails.grad.cpu()
 
         with torch.no_grad():
@@ -65,13 +64,12 @@ def estimate_tails(
 
             variance = 0.99 * variance + (1.0 - 0.99) * torch.square(gradient)
 
-            tails = tails - (1e-2 * mean / (torch.sqrt(variance) + eps)).to(device)
+            tails -= (1e-2 * mean / (torch.sqrt(variance) + eps)).to(device)
 
         condition = torch.logical_or(counts > 0, gradient.cpu() * tails.cpu() > 0)
 
         counts = torch.where(condition, counts + 1, counts)
 
-        assert tails.grad is not None
         tails.grad.zero_()
 
     return tails

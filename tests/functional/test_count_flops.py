@@ -59,13 +59,13 @@ def test_flop_count_conv(
                 cin = cout
 
         def forward(self, inp):
-            flops = torch.tensor(0)
+            flops = 0
             out = inp
             for layer, k_size in zip(self.layers, layer_kernels):
                 cin = out.shape[1]
                 out = layer(out)
                 # +3 for counting the additions to the flops variable itself
-                flops += out.numel() * k_size * k_size * cin + 3
+                flops += 3 + out.numel() * k_size * k_size * cin + 3
 
             return out, flops
 
@@ -74,7 +74,7 @@ def test_flop_count_conv(
     _, correct_flops = model(inp)
 
     counted_flops, _, unsupported_ops = count_flops(model, (inp,))
-    assert torch.allclose(torch.tensor(counted_flops).long(), correct_flops)
+    assert counted_flops == correct_flops
     assert len(unsupported_ops) == 0
 
 
@@ -86,7 +86,7 @@ def test_flop_count_elementwise(input_shape):
 
     class ElementwiseModel(torch.nn.Module):
         def forward(self, inp):
-            flops = torch.tensor(0)
+            flops = 5  # view operations
             out = inp
 
             out = out * 2
@@ -112,7 +112,7 @@ def test_flop_count_elementwise(input_shape):
     counted_flops, _, unsupported_ops = count_flops(
         model, (inp,), use_single_flop_estimates=True
     )
-    assert torch.allclose(torch.tensor(counted_flops).long(), correct_flops)
+    assert counted_flops == correct_flops
     assert len(unsupported_ops) == 0
 
 
