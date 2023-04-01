@@ -77,7 +77,7 @@ _SINGLE_FLOP_ESTIMATE_COUNTERS = {
 
 # Expanding on the 0-flop op list from fvcore here:
 # https://github.com/facebookresearch/fvcore/blob/166a030e093013a934642ca3744592a2e3de5ea2/fvcore/nn/jit_analysis.py#L27
-_OPS_TO_IGNORE = ["aten::empty_like"]
+_OPS_TO_IGNORE = ["aten::empty_like", "aten::numel"]
 
 
 def count_flops(
