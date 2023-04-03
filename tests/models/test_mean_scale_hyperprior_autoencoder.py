@@ -24,12 +24,12 @@ class TestMeanScaleHyperpriorAutoencoder:
 
         assert y_scores_size[0] == x.size()[0]
         assert y_scores_size[1] == 192
-        assert y_scores_size[2] == x.size()[2] / 2 ** 4
-        assert y_scores_size[3] == x.size()[3] / 2 ** 4
+        assert y_scores_size[2] == x.size()[2] / 2**4
+        assert y_scores_size[3] == x.size()[3] / 2**4
 
         z_scores_size = z_scores.size()
 
         assert z_scores_size[0] == x.size()[0]
         assert z_scores_size[1] == 128
-        assert z_scores_size[2] == x.size()[2] / 2 ** 6
-        assert z_scores_size[3] == x.size()[3] / 2 ** 6
+        assert z_scores_size[2] == x.size()[2] / 2**6
+        assert z_scores_size[3] == x.size()[3] / 2**6

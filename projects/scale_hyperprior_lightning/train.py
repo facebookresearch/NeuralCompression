@@ -17,7 +17,6 @@ from neuralcompression.models import ScaleHyperprior
 
 @hydra.main(config_path="config", config_name="base")
 def main(cfg: DictConfig):
-
     save_dir: Path = Path(hydra.utils.get_original_cwd()) / cfg.save_dir
 
     if (

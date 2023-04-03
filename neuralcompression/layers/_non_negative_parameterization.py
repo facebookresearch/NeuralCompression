@@ -49,7 +49,7 @@ class NonNegativeParameterization(torch.nn.Module):
         self,
         initial_value: Optional[Tensor] = None,
         minimum: float = 0.0,
-        offset: float = 2 ** -18,
+        offset: float = 2**-18,
         shape: Optional[Tuple[int]] = None,
         lower_bound_gradient: str = "identity_if_towards",
     ):
@@ -61,7 +61,7 @@ class NonNegativeParameterization(torch.nn.Module):
 
         self._lower_bound_gradient = lower_bound_gradient
 
-        self._bound = (self._minimum + self._offset ** 2) ** 0.5
+        self._bound = (self._minimum + self._offset**2) ** 0.5
 
         if initial_value is None:
             if shape is None:
@@ -75,7 +75,7 @@ class NonNegativeParameterization(torch.nn.Module):
 
         self.register_buffer(
             "_pedestal",
-            torch.tensor([(self._offset ** 2)], dtype=initial_value.dtype),
+            torch.tensor([(self._offset**2)], dtype=initial_value.dtype),
         )
 
         if initial_value is not None:
@@ -93,4 +93,4 @@ class NonNegativeParameterization(torch.nn.Module):
             self._lower_bound_gradient,
         )
 
-        return lower_bound ** 2 - self._pedestal
+        return lower_bound**2 - self._pedestal

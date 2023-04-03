@@ -27,15 +27,12 @@ def test_dense_image_warp(shape, seed):
 
     # this test won't work for completely random warps - about a 10% error
     # so we create a single vector flow and rotate it randomly
-    flow = (
-        numpy.stack(
-            (
-                numpy.ones(shape[0] * shape[-2] * shape[-1]),
-                numpy.zeros(shape[0] * shape[-2] * shape[-1]),
-            )
+    flow = numpy.stack(
+        (
+            numpy.ones(shape[0] * shape[-2] * shape[-1]),
+            numpy.zeros(shape[0] * shape[-2] * shape[-1]),
         )
-        * (rng.uniform() / 10)
-    )
+    ) * (rng.uniform() / 10)
 
     angle = rng.uniform() * 2 * numpy.pi
     cos_val, sin_val = numpy.cos(angle), numpy.sin(angle)

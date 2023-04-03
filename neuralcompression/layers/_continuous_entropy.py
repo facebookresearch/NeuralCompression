@@ -76,7 +76,7 @@ class ContinuousEntropy(Module):
         compressible: bool = False,
         stateless: bool = False,
         prior: Optional[Union[Distribution, UniformNoise]] = None,
-        tail_mass: float = 2 ** -8,
+        tail_mass: float = 2**-8,
         prior_shape: Optional[Tuple[int, ...]] = None,
         prior_dtype: Optional[torch.dtype] = None,
         cdfs: Optional[IntTensor] = None,

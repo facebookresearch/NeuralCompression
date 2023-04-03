@@ -99,7 +99,7 @@ class _PriorAutoencoder(LightningModule):
         distortion = F.mse_loss(x_hat, x)
 
         rate_distortion = (
-            self.hparams.distortion_trade_off * 255 ** 2 * (rate + distortion)  # type: ignore
+            self.hparams.distortion_trade_off * 255**2 * (rate + distortion)  # type: ignore
         )
 
         return rate, distortion, rate_distortion
