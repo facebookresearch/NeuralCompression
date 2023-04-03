@@ -145,8 +145,8 @@ class VCTEntropyModel(nn.Module):
             dropout=drop_out_enc,
         )
 
-        self.seq_len_dec = window_size_dec ** 2
-        self.seq_len_enc = window_size_enc ** 2
+        self.seq_len_dec = window_size_dec**2
+        self.seq_len_enc = window_size_enc**2
 
         self.patcher = Patcher(window_size_dec, "reflect")
         self.learned_zero = StartSym(hidden_dim=num_channels)
@@ -364,7 +364,7 @@ class VCTEntropyModel(nn.Module):
             raise ValueError(f"Model dims don't match, {d_dec}!={self.num_channels}")
         if b_dec != b_enc:
             raise ValueError(f"Batch dims don't match, got {b_enc} != {b_dec}!")
-        assert seq_len == self.window_size_dec ** 2, "Error patching"
+        assert seq_len == self.window_size_dec**2, "Error patching"
 
         # Transformer expects inputs to have channels in the last dim, [b', seq_len, C]
         # Transformer expects quantized latents

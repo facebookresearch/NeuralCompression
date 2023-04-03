@@ -138,7 +138,7 @@ class ContinuousIndexedGaussianConditional(EntropyModel):
 
     def _standardized_cumulative(self, inputs: Tensor) -> Tensor:
         half = float(0.5)
-        const = float(-(2 ** -0.5))
+        const = float(-(2**-0.5))
         # Using the complementary error function maximizes numerical precision.
         return half * torch.erfc(const * inputs)
 

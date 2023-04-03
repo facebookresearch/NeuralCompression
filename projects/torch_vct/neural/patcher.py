@@ -137,7 +137,7 @@ class Patcher(nn.Module):
                 0, 2, 4, 3, 5, 1
             )  # [B, num_patches_H, num_patches_W, C, patch_size, patch_size]
             .contiguous()
-            .reshape(B * n_patches_H * n_patches_W, patch_size ** 2, C)
+            .reshape(B * n_patches_H * n_patches_W, patch_size**2, C)
         )
 
     def _window_partition_conv2d(self, x: Tensor, patch_size: int) -> Tensor:
@@ -153,18 +153,18 @@ class Patcher(nn.Module):
         B, C, H, W = x.shape
 
         # PyTorch expects [output C, input C, kernel H, kernel W]
-        kernel = torch.diag(x.new_ones(patch_size ** 2 * C)).reshape(
-            C * patch_size ** 2, C, patch_size, patch_size
+        kernel = torch.diag(x.new_ones(patch_size**2 * C)).reshape(
+            C * patch_size**2, C, patch_size, patch_size
         )
         patches = F.conv2d(
             x, kernel, stride=self.stride
         )  # [B, patch_size^2*C, num_patches_H, num_patches_W]
         n_patches_H, n_patches_W = patches.shape[-2:]
         return (
-            patches.reshape(B, C, patch_size ** 2, n_patches_H, n_patches_W)
+            patches.reshape(B, C, patch_size**2, n_patches_H, n_patches_W)
             .permute(0, 3, 4, 2, 1)  # [B, npatch_H, npatch_W, seq_len,  C]
             .contiguous()
-            .reshape(B * n_patches_H * n_patches_W, patch_size ** 2, C)
+            .reshape(B * n_patches_H * n_patches_W, patch_size**2, C)
         )
 
     def forward(self, x: Tensor, patch_size: int) -> Patched:
@@ -216,7 +216,7 @@ class Patcher(nn.Module):
 
         # Can only unpatch objects where stride == patch_size
         assert (
-            seq_len == self.stride ** 2
+            seq_len == self.stride**2
         ), "Length mismatch. Potential reason: unpatch can only handle patch_size=stride"
         x = (
             x.reshape(-1, n_patches_H, n_patches_W, self.stride, self.stride, C)

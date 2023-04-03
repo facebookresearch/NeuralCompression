@@ -52,7 +52,7 @@ def make_embedding(input_dim: int, hidden_dim: int) -> nn.Module:
     Returns:
         a linear nn.Module, initialized with random uniform weights and biases
     """
-    scale = 1 / input_dim ** 0.5
+    scale = 1 / input_dim**0.5
     linear = torch.nn.Linear(input_dim, hidden_dim, bias=True)
     # initialise weights in the same was as vct
     torch.nn.init.uniform_(linear.weight, -scale, scale)

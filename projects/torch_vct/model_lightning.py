@@ -32,7 +32,7 @@ class VCTModule(pytorch_lightning.LightningModule):
             getattr(cfg, "training_loop", None), "distortion_lambda", None
         )
         if self._distortion_loss_scaling is not None:
-            self._distortion_loss_scaling = self._distortion_loss_scaling * (255 ** 2)
+            self._distortion_loss_scaling = self._distortion_loss_scaling * (255**2)
 
     def forward(self, batch: VideoData) -> Tensor:
         return self.model(batch)
