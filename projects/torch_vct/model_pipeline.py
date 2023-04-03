@@ -27,7 +27,6 @@ import torch
 import torch.nn as nn
 import utils.memoize as memoize
 
-# Compression modules
 from datamodules.video_data_api import Scenes, VideoData
 from neural.entropy_model import PreviousLatent, VCTEntropyModel
 from torch import Tensor
@@ -326,7 +325,6 @@ class VCTPipeline(nn.Module):
     def decode_scenes(
         self, bottlenecks: Generator[Bottleneck, None, None], cache: memoize.Cache
     ) -> Generator[Tensor, None, None]:
-
         decode_Iscene = memoize.bind(self.decode_Iscene, cache)
         decode_Pscene = memoize.bind(self.decode_Pscene, cache)
 
@@ -363,7 +361,7 @@ class VCTPipeline(nn.Module):
             (encode_out for encode_out in encode_outs_tee), cache=cache
         )  # [B, C, H, W]
 
-        for (rec_scene, encode_out) in zip(reconstructions_scenes, encode_outs):
+        for rec_scene, encode_out in zip(reconstructions_scenes, encode_outs):
             # rec_scene is padded [B, C, H, W]
             yield NetworkOut(
                 reconstruction=rec_scene,
@@ -472,7 +470,6 @@ class VCTPipeline(nn.Module):
     def compress_video(
         self, video: VideoData, force_cpu: bool = False
     ) -> Tuple[Tensor, List]:
-
         self._prepare_for_compression()
 
         assert (
