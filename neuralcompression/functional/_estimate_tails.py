@@ -11,7 +11,7 @@ import torch
 def estimate_tails(
     func: typing.Callable[[torch.Tensor], torch.Tensor],
     target: float,
-    shape: int,
+    shape: torch.Size,
     device: typing.Union[torch.device, str, None] = None,
     dtype: torch.dtype = torch.float32,
 ) -> torch.Tensor:
@@ -40,6 +40,8 @@ def estimate_tails(
     Returns:
         the solution, :math:`x`.
     """
+    tails: torch.Tensor
+
     if not device:
         if torch.cuda.is_available():
             device = "cuda"
@@ -47,18 +49,15 @@ def estimate_tails(
             device = "cpu"
 
     eps = torch.finfo(torch.float32).eps
-
     counts = torch.zeros(shape, dtype=torch.int32)
-
     tails = torch.zeros(shape, device=device, dtype=dtype, requires_grad=True)
-
     mean = torch.zeros(shape, dtype=dtype)
-
     variance = torch.ones(shape, dtype=dtype)
 
     while torch.min(counts) < 100:
         abs(func(tails) - target).backward(torch.ones_like(tails))
 
+        assert tails.grad is not None
         gradient = tails.grad.cpu()
 
         with torch.no_grad():

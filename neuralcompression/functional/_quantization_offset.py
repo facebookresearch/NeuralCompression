@@ -38,7 +38,7 @@ def quantization_offset(distribution: Distribution) -> Tensor:
     try:
         offset = distribution.mean
     except AttributeError:
-        offset = 0
+        offset = torch.tensor(0)
 
     with torch.no_grad():
         return offset - torch.round(offset)

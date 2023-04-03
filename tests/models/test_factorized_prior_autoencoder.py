@@ -24,8 +24,8 @@ class TestFactorizedPriorAutoencoder:
 
         assert y_probabilities.size()[0] == x.size()[0]
         assert y_probabilities.size()[1] == 192
-        assert y_probabilities.size()[2] == x.size()[2] / 2 ** 4
-        assert y_probabilities.size()[3] == x.size()[3] / 2 ** 4
+        assert y_probabilities.size()[2] == x.size()[2] / 2**4
+        assert y_probabilities.size()[3] == x.size()[3] / 2**4
 
     def test_from_state_dict(self, tmpdir):
         for n, m in [(128, 128), (128, 192), (192, 128)]:

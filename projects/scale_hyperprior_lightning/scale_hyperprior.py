@@ -64,7 +64,7 @@ class ScaleHyperpriorLightning(LightningModule):
         bpp_loss = bits / num_pixels
 
         distortion_loss = F.mse_loss(reconstruction, original)
-        combined_loss = self.distortion_lambda * 255 ** 2 * distortion_loss + bpp_loss
+        combined_loss = self.distortion_lambda * 255**2 * distortion_loss + bpp_loss
 
         return bpp_loss, distortion_loss, combined_loss
 
@@ -89,7 +89,6 @@ class ScaleHyperpriorLightning(LightningModule):
         )
 
     def training_step(self, batch, batch_idx, optimizer_idx):
-
         if optimizer_idx not in [0, 1]:
             raise ValueError(
                 f"Received unexpected optimizer index {optimizer_idx}"

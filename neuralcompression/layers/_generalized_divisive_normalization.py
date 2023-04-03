@@ -203,7 +203,7 @@ class GeneralizedDivisiveNormalization(Module):
         _, channels, _, _ = x.size()
 
         y = torch.nn.functional.conv2d(
-            x ** 2,
+            x**2,
             torch.reshape(
                 self._reparameterized_gamma(self.gamma),
                 (channels, channels, 1, 1),

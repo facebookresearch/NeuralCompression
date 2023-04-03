@@ -113,7 +113,7 @@ class PriorAutoencoder(Module):
         return updated
 
     def load_state_dict(
-        self, state_dict: OrderedDict[str, Tensor], strict: bool = True
+        self, state_dict: OrderedDict[str, Tensor], strict: bool = True  # type: ignore
     ):
         for bottleneck_buffer_name in self.bottleneck_buffer_names:
             name = f"{self.bottleneck_name}.{bottleneck_buffer_name}"

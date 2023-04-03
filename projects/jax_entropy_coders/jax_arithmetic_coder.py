@@ -123,6 +123,7 @@ def _enqueue(
             ``idx``, ``bit_idx``, ``pending_bits``, ``high``, ``low``, and
             ``cdf_state``.
     """
+
     # jax functions - these will all be jit-compiled for our while loop
     def decrease_high(vals):
         """Based on high decreasing, we append a 0 most significant bit."""
@@ -251,6 +252,7 @@ def _dequeue(
         A tuple containing updated versions of ``value``, ``high``, ``low``,
             ``idx``, ``bit_idx``, ``int_array``.
     """
+
     # jax functions - these will all be jit-compiled for our while loop
     def high_cross_half(vals):
         """No need to do anything, bit is 0."""

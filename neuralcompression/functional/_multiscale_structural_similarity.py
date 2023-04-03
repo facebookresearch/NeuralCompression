@@ -95,7 +95,7 @@ def _ssim_single_channel(
     a1, a2, b1, b2 = (
         2 * ux * uy + c1,
         2 * vxy + c2,
-        ux ** 2 + uy ** 2 + c1,
+        ux**2 + uy**2 + c1,
         vx + vy + c2,
     )
 

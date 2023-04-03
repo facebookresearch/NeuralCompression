@@ -231,16 +231,12 @@ class ScaleHyperprior(nn.Module):
     ):
         super().__init__()
 
-        if (
-            None
-            in [
-                image_analysis,
-                image_synthesis,
-                hyper_analysis,
-                hyper_synthesis,
-            ]
-            and None in [network_channels, compression_channels]
-        ):
+        if None in [
+            image_analysis,
+            image_synthesis,
+            hyper_analysis,
+            hyper_synthesis,
+        ] and None in [network_channels, compression_channels]:
             raise ValueError(
                 "When one or more analysis or synthesis networks is unspecified, "
                 "'network_channels' and 'compressions_channels' must be"

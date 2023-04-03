@@ -228,7 +228,6 @@ def bitsback_ans_codec(
     """
 
     def push(symbols, compressed_message, cdf_state):
-
         # pop latents with approximate posterior q(latents|symbols)
         latent_posterior_codec = latent_posterior_codec_maker(symbols)
         compressed_message, latents, _ = latent_posterior_codec.pop(
@@ -255,7 +254,6 @@ def bitsback_ans_codec(
         return compressed_message, None
 
     def pop(msg_index, compressed_message, message, cdf_state):
-
         # pop latents with prior p(latents)
         compressed_message, latents, _ = latent_prior_codec.pop(
             0,

@@ -20,7 +20,7 @@ class TestNonNegativeParameterization:
         assert torch.allclose(
             parameterization.initial_value,
             torch.sqrt(torch.max(x, x - x)),
-            atol=2 ** -18,
+            atol=2**-18,
         )
 
         for _ in range(10):

@@ -115,7 +115,7 @@ class HyperpriorAutoencoder(PriorAutoencoder):
 
     def load_state_dict(
         self,
-        state_dict: OrderedDict[str, Tensor],
+        state_dict: OrderedDict[str, Tensor],  # type: ignore
         strict: bool = True,
     ):
         bottleneck_buffer_names = [
