@@ -26,7 +26,6 @@ from typing import Generator, List, NamedTuple, Optional, Sequence, Tuple, Union
 import torch
 import torch.nn as nn
 import utils.memoize as memoize
-
 from datamodules.video_data_api import Scenes, VideoData
 from neural.entropy_model import PreviousLatent, VCTEntropyModel
 from torch import Tensor
