@@ -1,0 +1,3 @@
+_target_: utils.schedulers.LinearRampLinearLR
+ramp_len: ${eval:${training_loop.pseudo_epochs}*8//10} # 80% of training
+T_max: ${training_loop.pseudo_epochs}

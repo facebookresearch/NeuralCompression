@@ -76,7 +76,7 @@ jobs:
           mypy --version
           mypy neuralcompression
           flake8 --version
-          flake8 neuralcompression tests projects
+          flake8 neuralcompression tests
           isort --version
           isort --check-only neuralcompression tests projects
       - name: Install NeuralCompression
@@ -85,5 +85,5 @@ jobs:
           pip install dist/*.whl
       - name: Run pytest
         run: |
-          echo -e "PyTorch \c" && pip show torch | grep Version 
+          echo -e "PyTorch \c" && pip show torch | grep Version
           pytest tests

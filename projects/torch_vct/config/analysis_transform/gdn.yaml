@@ -1,0 +1,3 @@
+_target_: neural.transforms.ConvGDNAnalysis
+network_channels: 128
+compression_channels: 192 

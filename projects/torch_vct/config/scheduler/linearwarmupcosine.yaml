@@ -1,0 +1,4 @@
+_target_: utils.schedulers.LinearWarmUpCosineLR
+ramp_len: ${eval:${training_loop.pseudo_epochs}//20} # 5% of training
+T_max: ${training_loop.pseudo_epochs}
+eta_min: ${eval:${training_loop.learning_rate}//10}

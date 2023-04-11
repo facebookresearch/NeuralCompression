@@ -1,0 +1,86 @@
+experiment_name: torch_vct
+seed: 202208
+
+ngpu: 2
+num_workers_per_task: 10
+
+user: ${oc.env:USER} # oc=omegaconf
+
+defaults:
+  - _self_
+  - analysis_transform: elic # encoder
+  - synthesis_transform: elic # decoder
+  - datamodule: kinetics
+  - optim: adamw
+  - scheduler: linearrampcosine 
+  - test_datamodule: # by default, no testing at the end of training
+
+model:
+  _target_: model_pipeline.VCTPipeline
+  analysis_transform: ${analysis_transform}
+  synthesis_transform: ${synthesis_transform}
+  compression_channels: 192
+
+training_loop:
+  learning_rate: 1e-3
+  lr_annealing_frequency: ${checkpoint.callback.every_n_train_steps}
+  distortion_lambda: 0.0067
+  train_batch_size: 2
+  val_batch_size: 2
+  pseudo_epochs: ${eval:${trainer.max_steps}//${training_loop.lr_annealing_frequency}} 
+
+# logging configs
+checkpoint:
+  overwrite: False # overwrite logs already in training dir
+  resume_training: True # resume training from previous logs
+  callback: # passed to PyTorch Lightning's ModelCheckpoint callback
+    dirpath: checkpoints
+    save_top_k: 2
+    monitor: val_combined_loss_weighted
+    mode: min
+    save_last: True
+    every_n_train_steps: 2000 # also equals annealing freq and val evaluation
+
+
+# These args are passed to the PyTorch Lightning Trainer - add extra customization here
+trainer: 
+  # Steps, dev runs etc 
+  fast_dev_run: False # Default=False; if int runs n steps of train/val ~ unit test
+  max_steps: 1_000_000
+  log_every_n_steps: 100   # default=50
+  # ---
+  # Validation: validate every time checkpoint is stored
+  val_check_interval: ${checkpoint.callback.every_n_train_steps} # default is 1.0
+  check_val_every_n_epoch: # None = disable epoch validation, validate every <val_check_interval> steps 
+  limit_val_batches: 100    # Use <limit_val_batches> instead of the whole validation set
+  # ---
+  # Devices
+  devices: ${ngpu}  
+  accelerator: gpu 
+  strategy: ddp_find_unused_parameters_false
+  # ---
+  # Misc
+  gradient_clip_val: 1.0
+  gradient_clip_algorithm: norm
+
+tester:
+  accelerator: gpu 
+  devices: 1
+
+logger: 
+  entity: 
+  project: torch_vct
+  group: dev
+
+hydra:
+  run:
+    dir: ???
+  sweep:
+    dir: ???
+  job:
+    config:
+      override_dirname:
+        exclude_keys:
+          - mode
+          - experiment_name
+          - hydra.launcher.timeout_min

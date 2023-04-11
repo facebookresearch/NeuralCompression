@@ -1,0 +1,6 @@
+_target_: lion_pytorch.Lion
+lr: ${training_loop.learning_rate}
+weight_decay: 0.01 # default is 0.0
+betas:
+- 0.95
+- 0.98

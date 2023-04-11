@@ -1,0 +1,2 @@
+_target_: neural.transforms.ELICSynthesis
+output_channels: 3
