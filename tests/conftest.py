@@ -16,6 +16,7 @@ def arange_4d_image(request):
 
     return x.to(torch.get_default_dtype())
 
+
 @pytest.fixture(
     scope="session", params=[(2, 2, 65, 257), (3, 5, 124, 63), (5, 3, 252, 257)]
 )
