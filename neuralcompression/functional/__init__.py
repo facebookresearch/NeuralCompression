@@ -18,10 +18,10 @@ from ._lpips import lpips
 from ._multiscale_structural_similarity import multiscale_structural_similarity
 from ._ndtr import ndtr
 from ._optical_flow_to_color import optical_flow_to_color
+from ._pad_image import pad_image_to_factor
 from ._quantization_offset import quantization_offset
 from ._soft_round import soft_round
 from ._soft_round_conditional_mean import soft_round_conditional_mean
 from ._soft_round_inverse import soft_round_inverse
 from ._survival_function import survival_function
 from ._upper_tail import upper_tail
-from ._pad_image import pad_image_to_factor

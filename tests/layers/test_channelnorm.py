@@ -4,8 +4,9 @@
 # LICENSE file in the root directory of this source tree.
 
 import pytest
-from torch import Tensor
 import torch
+from torch import Tensor
+
 from neuralcompression.layers import ChannelNorm2D
 
 

@@ -11,10 +11,10 @@ from compressai.entropy_models import EntropyBottleneck, GaussianConditional
 from torch import Tensor
 
 import neuralcompression.functional as ncF
+from neuralcompression import HyperpriorCompressedOutput, HyperpriorOutput
 
 from ._hific_encoder_decoder import HiFiCEncoder, HiFiCGenerator
 from ._hyperprior_autoencoder import HyperpriorAutoencoderBase
-from neuralcompression import HyperpriorCompressedOutput, HyperpriorOutput
 
 
 def _conv(
