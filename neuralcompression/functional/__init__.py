@@ -24,3 +24,4 @@ from ._soft_round_conditional_mean import soft_round_conditional_mean
 from ._soft_round_inverse import soft_round_inverse
 from ._survival_function import survival_function
 from ._upper_tail import upper_tail
+from ._pad_image import pad_image_to_factor

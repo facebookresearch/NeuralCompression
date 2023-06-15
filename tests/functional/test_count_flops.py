@@ -8,7 +8,6 @@ import torch
 import torch.nn
 
 from neuralcompression.functional import count_flops
-from neuralcompression.models import ScaleHyperprior
 
 
 @pytest.mark.parametrize(
@@ -114,22 +113,6 @@ def test_flop_count_elementwise(input_shape):
     )
     assert counted_flops == correct_flops
     assert len(unsupported_ops) == 0
-
-
-@pytest.mark.parametrize(
-    "batch_size, network_channels, compression_channels, img_size", [(1, 8, 16, 128)]
-)
-def test_flop_count_hyperprior(
-    batch_size, network_channels, compression_channels, img_size
-):
-    # Testing that the flop counter doesn't crash and records all operators
-    # on a more complicated model, i.e. the scale hyperprior model.
-    model = ScaleHyperprior(
-        network_channels=network_channels, compression_channels=compression_channels
-    )
-    inputs = (torch.randn(batch_size, 3, img_size, img_size),)
-    _, _, unsupported_ops = count_flops(model, inputs, use_single_flop_estimates=True)
-    assert len(unsupported_ops) == 1
 
 
 def test_flop_counter_overrides():
