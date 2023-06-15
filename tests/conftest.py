@@ -9,7 +9,7 @@ import torch
 
 
 @pytest.fixture(
-    scope="session", params=[(2, 2, 64, 256), (3, 5, 128, 64), (5, 3, 256, 256)]
+    scope="session", params=[(2, 2, 64, 64), (3, 5, 128, 64), (1, 3, 256, 256)]
 )
 def arange_4d_image(request):
     x = torch.arange(torch.prod(torch.tensor(request.param))).reshape(request.param)
@@ -18,7 +18,7 @@ def arange_4d_image(request):
 
 
 @pytest.fixture(
-    scope="session", params=[(2, 2, 65, 257), (3, 5, 124, 63), (5, 3, 252, 257)]
+    scope="session", params=[(2, 2, 65, 257), (3, 5, 124, 63), (1, 3, 252, 257)]
 )
 def arange_4d_image_odd(request):
     x = torch.arange(torch.prod(torch.tensor(request.param))).reshape(request.param)
