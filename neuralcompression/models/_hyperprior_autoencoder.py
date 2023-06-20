@@ -3,160 +3,150 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import math
-from typing import Optional, OrderedDict, Union
+from typing import List, Optional, Tuple
 
 import torch
-import torch.nn
-from compressai.entropy_models import EntropyBottleneck, GaussianConditional
+import torch.nn as nn
+from compressai.entropy_models import EntropyBottleneck
+from compressai.models import CompressionModel
+from compressai.ops import quantize_ste
 from torch import Tensor
-from torch.nn import Module
 
-from neuralcompression.layers import (
-    HyperAnalysisTransformation2D,
-    HyperSynthesisTransformation2D,
-)
-
-from ._prior_autoencoder import PriorAutoencoder
+from neuralcompression import HyperpriorCompressedOutput, HyperpriorOutput
 
 
-class HyperpriorAutoencoder(PriorAutoencoder):
-    """Base class for implementing hyperprior autoencoder architectures. The
-    class composes a bottleneck module (e.g. the ``EntropyBottleneck`` module
-    provided by the CompressAI package) with two autoencoders (i.e. a prior
-    encoder and prior decoder pair of modules and a hyperprior encoder and
-    hyperprior decoder pair of modules).
+class _HyperpriorAutoencoderBase(CompressionModel):
+    """
+    Base class for hyperprior autoencoder.
 
-    Using the base class is as straightforward as inheriting from the class and
-    optionally providing ``encoder``, ``decoder``, ``hyper_encoder`` and
-    ``hyper_decoder`` modules. The ``neuralcompression.layers`` package
-    includes a standard prior encoder (``AnalysisTransformation2D``), prior
-    decoder (``SynthesisTransformation2D``), hyperprior encoder
-    (``HyperAnalysisTransformation2D``), and hyperprior decoder
-    (``HyperSynthesisTransformation2D``).
-
-    Args:
-        network_channels: number of channels in the network.
-        compression_channels: number of inferred latent compression features.
-        in_channels: number of channels in the input image.
-        encoder: prior encoder.
-        decoder: prior decoder.
-        hyper_encoder: hyperprior encoder.
-        hyper_decoder: hyperprior decoder.
-        minimum: minimum scale size.
-        maximum: maximum scale size.
-        steps: number of scale steps.
+    This base class wraps a number of utility functions for working with
+    Balle-style compression autoencoders implemented in the style of
+    CompressAI, such as parameter collection and device management. Users are
+    expected to subclass this calss before writing the appropriate PyTorch
+    operations.
     """
 
-    hyper_encoder: Module
-    hyper_decoder: Module
+    hyper_bottleneck: EntropyBottleneck
+    _compress_cpu_layers: Optional[List[nn.Module]]
 
-    def __init__(
-        self,
-        network_channels: int = 128,
-        compression_channels: int = 192,
-        in_channels: int = 3,
-        encoder: Optional[Module] = None,
-        decoder: Optional[Module] = None,
-        hyper_encoder: Optional[Module] = None,
-        hyper_decoder: Optional[Module] = None,
-        minimum: Union[int, float] = 0.11,
-        maximum: Union[int, float] = 256,
-        steps: int = 64,
-    ):
-        super(HyperpriorAutoencoder, self).__init__(
-            network_channels,
-            compression_channels,
-            in_channels,
-            encoder,
-            decoder,
-            EntropyBottleneck(network_channels),
-        )
+    def __init__(self):
+        super().__init__()
+        self._device_setting = "forward"
+        self._compress_cpu_layers = None
 
-        if hyper_encoder is not None:
-            self.hyper_encoder = hyper_encoder
-        else:
-            self.hyper_encoder = HyperAnalysisTransformation2D(
-                network_channels,
-                compression_channels,
-                in_channels,
-            )
+    @property
+    def device_setting(self) -> str:
+        return self._device_setting
 
-        if hyper_decoder is not None:
-            self.hyper_decoder = hyper_decoder
-        else:
-            self.hyper_decoder = HyperSynthesisTransformation2D(
-                network_channels,
-                compression_channels,
-                in_channels,
-            )
+    def set_compress_cpu_layers(self, compress_cpu_layers: List[nn.Module]):
+        self._compress_cpu_layers = compress_cpu_layers
 
-        self.minimum = math.log(minimum)
-        self.maximum = math.log(maximum)
+    def collect_parameters(self) -> Tuple[List[nn.Parameter], List[nn.Parameter]]:
+        """
+        Separates the trainable parameters of the model into groups.
 
-        self.steps = steps
+        The module's parameters are organized into "model parameters" (the
+        parameters that dictate the function of the model) and "quantile
+        parameters" (which are only used to learn the quantiles of the
+        hyper_bottleneck layer's factorized distribution, for use at inference
+        time).
 
-        self.gaussian_conditional = GaussianConditional(None)
+        Returns:
+            tuple of (model parameter_dict, quantile parameter_dict)
+        """
+        model_parameters = {
+            n: p
+            for n, p in self.named_parameters()
+            if not n.endswith(".quantiles") and p.requires_grad
+        }
+        quantile_parameters = {
+            n: p
+            for n, p in self.named_parameters()
+            if n.endswith(".quantiles") and p.requires_grad
+        }
 
-    @classmethod
-    def from_state_dict(
-        cls,
-        state_dict: OrderedDict,
-    ):
-        network_channels = state_dict["encoder.encode.0.weight"].size()[0]
+        model_keys = set(model_parameters.keys())
+        quantile_keys = set(quantile_parameters.keys())
 
-        compression_channels = state_dict["encoder.encode.6.weight"].size()[0]
+        # Make sure we don't have an intersection of parameters
+        params_dict = {
+            k: p for k, p in self.named_parameters() if p.requires_grad is True
+        }
+        params_keys = set(params_dict.keys())
 
-        hyperprior = cls(network_channels, compression_channels)
+        inter_keys = model_keys.intersection(quantile_keys)
+        union_keys = model_keys.union(quantile_keys)
 
-        hyperprior.load_state_dict(state_dict)
+        if len(inter_keys) != 0 or union_keys != params_keys:
+            raise RuntimeError("Separating model and quantile parameters failed.")
 
-        return hyperprior
-
-    def load_state_dict(
-        self,
-        state_dict: OrderedDict[str, Tensor],  # type: ignore
-        strict: bool = True,
-    ):
-        bottleneck_buffer_names = [
-            "_quantized_cdf",
-            "_offset",
-            "_cdf_length",
-            "scale_table",
+        return [v for _, v in model_parameters.items()], [
+            v for _, v in quantile_parameters.items()
         ]
 
-        for bottleneck_buffer_name in bottleneck_buffer_names:
-            name = f"gaussian_conditional.{bottleneck_buffer_name}"
+    def _ste_quantize(self, latent: Tensor, means: Optional[Tensor] = None) -> Tensor:
+        """
+        Quantization with straight-through estimator.
 
-            size = state_dict[name].size()
+        If the means are passed, then the input is first mean-shifted prior to
+        quantization. Internally, the function uses the ``quantize_ste``
+        function from CompressAI.
 
-            registered_buffers = []
+        Args:
+            latent: The latent to quantize.
+            means: Values to shift latent by prior to quantization.
+        """
+        if means is None:
+            return quantize_ste(latent)
+        else:
+            return quantize_ste(latent - means) + means
 
-            for name, buffer in self.gaussian_conditional.named_buffers():
-                if name == bottleneck_buffer_name:
-                    registered_buffers += [buffer]
+    def _set_devices_for_compress(self):
+        if self._compress_cpu_layers is None:
+            raise RuntimeError("Must run set_compress_cpu_layers() in __init__()")
 
-            if registered_buffers:
-                registered_buffer = registered_buffers[0]
+        for module in self._compress_cpu_layers:
+            module.to(torch.device("cpu"))
 
-                if registered_buffer.numel() == 0:
-                    registered_buffer.resize_(size)
+    def _check_compress_devices(self) -> bool:
+        if self._compress_cpu_layers is None:
+            raise RuntimeError("Must run set_compress_cpu_layers() in __init__()")
 
-        super(HyperpriorAutoencoder, self).load_state_dict(state_dict)
+        result = True
+        cpu = torch.device("cpu")
+        for module in self._compress_cpu_layers:
+            for param in module.parameters():
+                if not param.device == cpu:
+                    result = False
 
-    def scales(self) -> Tensor:
-        return torch.exp(torch.linspace(self.minimum, self.maximum, self.steps))
+        return result
 
-    def update_bottleneck(
-        self,
-        force: bool = False,
-        scales: Optional[Tensor] = None,
-    ) -> bool:
-        if scales is None:
-            scales = self.scales()
+    def update_tensor_devices(self, target_operation: str):
+        raise NotImplementedError
 
-        updated = self.gaussian_conditional.update_scale_table(scales, force=force)
+    def _on_cpu(self):
+        cpu = torch.device("cpu")
+        for param in self.parameters():
+            if param.device != cpu:
+                return False
+        return True
 
-        updated |= super(HyperpriorAutoencoder, self).update_bottleneck(force=force)
+    def compress(
+        self, image: Tensor, force_cpu: bool = True
+    ) -> HyperpriorCompressedOutput:
+        raise NotImplementedError
 
-        return updated
+    def decompress(
+        self, compressed_data: HyperpriorCompressedOutput, force_cpu: bool = True
+    ) -> Tensor:
+        raise NotImplementedError
+
+
+class HyperpriorAutoencoderBase(_HyperpriorAutoencoderBase):
+    def forward(self, image: Tensor) -> HyperpriorOutput:
+        raise NotImplementedError
+
+
+class ConditionalHyperpriorAutoencoderBase(_HyperpriorAutoencoderBase):
+    def forward(self, image: Tensor, context) -> HyperpriorOutput:
+        raise NotImplementedError

@@ -5,6 +5,13 @@
 
 from importlib.metadata import PackageNotFoundError, version
 
+from ._outputs import (
+    DiscriminatorOutput,
+    HyperpriorCompressedOutput,
+    HyperpriorOutput,
+    VqVaeAutoencoderOutput,
+)
+
 try:
     __version__ = version("neuralcompression")
 except PackageNotFoundError:
