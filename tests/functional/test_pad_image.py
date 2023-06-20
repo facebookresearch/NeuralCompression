@@ -4,32 +4,22 @@
 # LICENSE file in the root directory of this source tree.
 
 import pytest
-import torch
 from torch import Tensor
 
 import neuralcompression.functional as ncF
 
 
-def create_4d_image(shape) -> Tensor:
-    x = torch.arange(torch.prod(torch.tensor(shape))).reshape(shape)
+@pytest.mark.parametrize("factor", [64, 32, 16])
+def test_pad_image(factor: int, arange_4d_image_odd: Tensor):
+    output, (h, w) = ncF.pad_image_to_factor(arange_4d_image_odd, factor)
 
-    return x.to(torch.get_default_dtype())
+    assert h == arange_4d_image_odd.shape[2]
+    assert w == arange_4d_image_odd.shape[3]
 
+    if arange_4d_image_odd.shape[2] % factor != 0:
+        est = (arange_4d_image_odd.shape[2] // factor + 1) * factor
+        assert output.shape[2] == est
 
-@pytest.mark.parametrize("mode", ["reflect", "constant", "replicate", "circular"])
-@pytest.mark.parametrize(
-    "factor,start_sz,output_sz",
-    [
-        (64, (2, 2, 64, 257), (2, 2, 64, 320)),
-        (32, (3, 5, 124, 63), (3, 5, 128, 64)),
-        (16, (1, 3, 252, 257), (1, 3, 256, 272)),
-    ],
-)
-def test_pad_image(mode: str, factor, start_sz, output_sz):
-    arange_image = create_4d_image(start_sz)
-    output, (h, w) = ncF.pad_image_to_factor(arange_image, factor, mode=mode)
-
-    assert h == arange_image.shape[2]
-    assert w == arange_image.shape[3]
-
-    assert tuple(output.shape) == output_sz
+    if arange_4d_image_odd.shape[3] % factor != 0:
+        est = (arange_4d_image_odd.shape[3] // factor + 1) * factor
+        assert output.shape[3] == est

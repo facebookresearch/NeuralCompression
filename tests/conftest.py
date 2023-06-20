@@ -15,3 +15,12 @@ def arange_4d_image(request):
     x = torch.arange(torch.prod(torch.tensor(request.param))).reshape(request.param)
 
     return x.to(torch.get_default_dtype())
+
+
+@pytest.fixture(
+    scope="session", params=[(2, 2, 65, 257), (3, 5, 124, 63), (1, 3, 252, 257)]
+)
+def arange_4d_image_odd(request):
+    x = torch.arange(torch.prod(torch.tensor(request.param))).reshape(request.param)
+
+    return x.to(torch.get_default_dtype())

@@ -7,6 +7,7 @@ from ._count_flops import count_flops
 from ._dense_image_warp import dense_image_warp
 from ._estimate_tails import estimate_tails
 from ._hsv_to_rgb import hsv_to_rgb
+from ._image_to_255_scale import image_to_255_scale
 from ._information_content import information_content
 from ._log_cdf import log_cdf
 from ._log_expm1 import log_expm1
