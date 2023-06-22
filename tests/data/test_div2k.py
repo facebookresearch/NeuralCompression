@@ -8,11 +8,10 @@ from pathlib import Path
 import numpy
 import pytest
 import torch
-from PIL.Image import Image
+from torchvision.transforms import ToTensor
 from utils import create_random_image, write_image_to_file
 
 from neuralcompression.data import DIV2KDataset
-from torchvision.transforms import ToTensor
 
 
 @pytest.fixture
@@ -43,3 +42,5 @@ def test_div2k_getitem(div2k_datafolder):
     true_images = div2k_datafolder[1]
     for img, true_img in zip(dataset, true_images):
         assert torch.allclose(img, torch.tensor(true_img))
+
+    assert len(dataset) == len(true_images)
