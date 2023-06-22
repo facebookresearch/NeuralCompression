@@ -5,7 +5,7 @@
 
 import pytest
 import pytorchvideo.data.clip_sampling
-from utils import create_random_image
+from utils import create_random_image, write_image_to_file
 
 from neuralcompression.data import CLIC2020Video
 
@@ -27,7 +27,8 @@ def data(tmp_path):
         for index in range(num_frames):
             path = directory.joinpath(f"{index}_y.png")
 
-            create_random_image(path, (3, 224, 224))
+            img = create_random_image((3, 224, 224))
+            write_image_to_file(img, path)
 
     clip_sampler = pytorchvideo.data.clip_sampling.make_clip_sampler("random", 4)
 
@@ -44,6 +45,7 @@ class TestCLIC2020Video:
         data, _ = data
 
         assert isinstance(data[0], dict)
+        assert isinstance(data[-1], dict)
 
     def test___len__(self, data):
         data, n = data

@@ -6,7 +6,7 @@
 import numpy
 import pytest
 from PIL.Image import Image
-from utils import create_random_image
+from utils import create_random_image, write_image_to_file
 
 from neuralcompression.data import CLIC2020Image
 
@@ -24,7 +24,8 @@ def data(tmp_path):
     for index in range(n):
         path = directory.joinpath(f"{index}.png")
 
-        create_random_image(path, (3, 224, 224))
+        img = create_random_image((3, 224, 224), rng)
+        write_image_to_file(img, path)
 
     return CLIC2020Image(tmp_path, split="test"), n
 
@@ -34,6 +35,7 @@ class TestCLIC2020Image:
         data, _ = data
 
         assert isinstance(data[0], Image)
+        assert isinstance(data[-1], Image)
 
     def test___len__(self, data):
         data, n = data
