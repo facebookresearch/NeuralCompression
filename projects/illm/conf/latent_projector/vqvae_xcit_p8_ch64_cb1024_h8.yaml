@@ -1,0 +1,27 @@
+projector:
+  _target_: neuralcompression.models.VqVaeProjector
+autoencoder:
+  _target_: neuralcompression.models.VqVaeXCiTAutoencoder
+  ch: 64
+  out_ch: 3
+  ch_mult: [1, 2, 2, 4]
+  num_res_blocks: 2
+  attn_resolutions: [32]
+  dropout: 0.0
+  resamp_with_conv: true
+  in_channels: 3
+  resolution: 256
+  embed_dim: 256
+  give_pre_end: false
+  freeze_encoder: false
+  norm_type: channel
+  bottleneck_op:
+    _target_: neuralcompression.layers.ProjectLatent
+    input_dim: 256
+    output_dim: 8
+    child:
+      _target_: neuralcompression.layers.NormalizeLatent
+      child:
+        _target_: neuralcompression.layers.VQBottleneck
+        codebook_size: 1024
+        vector_length: 8

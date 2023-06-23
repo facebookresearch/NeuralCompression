@@ -8,7 +8,7 @@ import logging
 import math
 import pickle
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 from warnings import warn
 
 import hydra
@@ -23,13 +23,14 @@ from lightning.pytorch.callbacks import LearningRateMonitor, ModelCheckpoint
 from lightning.pytorch.loggers import WandbLogger
 from lightning.pytorch.strategies import DDPStrategy
 from omegaconf import DictConfig, OmegaConf
+from open_images_datamodule import OpenImagesDataModule
 from target_compression_module import TargetRateCompressionModule
 from torch import Tensor
 from torch.utils.data import DataLoader
 from torchvision.utils import make_grid
 
-from neuralcompression.data import OpenImagesDataModule
 from neuralcompression.loss_fn import TargetRateConfig
+from neuralcompression.models import HyperpriorAutoencoderBase
 
 LOGGER = logging.getLogger(__file__)
 
@@ -117,8 +118,10 @@ def pretrained_state_dict(checkpoint_file: str, prefix: str = "model."):
     return state_dict
 
 
-def build_model(cfg: DictConfig) -> Tuple[nn.Module, Optional[TargetRateConfig]]:
-    model: torch.nn.Module = hydra.utils.instantiate(cfg.model)
+def build_model(
+    cfg: DictConfig,
+) -> Tuple[HyperpriorAutoencoderBase, Optional[TargetRateConfig]]:
+    model: HyperpriorAutoencoderBase = hydra.utils.instantiate(cfg.model)
     target_rate_config: Optional[TargetRateConfig] = None
     if cfg.get("pretrained_autoencoder") is not None:
         LOGGER.info(f"Loading pretrained model from {cfg.pretrained_autoencoder.path}")
@@ -209,7 +212,7 @@ def build_module(cfg: DictConfig) -> ImageModule:
     return module
 
 
-def build_image_logger(cfg: DictConfig, data_module: pl.LightningDataModule):
+def build_image_logger(cfg: DictConfig, data_module: OpenImagesDataModule):
     """Construct logger for sending images to wandb."""
     log_cache_dir = Path(cfg.image_logs.log_cache_dir)
     if not log_cache_dir.exists():
@@ -301,6 +304,7 @@ def build_trainer(
     image_logger = build_image_logger(cfg, data_module)
 
     # sometimes we have unused parameters
+    strategy: Union[DDPStrategy, str]
     if cfg.training_mode == "train":
         strategy = DDPStrategy(find_unused_parameters=True)
     else:

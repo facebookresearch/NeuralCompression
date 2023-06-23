@@ -6,3 +6,4 @@
 from ._channel_norm import ChannelNorm2D
 from ._continuous_entropy import ContinuousEntropy
 from ._simplified_gdn import SimplifiedGDN, SimplifiedInverseGDN
+from ._xca import XCA

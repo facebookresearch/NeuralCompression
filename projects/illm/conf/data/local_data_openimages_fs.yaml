@@ -1,0 +1,5 @@
+_target_: neuralcompression.data.OpenImagesDataModule
+open_images_root: null
+workers: 10
+image_size: [256, 256]
+batch_size: 6

@@ -13,13 +13,10 @@ from omegaconf import DictConfig
 from torch import Tensor
 from torch.utils.data import Dataset
 
+from neuralcompression import HyperpriorOutput
 from neuralcompression.loss_fn import DistortionLoss, MSELoss, TargetRateConfig
 from neuralcompression.metrics import pickle_size_of
-from neuralcompression.models import (
-    HyperpriorAutoencoderBase,
-    HyperpriorOutput,
-)
-from neuralcompression import HyperpriorOutput
+from neuralcompression.models import HyperpriorAutoencoderBase
 
 
 class RateLossOutput(NamedTuple):

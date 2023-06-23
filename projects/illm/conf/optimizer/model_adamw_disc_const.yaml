@@ -1,0 +1,19 @@
+model_opt:
+  _target_: torch.optim.AdamW
+  lr: 0.0001
+  weight_decay: 0.0
+  betas: [0.5, 0.9]
+model_opt_schedule:
+  _target_: neuralcompression.optim.IdentitySchedule
+discriminator_opt:
+  _target_: torch.optim.AdamW
+  lr: 0.0004
+  weight_decay: 0.0
+  betas: [0.5, 0.9]
+discriminator_opt_schedule:
+  _target_: neuralcompression.optim.IdentitySchedule
+aux_opt:
+  _target_: torch.optim.AdamW
+  lr: 0.001
+aux_opt_schedule:
+  _target_: neuralcompression.optim.IdentitySchedule

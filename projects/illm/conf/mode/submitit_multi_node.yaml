@@ -1,0 +1,32 @@
+# @package _global_
+defaults:
+  - override /hydra/launcher: submitit_slurm
+
+ngpu: 8
+training_mode: train
+
+trainer:
+  num_nodes: 1
+  devices: ${ngpu}
+  accelerator: gpu
+  max_steps: ${max_steps}
+  max_epochs: -1
+  val_check_interval: 10000
+  use_distributed_sampler: False
+  reload_dataloaders_every_n_epochs: 1
+
+logger:
+  group: "${experiment_name}"
+
+hydra:
+  callbacks:
+    log_job_return:
+      _target_: hydra.experimental.callbacks.LogJobReturnCallback
+  launcher:
+    timeout_min: 2160
+    gpus_per_node: ${ngpu}
+    tasks_per_node: ${ngpu}
+    nodes: ${trainer.num_nodes}
+    cpus_per_task: ${data.workers}
+    mem_gb: 20
+    max_num_timeout: 5

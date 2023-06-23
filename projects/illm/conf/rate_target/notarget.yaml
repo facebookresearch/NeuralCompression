@@ -1,0 +1,7 @@
+_target_: neuralcompression.loss_fn.TargetRateConfig
+target_bpp: 1.0
+target_factors: [1.0, 1.0]
+target_steps: [0]
+lam_levels: [1.0, 1.0]
+lam2_factors: [1.0, 1.0]
+lam2_steps: [0]

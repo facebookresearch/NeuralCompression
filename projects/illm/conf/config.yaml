@@ -1,0 +1,53 @@
+defaults:
+  - _self_
+  - trainer: default_trainer
+  - image_logs: default_logs
+  - data: local_data_openimages
+  - model: elic_autoencoder
+  - optimizer: model_adamw
+  - distortion_loss: mse_distortion
+  - test_dataloaders: test_fc
+  - rate_target: notarget
+
+ngpu: 2
+seed: 18
+training_mode: train
+max_steps: 1000000
+
+experiment_name: base_config
+
+user: ${oc.env:USER}
+rundir: ~${user}/illm
+
+hydra:
+  run:
+    dir: ${rundir}/dev_runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ${rundir}/experiments/${experiment_name}
+  job:
+    config:
+      override_dirname:
+        exclude_keys:
+          - mode
+          - experiment_name
+          - hydra.launcher.timeout_min
+
+lightning_module:
+  distortion_lam: 1.0
+  gradient_clip_val: 1.0
+  gradient_clip_algorithm: norm
+  noisy_context_steps: 800000
+
+logger:
+  group: "dev"
+
+# logging configs
+checkpoint:
+  overwrite: False # overwrite logs already in training dir
+  resume_training: True # resume training from previous logs
+  callback: # passed to PyTorch Lightning's ModelCheckpoint callback
+    dirpath: "checkpoints"
+    save_top_k: 1
+    monitor: "val/ms_ssim"
+    mode: "max"
+    save_last: True

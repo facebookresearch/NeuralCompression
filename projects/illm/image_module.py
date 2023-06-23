@@ -98,7 +98,7 @@ class ImageModule(LightningModule):
         assert self.test_fid_swav is not None
         if clic_eval:
             # this applies the FID/KID calculations from Mentzer 2020
-            ncm.update_patch_clic_test_fid_kid(
+            ncm.update_patch_fid(
                 input_images=input_images,
                 pred=pred,
                 fid_metric=self.test_fid,

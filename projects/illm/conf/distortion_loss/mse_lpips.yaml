@@ -1,0 +1,5 @@
+_target_: neuralcompression.loss_fn.MSELPIPSLoss
+mse_param: 65025.0  # 255 ** 2
+lpips_param: 1.0
+normalize: true
+backbone: alex
