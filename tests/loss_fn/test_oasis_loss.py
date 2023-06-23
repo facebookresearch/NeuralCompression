@@ -4,13 +4,10 @@
 # LICENSE file in the root directory of this source tree.
 
 import pytest
-import torch.nn.functional as F
 import torch
+import torch.nn.functional as F
 
-from neuralcompression.loss_fn import (
-    OASISDiscriminatorLoss,
-    OASISGeneratorLoss,
-)
+from neuralcompression.loss_fn import OASISDiscriminatorLoss, OASISGeneratorLoss
 
 
 @pytest.fixture(params=[(3, 256, 4, 4), (20, 4, 12, 12), (5, 5, 64, 64)])
