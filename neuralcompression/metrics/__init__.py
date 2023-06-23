@@ -9,5 +9,6 @@ from ._dists import DeepImageStructureTextureSimilarity
 from ._fid import FrechetInceptionDistance
 from ._fid_swav import FrechetInceptionDistanceSwAV
 from ._kid import KernelInceptionDistance
+from ._msssim import MultiscaleStructuralSimilarity
 from ._pickle_size import pickle_size_of
 from ._update_patch_fid import update_patch_fid
