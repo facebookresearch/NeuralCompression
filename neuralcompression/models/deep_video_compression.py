@@ -244,7 +244,7 @@ class DVC(nn.Module):
             compressed_pframe.residual_decomp_sizes[-1][-2] // 2,
             compressed_pframe.residual_decomp_sizes[-1][-1] // 2,
         )
-        residual_latent = self.motion_entropy_bottleneck.decompress(
+        residual_latent = self.residual_entropy_bottleneck.decompress(
             compressed_pframe.compressed_residual, residual_latent_size
         )
         residual = self.residual_decoder(
