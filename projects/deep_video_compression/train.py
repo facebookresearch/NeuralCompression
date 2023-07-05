@@ -5,7 +5,7 @@
 
 from pathlib import Path
 
-import _optical_flow_to_color
+from neuralcompression.functional import optical_flow_to_color
 import hydra
 import numpy as np
 import pytorch_lightning as pl
@@ -53,7 +53,7 @@ class WandbImageCallback(pl.Callback):
                 mosaic = torch.cat(image_dict[key], dim=-1)
                 mosaic = torch.cat(list(mosaic), dim=-2)
                 if key == "flow":
-                    mosaic = _optical_flow_to_color.optical_flow_to_color(
+                    mosaic = optical_flow_to_color(
                         mosaic.unsqueeze(0)
                     )[0]
                 mosaic = torch.clip(mosaic, min=0, max=1.0)
