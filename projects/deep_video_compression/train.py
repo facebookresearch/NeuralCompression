@@ -53,9 +53,7 @@ class WandbImageCallback(pl.Callback):
                 mosaic = torch.cat(image_dict[key], dim=-1)
                 mosaic = torch.cat(list(mosaic), dim=-2)
                 if key == "flow":
-                    mosaic = optical_flow_to_color(
-                        mosaic.unsqueeze(0)
-                    )[0]
+                    mosaic = optical_flow_to_color(mosaic.unsqueeze(0))[0]
                 mosaic = torch.clip(mosaic, min=0, max=1.0)
                 trainer.logger.experiment.log(
                     {
