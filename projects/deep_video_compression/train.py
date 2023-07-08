@@ -4,16 +4,18 @@
 # LICENSE file in the root directory of this source tree.
 
 from pathlib import Path
+
 import hydra
 import numpy as np
-import pytorch_lightning as pl
 import torch
 import wandb
 from data_module import Vimeo90kSeptupletLightning
 from dvc_module import DvcModule
 from omegaconf import DictConfig, OmegaConf
+from pytorch_lightning import pl
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
+
 from neuralcompression.functional import optical_flow_to_color
 from neuralcompression.models import DVC
 
