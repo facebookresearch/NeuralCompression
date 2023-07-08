@@ -45,7 +45,7 @@ def estimate_tails(
     if not device:
         if torch.cuda.is_available():
             device = "cuda"
-        elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
             device = "mps"
         else:
             device = "cpu"
