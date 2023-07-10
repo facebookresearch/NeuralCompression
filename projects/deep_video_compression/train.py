@@ -5,7 +5,6 @@
 
 from pathlib import Path
 
-import _optical_flow_to_color
 import hydra
 import numpy as np
 import pytorch_lightning as pl
@@ -17,6 +16,7 @@ from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
 
+from neuralcompression.functional import optical_flow_to_color
 from neuralcompression.models import DVC
 
 
@@ -53,9 +53,7 @@ class WandbImageCallback(pl.Callback):
                 mosaic = torch.cat(image_dict[key], dim=-1)
                 mosaic = torch.cat(list(mosaic), dim=-2)
                 if key == "flow":
-                    mosaic = _optical_flow_to_color.optical_flow_to_color(
-                        mosaic.unsqueeze(0)
-                    )[0]
+                    mosaic = optical_flow_to_color(mosaic.unsqueeze(0))[0]
                 mosaic = torch.clip(mosaic, min=0, max=1.0)
                 trainer.logger.experiment.log(
                     {
