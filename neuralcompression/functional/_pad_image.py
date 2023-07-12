@@ -9,7 +9,9 @@ import torch.nn.functional as F
 from torch import Tensor
 
 
-def pad_image_to_factor(image: Tensor, factor: int) -> Tuple[Tensor, Tuple[int, int]]:
+def pad_image_to_factor(
+    image: Tensor, factor: int, mode: str = "reflect"
+) -> Tuple[Tensor, Tuple[int, int]]:
     """
     Pads an image if it is not divisible by factor.
 
@@ -20,7 +22,6 @@ def pad_image_to_factor(image: Tensor, factor: int) -> Tuple[Tensor, Tuple[int, 
     Args:
         image: A 4-D PyTorch tensor with dimensions (B, C, H, W)
         factor: A factor by which the output image should be divisible.
-
     Returns:
         The image padded so that its dimensions are disible by factor, as well
         as the height and width.
@@ -30,6 +31,6 @@ def pad_image_to_factor(image: Tensor, factor: int) -> Tuple[Tensor, Tuple[int, 
     pad_height = (factor - (height % factor)) % factor
     pad_width = (factor - (width % factor)) % factor
     if pad_height != 0 or pad_width != 0:
-        image = F.pad(image, (0, pad_width, 0, pad_height), mode="reflect")
+        image = F.pad(image, (0, pad_width, 0, pad_height), mode=mode)
 
     return image, (height, width)
