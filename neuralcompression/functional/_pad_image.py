@@ -22,6 +22,7 @@ def pad_image_to_factor(
     Args:
         image: A 4-D PyTorch tensor with dimensions (B, C, H, W)
         factor: A factor by which the output image should be divisible.
+
     Returns:
         The image padded so that its dimensions are disible by factor, as well
         as the height and width.
