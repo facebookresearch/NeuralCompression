@@ -145,7 +145,7 @@ class TargetRateCompressionModule(ImageModule):
         model_sched, quantile_sched = self.lr_schedulers()
 
         ########### MODEL OPTIMIZER ###########
-        images, _ = batch
+        images = batch
 
         output = self.model(images)
 
@@ -201,7 +201,7 @@ class TargetRateCompressionModule(ImageModule):
         images: Tensor
         output: HyperpriorOutput
 
-        images, _ = batch
+        images = batch
 
         output = self.model(images)
 

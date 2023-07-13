@@ -153,7 +153,7 @@ def build_module(cfg: DictConfig) -> ImageModule:
     if target_rate_config is None:
         target_rate_config = hydra.utils.instantiate(cfg.rate_target)
 
-    if cfg.discriminator is None:
+    if cfg.get("discriminator") is None:
         module = TargetRateCompressionModule(
             model=model,
             target_rate_config=target_rate_config,
@@ -216,7 +216,7 @@ def build_image_logger(cfg: DictConfig, data_module: OpenImagesDataModule):
     """Construct logger for sending images to wandb."""
     log_cache_dir = Path(cfg.image_logs.log_cache_dir)
     if not log_cache_dir.exists():
-        log_cache_dir.mkdir()
+        log_cache_dir.mkdir(parents=True)
 
     sha = hashlib.sha256()
     sha.update(str(cfg.data._target_).encode())
@@ -232,13 +232,10 @@ def build_image_logger(cfg: DictConfig, data_module: OpenImagesDataModule):
     else:
         data_module.setup()
         train_log_images = torch.stack(
-            [
-                data_module.train_dataset[ind][0]
-                for ind in cfg.image_logs.train_log_indices
-            ]
+            [data_module.train_dataset[ind] for ind in cfg.image_logs.train_log_indices]
         )
         eval_log_images = torch.stack(
-            [data_module.eval_dataset[ind][0] for ind in cfg.image_logs.val_log_indices]
+            [data_module.eval_dataset[ind] for ind in cfg.image_logs.val_log_indices]
         )
         with open(pkl_file, "wb") as f:
             pickle.dump(
