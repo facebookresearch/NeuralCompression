@@ -7,14 +7,13 @@ import logging
 from pathlib import Path
 from typing import Callable, List, Optional
 
+from default_transforms import default_train_transform, default_val_transform
 from lightning.pytorch import LightningDataModule
 from PIL.Image import Image
 from torch import Tensor
 from torch.utils.data import DataLoader
 
 from neuralcompression.data import OpenImagesV6
-
-from default_transforms import default_train_transform, default_val_transform
 
 
 class OpenImagesDataModule(LightningDataModule):
