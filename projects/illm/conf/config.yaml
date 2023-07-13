@@ -3,10 +3,10 @@ defaults:
   - trainer: default_trainer
   - image_logs: default_logs
   - data: local_data_openimages
-  - model: elic_autoencoder
+  - model: hific_autoencoder
   - optimizer: model_adamw
   - distortion_loss: mse_distortion
-  - test_dataloaders: test_fc
+  - test_dataloaders: test
   - rate_target: notarget
 
 ngpu: 2
@@ -17,7 +17,7 @@ max_steps: 1000000
 experiment_name: base_config
 
 user: ${oc.env:USER}
-rundir: ~${user}/illm
+rundir: run-logs
 
 hydra:
   run:

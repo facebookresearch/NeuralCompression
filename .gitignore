@@ -157,3 +157,6 @@ docs/source/examples
 
 # setuptools_scm
 neuralcompression/version.py
+
+# logs created by hydra
+**/run-logs/**
