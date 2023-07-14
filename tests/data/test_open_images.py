@@ -28,6 +28,7 @@ def open_images_datafolder(tmp_path: Path):
 
         images = []
 
+        # NOTE: update this if we switch to arbitrary split paths
         with open(base_dir / f"list-{subfolder}-files.txt", "w") as f:
             for index in range(n):
                 path = directory.joinpath(f"{index:03}.jpg")

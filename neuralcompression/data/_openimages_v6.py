@@ -63,6 +63,8 @@ class OpenImagesV6(Dataset):
 
         if image_list_file is None:
             self.image_list_file = self.root / f"list-{self.split}-files.txt"
+        else:
+            self.image_list_file = Path(image_list_file)
 
         self.indices = _load_indices(self.image_list_file)
 
