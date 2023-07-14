@@ -4,8 +4,9 @@
 [![Build and Test](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml) [![Documentation Status](https://readthedocs.org/projects/neuralcompression/badge/?version=latest)](https://neuralcompression.readthedocs.io/en/latest/?badge=latest)
 
 ## What's New
-- **April 2023 (video compression)** - Added [a pytorch implementation of the video compression transformer (VCT)](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/torch_vct)
-- **November 2022 (image compression)** - Added [Bits-Back coding with diffusion models](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/bits_back_diffusion)!
+- **July 2023 (image compression)** - [Released PyTorch implementation of MS-ILLM](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/illm)
+- **April 2023 (video compression)** - [Released a pytorch implementation of the video compression transformer (VCT)](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/torch_vct)
+- **November 2022 (image compression)** - [Released Bits-Back coding with diffusion models](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/bits_back_diffusion)!
 - **July 2021 (image compression)** - [Released implemenation of Scale Hyperprior](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/scale_hyperprior_lightning)
 - **July 2021 (video compression)** - [Released implementation of DVC](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/deep_video_compression)
 

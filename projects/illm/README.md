@@ -3,7 +3,7 @@
 This project implements code for the following paper:
 
 MJ Muckley, A El-Nouby, K Ullrich, H Jegou, J Verbeek.
-[Improving Statistical Fidelity for Neural Image Compression with Implicit Local Likelihood Models](https://arxiv.org/abs/2301.11189).
+[Improving Statistical Fidelity for Neural Image Compression with Implicit Local Likelihood Models](https://openreview.net/forum?id=iUspLfxpWC).
 In *ICML*, 2023.
 
 ## Installation
