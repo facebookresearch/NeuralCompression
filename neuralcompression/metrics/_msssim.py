@@ -23,7 +23,6 @@ class MultiscaleStructuralSimilarity(Metric):
         k2: float = 0.03,
         gaussian_std: float = 1.5,
         power_factors: Sequence[float] = MS_SSIM_FACTORS,
-        compute_on_step: bool = True,
         dist_sync_on_step: bool = False,
         process_group: Optional[Any] = None,
         dist_sync_fn: Optional[Callable] = None,
@@ -46,14 +45,12 @@ class MultiscaleStructuralSimilarity(Metric):
             power_factors: relative importance of each scale; defaults to
                 the values proposed in the paper; the length of
                 power_factors determines how many scales to consider.
-            compute_on_step: see ``torchmetrics.Metric`` documentation.
             dist_sync_on_step: see ``torchmetrics.Metric`` documentation.
             process_group: see ``torchmetrics.Metric`` documentation.
             dist_sync_fn: see ``torchmetrics.Metric`` documentation.
         """
 
         super().__init__(
-            compute_on_step=compute_on_step,
             dist_sync_on_step=dist_sync_on_step,
             process_group=process_group,
             dist_sync_fn=dist_sync_fn,
