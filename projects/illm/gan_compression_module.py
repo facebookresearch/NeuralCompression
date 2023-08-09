@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import Optional
+from typing import Optional, Tuple
 
 import hydra
 import torch
@@ -77,8 +77,20 @@ class GANCompressionModule(TargetRateCompressionModule):
     def forward(self, x):
         return self.model(x)
 
+    def _resample_batch(
+        self, full_images: Tensor, mc_sampling: bool = False
+    ) -> Tuple[Tensor, Tensor]:
+        if mc_sampling is True:
+            split_ind = full_images.shape[0] // 2
+            model_images = full_images[:split_ind]
+            disc_images = full_images[split_ind : split_ind * 2]
+        else:
+            model_images = full_images
+            disc_images = full_images
+
+        return model_images, disc_images
+
     def training_step(self, batch, batch_idx):
-        full_images: Tensor
         output: HyperpriorOutput
         opts = self.optimizers()
         scheds = self.lr_schedulers()
@@ -91,14 +103,9 @@ class GANCompressionModule(TargetRateCompressionModule):
             quantile_opt = None
 
         # if doing Monte Carlo sampling, split the batch for the discriminator
-        full_images, _ = batch
-        if self.mc_sampling is True:
-            split_ind = full_images.shape[0] // 2
-            model_images = full_images[:split_ind]
-            disc_images = full_images[split_ind : split_ind * 2]
-        else:
-            model_images = full_images
-            disc_images = full_images
+        model_images, disc_images = self._resample_batch(
+            batch[0], mc_sampling=self.mc_sampling
+        )
 
         # get the discriminator/generator targets
         if self.latent_projector is not None:

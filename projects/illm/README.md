@@ -117,3 +117,9 @@ python train.py \
     +latent_projector=vqvae_xcit_p8_ch64_cb1024_h8 \
     +pretrained_latent_autoencoder=your_file_name
 ```
+
+## Other notes
+
+### Logging
+
+By default the project uses 

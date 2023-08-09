@@ -15,12 +15,10 @@ import hydra
 import lightning.pytorch as pl
 import torch
 import torch.nn as nn
-import wandb
 import yaml
 from gan_compression_module import GANCompressionModule
 from image_module import ImageModule
 from lightning.pytorch.callbacks import LearningRateMonitor, ModelCheckpoint
-from lightning.pytorch.loggers import WandbLogger
 from lightning.pytorch.strategies import DDPStrategy
 from omegaconf import DictConfig, OmegaConf
 from open_images_datamodule import OpenImagesDataModule
@@ -33,6 +31,15 @@ from neuralcompression.loss_fn import TargetRateConfig
 from neuralcompression.models import HyperpriorAutoencoderBase
 
 LOGGER = logging.getLogger(__file__)
+
+try:
+    import wandb
+    from lightning.pytorch.loggers import WandbLogger
+
+    HAS_WANDB = True
+except ModuleNotFoundError:
+    HAS_WANDB = False
+    LOGGER.warn("wandb not found - disabling image logging.")
 
 
 class WandbImageCallback(pl.Callback):
@@ -128,11 +135,18 @@ def build_model(
         state_dict = pretrained_state_dict(cfg.pretrained_autoencoder.path)
         model.load_state_dict(state_dict)
 
-        wandb_config = (
-            Path(cfg.pretrained_autoencoder.path).parents[1]
-            / "wandb_logs/wandb/latest-run/files/config.yaml"
-        )
-        with open(wandb_config, "r") as f:
+        if HAS_WANDB:
+            run_config = (
+                Path(cfg.pretrained_autoencoder.path).parents[1]
+                / "wandb_logs/wandb/latest-run/files/config.yaml"
+            )
+        else:
+            raise RuntimeError(
+                "wandb not found, so config structure is unknown. "
+                "Please modify this line in train.py to properly handle "
+                "your config structure."
+            )
+        with open(run_config, "r") as f:
             rate_file_config = yaml.safe_load(f)["rate_target"]["value"]
 
         target_rate_config = hydra.utils.instantiate(rate_file_config)
@@ -212,7 +226,7 @@ def build_module(cfg: DictConfig) -> ImageModule:
     return module
 
 
-def build_image_logger(cfg: DictConfig, data_module: OpenImagesDataModule):
+def build_wandb_image_logger(cfg: DictConfig, data_module: OpenImagesDataModule):
     """Construct logger for sending images to wandb."""
     log_cache_dir = Path(cfg.image_logs.log_cache_dir)
     if not log_cache_dir.exists():
@@ -284,21 +298,25 @@ def build_trainer(
     else:
         name = Path.cwd().name
 
-    # create an id for this run based on hash of config string
-    sha = hashlib.sha256()
-    sha.update(str(Path.cwd()).encode())
-    wandb_id = sha.hexdigest()
+    if HAS_WANDB:
+        # create an id for this run based on hash of config string
+        sha = hashlib.sha256()
+        sha.update(str(Path.cwd()).encode())
+        wandb_id = sha.hexdigest()
 
-    logger = WandbLogger(
-        name=name,
-        save_dir=str(log_dir),
-        project="illm_oss",
-        id=wandb_id,
-        config=OmegaConf.to_container(cfg),
-        **cfg.logger,
-    )
+        logger = WandbLogger(
+            name=name,
+            save_dir=str(log_dir),
+            project="illm_oss",
+            id=wandb_id,
+            config=OmegaConf.to_container(cfg),
+            **cfg.logger,
+        )
 
-    image_logger = build_image_logger(cfg, data_module)
+        image_logger = build_wandb_image_logger(cfg, data_module)
+    else:
+        logger = None
+        image_logger = pl.Callback()
 
     # sometimes we have unused parameters
     strategy: Union[DDPStrategy, str]
