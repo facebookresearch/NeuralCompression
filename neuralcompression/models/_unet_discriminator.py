@@ -29,6 +29,7 @@ def apply_conv_norm(module: nn.Module, norm_type: str = "identity") -> nn.Module
         return module
 
 
+# TODO: Make this a config?
 def build_norm_layer(chans: int, norm_type: str) -> nn.Module:
     _verify_norm_type(norm_type)
     if norm_type == "batch":
@@ -118,7 +119,7 @@ class _UnetLevel(nn.Module):
         self.right_shortcut: Union[nn.Module, Callable]
         if clip_upsample is True:
             self.right_block = nn.Identity()
-            self.right_shortcut = lambda x: 0.0
+            self.right_shortcut = lambda x: torch.tensor(0.0)
         else:
             self.right_block = nn.Sequential(
                 norm_layer(down_planes),

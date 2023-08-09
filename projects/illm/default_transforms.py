@@ -16,16 +16,15 @@ from torchvision.transforms import (
 
 
 def default_train_transform(image_size: int) -> Compose:
+    choice_transform = RandomChoice(
+        [
+            RandomCrop(size=image_size, pad_if_needed=True, padding_mode="reflect"),
+            RandomResizedCrop(size=image_size),
+        ]
+    )
     return Compose(
         [
-            RandomChoice(
-                [
-                    RandomCrop(
-                        size=image_size, pad_if_needed=True, padding_mode="reflect"
-                    ),
-                    RandomResizedCrop(size=image_size),
-                ]
-            ),
+            choice_transform,
             RandomHorizontalFlip(),
             ToTensor(),
         ]
