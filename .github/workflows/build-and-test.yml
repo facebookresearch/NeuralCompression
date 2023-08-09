@@ -71,7 +71,7 @@ jobs:
           isort --check-only neuralcompression tests projects
       - name: Install NeuralCompression
         run: |
-          python setup.py bdist_wheel
+          python -m build .
           pip install dist/*.whl
       - name: Run pytest
         run: |
