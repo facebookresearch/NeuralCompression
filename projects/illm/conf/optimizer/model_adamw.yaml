@@ -1,0 +1,13 @@
+model_opt:
+  _target_: torch.optim.AdamW
+  lr: 0.0003
+  weight_decay: 0.00005
+model_opt_schedule:
+  _target_: neuralcompression.optim.RampCosineLRSchedule
+  num_ramp_steps: 10000
+  num_max_steps: ${max_steps}
+aux_opt:
+  _target_: torch.optim.AdamW
+  lr: 0.001
+aux_opt_schedule:
+  _target_: neuralcompression.optim.IdentitySchedule

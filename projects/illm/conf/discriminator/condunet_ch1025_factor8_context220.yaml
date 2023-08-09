@@ -1,0 +1,11 @@
+model:
+  _target_: neuralcompression.models.ConditionalUnetDiscriminator
+  output_channels: 1025
+  output_downsampling_factor: 8
+  context_in: 220
+  context_out: 16
+  norm_type: identity
+discriminator_loss:
+  _target_: neuralcompression.loss_fn.OASISDiscriminatorLoss
+generator_loss:
+  _target_: neuralcompression.loss_fn.OASISGeneratorLoss

@@ -1,0 +1,35 @@
+ds1:
+  name: "kodak"
+  class_params:
+    _target_: torch.utils.data.DataLoader
+    batch_size: 1
+    num_workers: 10
+    dataset:
+      _target_: neuralcompression.data.Kodak
+      root: null
+      transform:
+        _target_: torchvision.transforms.ToTensor
+ds2:
+  name: "clic2020_test"
+  class_params:
+    _target_: torch.utils.data.DataLoader
+    batch_size: 1
+    num_workers: 10
+    dataset:
+      _target_: neuralcompression.data.CLIC2020Image
+      root: null
+      split: test_fid
+      transform:
+        _target_: torchvision.transforms.ToTensor
+ds3:
+  name: "div2k_val"
+  class_params:
+    _target_: torch.utils.data.DataLoader
+    batch_size: 1
+    num_workers: 10
+    dataset:
+      _target_: neuralcompression.data.DiV2KDataset
+      root: null
+      split: val
+      transform:
+        _target_: torchvision.transforms.ToTensor

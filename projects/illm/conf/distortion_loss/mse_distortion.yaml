@@ -1,0 +1,2 @@
+_target_: neuralcompression.loss_fn.MSELoss
+scale_param: 65025.0  # 255 ** 2

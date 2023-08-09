@@ -1,0 +1,4 @@
+max_steps: ${max_steps}
+val_check_interval: 10000
+accelerator: gpu
+devices: ${ngpu}

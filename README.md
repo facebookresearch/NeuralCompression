@@ -4,8 +4,9 @@
 [![Build and Test](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml) [![Documentation Status](https://readthedocs.org/projects/neuralcompression/badge/?version=latest)](https://neuralcompression.readthedocs.io/en/latest/?badge=latest)
 
 ## What's New
-- **April 2023 (video compression)** - Added [a pytorch implementation of the video compression transformer (VCT)](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/torch_vct)
-- **November 2022 (image compression)** - Added [Bits-Back coding with diffusion models](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/bits_back_diffusion)!
+- **August 2023 (image compression)** - [Released PyTorch implementation of MS-ILLM](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/illm)
+- **April 2023 (video compression)** - [Released a pytorch implementation of the video compression transformer (VCT)](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/torch_vct)
+- **November 2022 (image compression)** - [Released Bits-Back coding with diffusion models](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/bits_back_diffusion)!
 - **July 2021 (image compression)** - [Released implemenation of Scale Hyperprior](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/scale_hyperprior_lightning)
 - **July 2021 (video compression)** - [Released implementation of DVC](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/deep_video_compression)
 
@@ -65,19 +66,22 @@ The 2-tier structure enables rapid iteration and reproduction via code in
 
 - `neuralcompression` - base package
   - `data` - PyTorch data loaders for various data sets
-  - `entropy_coders` - lossless compression algorithms in JAX
-    - `craystack` - an implementation of the rANS algorithm with the
-    [craystack](https://github.com/j-towns/craystack) API
+  - `distributions` - extensions of probability models for compression
   - `functional` - methods for image warping, information cost, flop counting, etc.
   - `layers` - building blocks for compression models
   - `metrics` - `torchmetrics` classes for assessing model performance
   - `models` - complete compression models
+  - `optim` - useful optimization utilities
 
 ## projects
 
 - `projects` - recipes and code for reproducing papers
-  - `scale_hyperprior_lightning` [Scale Hyperprior (Balle et al., 2018)](https://arxiv.org/abs/1802.01436)
-  - `deep_video_compression` [DVC (Lu et al., 2019)](https://openaccess.thecvf.com/content_CVPR_2019/html/Lu_DVC_An_End-To-End_Deep_Video_Compression_Framework_CVPR_2019_paper.html)
+  - `bits_back_diffusion` - code for bits-back coding with diffusion models
+  - `deep_video_compression` [DVC (Lu et al., 2019)](https://openaccess.thecvf.com/content_CVPR_2019/html/Lu_DVC_An_End-To-End_Deep_Video_Compression_Framework_CVPR_2019_paper.html), might soon be deprecated
+  - `illm` [MS-ILLM (Muckley et al., 2023)](https://proceedings.mlr.press/v202/muckley23a.html)
+  - `jax_entropy_coders` - implementations of arithmetic coding and ANS in JAX
+  - `scale_hyperprior_lightning` [Scale Hyperprior (Balle et al., 2018)](https://arxiv.org/abs/1802.01436), might soon be deprecated
+  - `torch_vct` [VCT (Mentzer, et al.,)](https://proceedings.neurips.cc/paper_files/paper/2022/hash/54dcf25318f9de5a7a01f0a4125c541e-Abstract-Conference.html)
 
 ## Tutorial Notebooks
 
@@ -87,13 +91,6 @@ Existing tutorials are:
 
 - Walkthrough of the `neuralcompression` flop counter ([view on Colab](https://colab.research.google.com/github/facebookresearch/NeuralCompression/blob/main/tutorials/Flop_Count_Example.ipynb)).
 - Using `neuralcompression.metrics` and `torchmetrics` to calculate rate-distortion curves ([view on Colab](https://colab.research.google.com/github/facebookresearch/NeuralCompression/blob/main/tutorials/Metrics_Example.ipynb)).
-
-## Getting Started
-
-For an example of package usage, see the
-[Scale Hyperprior](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/scale_hyperprior_lightning) for an example of how
-to train an image compression model in PyTorch Lightning. See
-[DVC](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/deep_video_compression) for a video compression example.
 
 ## Contributions
 
@@ -113,9 +110,15 @@ linting, and `mypy` for type checking.
 
 NeuralCompression is MIT licensed, as found in the [LICENSE](https://github.com/facebookresearch/NeuralCompression/tree/main/LICENSE) file.
 
+Some of the code may from other repositories and include other licenses.
+Please read all code files carefully for details.
+
+Model weights may be released on another license.
+
 ## Cite
 
-If you find NeuralCompression useful in your work, feel free to cite
+If you use code for a paper reimplementation. If you would like to also cite
+the repository, you can use:
 
 ```bibtex
 @misc{muckley2021neuralcompression,

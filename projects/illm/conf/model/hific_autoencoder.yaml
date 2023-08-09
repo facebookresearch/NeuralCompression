@@ -1,0 +1,7 @@
+_target_: neuralcompression.models.HiFiCAutoencoder
+in_channels: 3
+latent_features: 220
+hyper_features: 320
+num_residual_blocks: 9
+freeze_encoder: false
+freeze_bottleneck: false
