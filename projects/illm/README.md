@@ -1,6 +1,6 @@
 # Official implementation of MS-ILLM
 
-This project implements code for the following paper:
+This is the official code for the following paper:
 
 MJ Muckley, A El-Nouby, K Ullrich, H Jegou, J Verbeek.
 [Improving Statistical Fidelity for Neural Image Compression with Implicit Local Likelihood Models](https://proceedings.mlr.press/v202/muckley23a.html).
@@ -122,4 +122,31 @@ python train.py \
 
 ### Logging
 
-By default the project uses 
+By default the project uses [Weights & Biases](https://wandb.ai/site) for
+logging. If you don't have `wandb` installed, the trainer should try to
+fall-back to training without it (note: images will not be logged.), but there
+may be some issues you'll have to debug. Fortunately, all of the logging code
+is confined to `train.py`. You shouldn't have to modify anything outside of
+that file.
+
+### Compressing autoencoder
+
+The paper was written with the HiFiC architecture, and this is used in all
+experiments. The nice thing about the HiFiC architecture is that it's very
+stable for discriminator fine-tuning. For newer architectures, such as ELIC,
+discriminator fine-tuning can be more difficult. It is possible to get good
+results, but it requires more hyperparameter tuning, and you may need to use
+different weights or learning rates for different parts of the R-D curve.
+
+If you find recipes that work particularly well, feel free to post them as a
+Discussion (or go ahead and publish and toss a cite :) ).
+
+## BibTeX
+```bibtex
+@inproceedings{muckley2023improving,
+  author = {Muckley, Matthew J. and El-Nouby, Alaaeldin and Ullrich, Karen and Jégou, Hervé and Verbeek, Jakob},
+  title = {Improving Statistical Fidelity for Neural Image Compression with Implicit Local Likelihood Models},
+  booktitle = {International Conference on Machine Learning},
+  year = {2023},
+}
+```
