@@ -54,9 +54,22 @@ torch.hub.list("facebookresearch/NeuralCompression")
 To get information on a model and its target bitrate, you can use:
 
 ```python
-torch.hub.help("facebookresearch/NeuralCompression", "msillm_quality_3")
+print(torch.hub.help("facebookresearch/NeuralCompression", "msillm_quality_3"))
 ```
 
+We release the following models:
+
+| Bitrate   | MS-ILLM            | No-GAN              |
+| --------- | ------------------ | ------------------- |
+| 0.035 bpp | "msillm_quality_1" | "noganms_quality_1" |
+| 0.07 bpp  | "msillm_quality_2" | "noganms_quality_2" |
+| 0.14 bpp  | "msillm_quality_3" | "noganms_quality_3" |
+| 0.3 bpp   | "msillm_quality_4" | "noganms_quality_4" |
+| 0.45 bpp  | "msillm_quality_5" | "noganms_quality_5" |
+| 0.9 bpp   | "msillm_quality_6" | "noganms_quality_6" |
+
+The No-GAN models are released for researchers seeking to fine-tune them
+with their own methods.
 
 ## Training
 
