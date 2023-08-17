@@ -34,7 +34,9 @@ def _build_noganms(weights: Optional[str] = None):
             + f"noganms_{weights}.ckpt"
         )
 
-        model.load_state_dict(torch.hub.load_state_dict_from_url(url))
+        model.load_state_dict(
+            torch.hub.load_state_dict_from_url(url, map_location="cpu")
+        )
 
     return model
 

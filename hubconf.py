@@ -1,4 +1,8 @@
-dependencies = ["torch"]
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 
 from neuralcompression.zoo import msillm_quality_1 as _msillm_quality_1
 from neuralcompression.zoo import msillm_quality_2 as _msillm_quality_2
@@ -12,6 +16,8 @@ from neuralcompression.zoo import noganms_quality_3 as _noganms_quality_3
 from neuralcompression.zoo import noganms_quality_4 as _noganms_quality_4
 from neuralcompression.zoo import noganms_quality_5 as _noganms_quality_5
 from neuralcompression.zoo import noganms_quality_6 as _noganms_quality_6
+
+dependencies = ["torch"]
 
 
 def msillm_quality_1(pretrained=True, **kwargs):
