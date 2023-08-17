@@ -1,7 +1,7 @@
 # NeuralCompression
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebookresearch/NeuralCompression/tree/main/LICENSE)
-[![Build and Test](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml) [![Documentation Status](https://readthedocs.org/projects/neuralcompression/badge/?version=latest)](https://neuralcompression.readthedocs.io/en/latest/?badge=latest)
+[![Build and Test](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/facebookresearch/NeuralCompression/actions/workflows/build-and-test.yml)
 
 ## What's New
 - **August 2023 (image compression)** - [Released PyTorch implementation of MS-ILLM](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/illm)
