@@ -22,13 +22,13 @@ QUALITIES = [1, 2, 3, 4, 5, 6]
 
 
 def _build_msillm(weights: Optional[str] = None):
-    if weights not in VALID_WEIGHTS:
-        raise ValueError(
-            f"Unrecognized weights {weights}, must be one of {VALID_WEIGHTS}"
-        )
-
     model = HiFiCAutoencoder()
     if weights is not None:
+        if weights not in VALID_WEIGHTS:
+            raise ValueError(
+                f"Unrecognized weights {weights}, must be one of {VALID_WEIGHTS}"
+            )
+
         url = (
             "https://dl.fbaipublicfiles.com/NeuralCompression/2023-muckley-msillm/"
             + f"msillm_{weights}.ckpt"
