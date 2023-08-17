@@ -1,4 +1,4 @@
-# Official implementation of MS-ILLM
+# Official Implementation of MS-ILLM
 
 This is the official code for the following paper:
 
@@ -33,6 +33,58 @@ directory:
 ```bash
 pip install -r requirements.txt
 ```
+
+## Pretrained Models
+
+**Weights are released under the CC-BY-NC 4.0 license available in the**
+**repository root**
+
+This repository is configured to use `torch.hub`. An example for loading the
+ILLM model targeting 0.14 bpp is shown below:
+
+```python
+import torch
+
+model = torch.hub.load("facebookresearch/NeuralCompression", "msillm_quality_3")
+```
+
+To list all available models, you can use:
+
+```python
+torch.hub.list("facebookresearch/NeuralCompression")
+```
+
+To get information on a model and its target bitrate, you can use:
+
+```python
+print(torch.hub.help("facebookresearch/NeuralCompression", "msillm_quality_3"))
+```
+
+We release the following models:
+
+| Bitrate   | MS-ILLM            | No-GAN              |
+| --------- | ------------------ | ------------------- |
+| 0.035 bpp | "msillm_quality_1" | "noganms_quality_1" |
+| 0.07 bpp  | "msillm_quality_2" | "noganms_quality_2" |
+| 0.14 bpp  | "msillm_quality_3" | "noganms_quality_3" |
+| 0.3 bpp   | "msillm_quality_4" | "noganms_quality_4" |
+| 0.45 bpp  | "msillm_quality_5" | "noganms_quality_5" |
+| 0.9 bpp   | "msillm_quality_6" | "noganms_quality_6" |
+
+The No-GAN models are released for researchers seeking to fine-tune them
+with their own methods.
+
+## Reproducing Results
+
+The `eval_folder_example.py` script provides an example for reproducing the
+numbers from the paper. Simply run
+
+```bash
+python eval_folder_example.py $PATH_TO_CLIC2020
+```
+
+And it should run on the folder you provide and print the metrics for the
+0.14 bpp target model.
 
 ## Training
 
