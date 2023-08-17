@@ -43,10 +43,7 @@ def main():
     clic_path = Path(args.clic_path)
 
     device = torch.device("cuda")
-    model = torch.hub.load(
-        "facebookresearch/NeuralCompression:mmuckley/illm_zoo",
-        "msillm_quality_3",
-    )
+    model = torch.hub.load("facebookresearch/NeuralCompression", "msillm_quality_3")
     model = model.to(device)
     model = model.eval()
     model.update()
