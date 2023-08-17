@@ -21,6 +21,7 @@ VALID_WEIGHTS = [
 
 
 def _build_msillm(weights: Optional[str] = None):
+    print("entry")
     model = HiFiCAutoencoder()
     if weights is not None:
         if weights not in VALID_WEIGHTS:
@@ -33,10 +34,10 @@ def _build_msillm(weights: Optional[str] = None):
             + f"msillm_{weights}.ckpt"
         )
 
-        sys.stderr.write(
+        print(
             f"Downloading {weights} MS-ILLM weights. These weights are released under "
             f"the CC-BY-NC 4.0 license which can be found at "
-            "https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE.\n"
+            "https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE."
         )
 
         model.load_state_dict(
