@@ -110,8 +110,8 @@ linting, and `mypy` for type checking.
 
 NeuralCompression is MIT licensed, as found in the [LICENSE](https://github.com/facebookresearch/NeuralCompression/tree/main/LICENSE) file.
 
-Weights released with NeuralCompression are CC-BY-NC 4.0 licensed, as found in the
-[WEIGHTS_LICENSE](https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE.md)
+Model weights released with NeuralCompression are CC-BY-NC 4.0 licensed, as
+found in the [WEIGHTS_LICENSE](https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE.md)
 file.
 
 Some of the code may from other repositories and include other licenses.
