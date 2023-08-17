@@ -14,7 +14,7 @@ from neuralcompression.zoo import noganms_quality_5 as _noganms_quality_5
 from neuralcompression.zoo import noganms_quality_6 as _noganms_quality_6
 
 
-def msillm_quality_1(pretrained=False, **kwargs):
+def msillm_quality_1(pretrained=True, **kwargs):
     """
     Pretrained MS-ILLM model
 
@@ -32,7 +32,7 @@ def msillm_quality_1(pretrained=False, **kwargs):
     return _msillm_quality_1(pretrained=pretrained, **kwargs)
 
 
-def msillm_quality_2(pretrained=False, **kwargs):
+def msillm_quality_2(pretrained=True, **kwargs):
     """
     Pretrained MS-ILLM model
 
@@ -50,7 +50,7 @@ def msillm_quality_2(pretrained=False, **kwargs):
     return _msillm_quality_2(pretrained=pretrained, **kwargs)
 
 
-def msillm_quality_3(pretrained=False, **kwargs):
+def msillm_quality_3(pretrained=True, **kwargs):
     """
     Pretrained MS-ILLM model
 
@@ -68,7 +68,7 @@ def msillm_quality_3(pretrained=False, **kwargs):
     return _msillm_quality_3(pretrained=pretrained, **kwargs)
 
 
-def msillm_quality_4(pretrained=False, **kwargs):
+def msillm_quality_4(pretrained=True, **kwargs):
     """
     Pretrained MS-ILLM model
 
@@ -86,7 +86,7 @@ def msillm_quality_4(pretrained=False, **kwargs):
     return _msillm_quality_4(pretrained=pretrained, **kwargs)
 
 
-def msillm_quality_5(pretrained=False, **kwargs):
+def msillm_quality_5(pretrained=True, **kwargs):
     """
     Pretrained MS-ILLM model
 
@@ -104,7 +104,7 @@ def msillm_quality_5(pretrained=False, **kwargs):
     return _msillm_quality_5(pretrained=pretrained, **kwargs)
 
 
-def msillm_quality_6(pretrained=False, **kwargs):
+def msillm_quality_6(pretrained=True, **kwargs):
     """
     Pretrained MS-ILLM model
 
@@ -122,7 +122,7 @@ def msillm_quality_6(pretrained=False, **kwargs):
     return _msillm_quality_6(pretrained=pretrained, **kwargs)
 
 
-def noganms_quality_1(pretrained=False, **kwargs):
+def noganms_quality_1(pretrained=True, **kwargs):
     """
     Pretrained No-GAN model with HiFiC Mean-Scale Hyperprior architecture.
 
@@ -140,7 +140,7 @@ def noganms_quality_1(pretrained=False, **kwargs):
     return _noganms_quality_1(pretrained=pretrained, **kwargs)
 
 
-def noganms_quality_2(pretrained=False, **kwargs):
+def noganms_quality_2(pretrained=True, **kwargs):
     """
     Pretrained No-GAN model with HiFiC Mean-Scale Hyperprior architecture.
 
@@ -158,7 +158,7 @@ def noganms_quality_2(pretrained=False, **kwargs):
     return _noganms_quality_2(pretrained=pretrained, **kwargs)
 
 
-def noganms_quality_3(pretrained=False, **kwargs):
+def noganms_quality_3(pretrained=True, **kwargs):
     """
     Pretrained No-GAN model with HiFiC Mean-Scale Hyperprior architecture.
 
@@ -176,7 +176,7 @@ def noganms_quality_3(pretrained=False, **kwargs):
     return _noganms_quality_3(pretrained=pretrained, **kwargs)
 
 
-def noganms_quality_4(pretrained=False, **kwargs):
+def noganms_quality_4(pretrained=True, **kwargs):
     """
     Pretrained No-GAN model with HiFiC Mean-Scale Hyperprior architecture.
 
@@ -194,7 +194,7 @@ def noganms_quality_4(pretrained=False, **kwargs):
     return _noganms_quality_4(pretrained=pretrained, **kwargs)
 
 
-def noganms_quality_5(pretrained=False, **kwargs):
+def noganms_quality_5(pretrained=True, **kwargs):
     """
     Pretrained No-GAN model with HiFiC Mean-Scale Hyperprior architecture.
 
@@ -212,7 +212,7 @@ def noganms_quality_5(pretrained=False, **kwargs):
     return _noganms_quality_5(pretrained=pretrained, **kwargs)
 
 
-def noganms_quality_6(pretrained=False, **kwargs):
+def noganms_quality_6(pretrained=True, **kwargs):
     """
     Pretrained No-GAN model with HiFiC Mean-Scale Hyperprior architecture.
 
