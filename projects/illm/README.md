@@ -1,4 +1,4 @@
-# Official implementation of MS-ILLM
+# Official Implementation of MS-ILLM
 
 This is the official code for the following paper:
 
@@ -33,6 +33,10 @@ directory:
 ```bash
 pip install -r requirements.txt
 ```
+
+## Pretrained Models
+
+This repository is configured to use `torch.hub`.
 
 ## Training
 
