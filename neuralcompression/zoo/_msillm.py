@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import sys
+import warnings
 from typing import Optional
 
 import torch
@@ -34,7 +34,7 @@ def _build_msillm(weights: Optional[str] = None):
             + f"msillm_{weights}.ckpt"
         )
 
-        print(
+        warnings.warn(
             f"Downloading {weights} MS-ILLM weights. These weights are released under "
             f"the CC-BY-NC 4.0 license which can be found at "
             "https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE."
