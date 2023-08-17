@@ -36,6 +36,8 @@ pip install -r requirements.txt
 
 ## Pretrained Models
 
+**Weights are released under the CC-BY-NC 4.0 license available in the repository root**
+
 This repository is configured to use `torch.hub`. An example for loading the
 ILLM model targeting 0.14 bpp is shown below:
 
