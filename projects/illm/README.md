@@ -34,15 +34,6 @@ directory:
 pip install -r requirements.txt
 ```
 
-**NOTE:** This code uses `wandb` for metrics logging. Most of the code is
-logger agnostic, but the image callback in `train.py` does include some
-`wandb`-specific code. If you would like to use a logger other than `wandb`,
-you can modify or remove the image callback and still have all metrics
-(just no images).
-
-If you're using `wandb`, you'll need to ensure that you're logged into your
-account or you've set up the anonymous logging mode.
-
 ## Training
 
 This code makes heavy use of
@@ -128,6 +119,9 @@ fall-back to training without it (note: images will not be logged.), but there
 may be some issues you'll have to debug. Fortunately, all of the logging code
 is confined to `train.py`. You shouldn't have to modify anything outside of
 that file.
+
+If you're using `wandb`, you'll need to ensure that you're logged into your
+account or you've set up the anonymous logging mode.
 
 ### Compressing autoencoder
 
