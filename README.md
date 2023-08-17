@@ -117,8 +117,6 @@ file.
 Some of the code may from other repositories and include other licenses.
 Please read all code files carefully for details.
 
-Model weights may be released on another license.
-
 ## Cite
 
 If you use code for a paper reimplementation. If you would like to also cite
