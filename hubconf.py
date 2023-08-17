@@ -32,9 +32,9 @@ def msillm_quality_1(pretrained=True, **kwargs):
 
     The target bitrate is 0.035 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -54,9 +54,9 @@ def msillm_quality_2(pretrained=True, **kwargs):
 
     The target bitrate is 0.07 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -76,9 +76,9 @@ def msillm_quality_3(pretrained=True, **kwargs):
 
     The target bitrate is 0.14 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -98,9 +98,9 @@ def msillm_quality_4(pretrained=True, **kwargs):
 
     The target bitrate is 0.3 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -120,9 +120,9 @@ def msillm_quality_5(pretrained=True, **kwargs):
 
     The target bitrate is 0.45 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -142,9 +142,9 @@ def msillm_quality_6(pretrained=True, **kwargs):
 
     The target bitrate is 0.9 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -164,9 +164,9 @@ def noganms_quality_1(pretrained=True, **kwargs):
 
     The target bitrate is 0.035 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -186,9 +186,9 @@ def noganms_quality_2(pretrained=True, **kwargs):
 
     The target bitrate is 0.07 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -208,9 +208,9 @@ def noganms_quality_3(pretrained=True, **kwargs):
 
     The target bitrate is 0.14 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -230,9 +230,9 @@ def noganms_quality_4(pretrained=True, **kwargs):
 
     The target bitrate is 0.3 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -252,9 +252,9 @@ def noganms_quality_5(pretrained=True, **kwargs):
 
     The target bitrate is 0.45 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
@@ -274,9 +274,9 @@ def noganms_quality_6(pretrained=True, **kwargs):
 
     The target bitrate is 0.9 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 LICENSE
+    The pretrained weights are released under the CC-BY-CC 4.0 license
     available at
-    https://github.com/facebookresearch/NeuralCompression/WEIGHTS_LICENSE.md
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE.md
 
     pretrained (bool): kwargs, load pretrained weights into the model
     """
