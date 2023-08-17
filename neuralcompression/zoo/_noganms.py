@@ -86,7 +86,7 @@ def noganms_quality_4(pretrained=False, **kwargs):
 
 def noganms_quality_5(pretrained=False, **kwargs):
     if pretrained is True:
-        weights = "target_0.455bpp"
+        weights = "target_0.45bpp"
     else:
         weights = None
 
