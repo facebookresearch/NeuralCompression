@@ -3,12 +3,14 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import warnings
+import logging
 from typing import Optional
 
 import torch
 
 from neuralcompression.models import HiFiCAutoencoder
+
+LOGGER = logging.getLogger(__file__)
 
 VALID_WEIGHTS = [
     "target_0.035bpp",
@@ -21,7 +23,6 @@ VALID_WEIGHTS = [
 
 
 def _build_msillm(weights: Optional[str] = None):
-    print("entry")
     model = HiFiCAutoencoder()
     if weights is not None:
         if weights not in VALID_WEIGHTS:
@@ -34,7 +35,7 @@ def _build_msillm(weights: Optional[str] = None):
             + f"msillm_{weights}.ckpt"
         )
 
-        warnings.warn(
+        LOGGER.error(
             f"Downloading {weights} MS-ILLM weights. These weights are released under "
             f"the CC-BY-NC 4.0 license which can be found at "
             "https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE."
