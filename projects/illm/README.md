@@ -36,7 +36,27 @@ pip install -r requirements.txt
 
 ## Pretrained Models
 
-This repository is configured to use `torch.hub`.
+This repository is configured to use `torch.hub`. An example for loading the
+ILLM model targeting 0.14 bpp is shown below:
+
+```python
+import torch
+
+model = torch.hub.load("facebookresearch/NeuralCompression", "msillm_quality_3")
+```
+
+To list all available models, you can use:
+
+```python
+torch.hub.list("facebookresearch/NeuralCompression")
+```
+
+To get information on a model and its target bitrate, you can use:
+
+```python
+torch.hub.help("facebookresearch/NeuralCompression", "msillm_quality_3")
+```
+
 
 ## Training
 

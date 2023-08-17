@@ -57,7 +57,7 @@ def msillm_quality_2(pretrained=True, **kwargs):
 
 
 def msillm_quality_3(pretrained=True, **kwargs):
-    """
+    r"""
     Pretrained MS-ILLM model
 
     This model was trained for the paper:
