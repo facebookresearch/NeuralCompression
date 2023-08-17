@@ -71,6 +71,18 @@ We release the following models:
 The No-GAN models are released for researchers seeking to fine-tune them
 with their own methods.
 
+## Reproducing Results
+
+The `eval_folder_example.py` script provides an example for reproducing the
+numbers from the paper. Simply run
+
+```bash
+python eval_folder_example.py $PATH_TO_CLIC2020
+```
+
+And it should run on the folder you provide and print the metrics for the
+0.14 bpp target model.
+
 ## Training
 
 This code makes heavy use of

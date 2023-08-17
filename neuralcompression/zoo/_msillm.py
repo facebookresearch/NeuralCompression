@@ -18,8 +18,6 @@ VALID_WEIGHTS = [
     "target_0.9bpp",
 ]
 
-QUALITIES = [1, 2, 3, 4, 5, 6]
-
 
 def _build_msillm(weights: Optional[str] = None):
     model = HiFiCAutoencoder()
