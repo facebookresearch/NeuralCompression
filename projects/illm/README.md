@@ -97,18 +97,13 @@ tailor them to your own uses by modifying the configs.
 ### Pretraining the HiFiC autoencoder (no GAN)
 
 First, you'll need to pretrain an autoencoder without the GAN.
-Populate the configs with the paths to OpenImages V6 and models on your system.
-For the initial training stage (without GAN), you need to have the OpenImages
-V6 path:
-
-- `conf/data/local_data_openimages.yaml`
-
-Then, launch a 2-GPU job for pretraining the autoencoder at a 0.14 bpp target
+Launch a 2-GPU job for pretraining the autoencoder at a 0.14 bpp target
 bitrate:
 
 ```bash
 python train.py \
     experiment_name=pretrain0.14bpp \
+    data.open_images_root=$PATH_TO_OPENIMAGES \
     data.batch_size=8 \
     distortion_loss=mse_lpips \
     distortion_loss.mse_param=150.0 \
