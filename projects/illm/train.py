@@ -307,7 +307,7 @@ def build_trainer(
         logger = WandbLogger(
             name=name,
             save_dir=str(log_dir),
-            project="illm_oss",
+            project="illm",
             id=wandb_id,
             config=OmegaConf.to_container(cfg),
             **cfg.logger,
