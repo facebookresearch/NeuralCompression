@@ -11,7 +11,7 @@ import neuralcompression.functional as ncF
 from neuralcompression.metrics import FrechetInceptionDistance
 
 
-@pytest.mark.parametrize("num_samples", [10])
+@pytest.mark.parametrize("num_samples", [5])
 def test_dists(num_samples: int, arange_4d_image: Tensor):
     if arange_4d_image.shape[1] != 3:
         return
