@@ -28,7 +28,7 @@ def _build_msillm_projector(model: nn.Module, weights: Optional[str] = None):
 
         url = (
             "https://dl.fbaipublicfiles.com/NeuralCompression/2023-muckley-msillm/"
-            + f"msillm_projector_{weights}.ckpt"
+            + f"{weights}.ckpt"
         )
 
         LOGGER.error(
