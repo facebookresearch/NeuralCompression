@@ -7,4 +7,6 @@ from ._discriminator import Discriminator
 from ._hific_autoencoder import HiFiCAutoencoder
 from ._hyperprior_autoencoder import HyperpriorAutoencoderBase
 from ._unet_discriminator import ConditionalUnetDiscriminator, UnetDiscriminator
+from ._vqvae_projector import VqVaeProjector
+from ._vqvae_xcit_autoencoder import VqVaeXCiTAutoencoder
 from .deep_video_compression import DVC
