@@ -17,7 +17,7 @@ from neuralcompression.zoo import noganms_quality_4 as _noganms_quality_4
 from neuralcompression.zoo import noganms_quality_5 as _noganms_quality_5
 from neuralcompression.zoo import noganms_quality_6 as _noganms_quality_6
 from neuralcompression.zoo import (
-    vqvae_xcit_p8_ch64_cb1024_h8_projector as _vqvae_xcit_p8_ch64_cb1024_h8_projector,
+    vqvae_xcit_p8_ch64_cb1024_h8 as _vqvae_xcit_p8_ch64_cb1024_h8,
 )
 
 dependencies = ["torch"]
@@ -287,9 +287,9 @@ def noganms_quality_6(pretrained=True, **kwargs):
     return _noganms_quality_6(pretrained=pretrained, **kwargs)
 
 
-def msillm_vqvae_xcit_p8_ch64_cb1024_h8_projector(pretrained=True, **kwargs):
+def msillm_vqvae_xcit_p8_ch64_cb1024_h8(pretrained=True, **kwargs):
     """
-    Pretrained continuous-to-discrete projector with VQ-VAE architecture.
+    Pretrained VQ-VAE architecture.
 
     This model was trained for the paper:
 
@@ -306,4 +306,4 @@ def msillm_vqvae_xcit_p8_ch64_cb1024_h8_projector(pretrained=True, **kwargs):
     pretrained (bool): kwargs, load pretrained weights into the model
     """
 
-    return _vqvae_xcit_p8_ch64_cb1024_h8_projector(pretrained=pretrained, **kwargs)
+    return _vqvae_xcit_p8_ch64_cb1024_h8(pretrained=pretrained, **kwargs)

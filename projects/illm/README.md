@@ -153,7 +153,7 @@ python train.py \
     lightning_module.noisy_context_steps=0 \
     lightning_module.distortion_lam=1.0,0.5,0.25,0.125,0.0625,0.03125,0.015625,0.0078125 \
     +latent_projector=vqvae_xcit_p8_ch64_cb1024_h8 \
-    +pretrained_latent_autoencoder=your_file_name
+    +pretrained_latent_autoencoder=vqvae_xcit_p8_ch64_cb1024_h8
 ```
 
 ## Other notes

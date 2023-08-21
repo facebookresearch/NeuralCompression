@@ -7,10 +7,9 @@ import logging
 from typing import Optional
 
 import torch
-import torch.nn as nn
 
 from neuralcompression.layers import NormalizeLatent, ProjectLatent, VQBottleneck
-from neuralcompression.models import VqVaeProjector, VqVaeXCiTAutoencoder
+from neuralcompression.models import VqVaeXCiTAutoencoder
 
 LOGGER = logging.getLogger(__file__)
 
@@ -19,9 +18,7 @@ VALID_WEIGHTS = [
 ]
 
 
-def _build_msillm_projector(
-    vq_model: VqVaeXCiTAutoencoder, weights: Optional[str] = None
-):
+def _build_msillm_vqvae(vq_model: VqVaeXCiTAutoencoder, weights: Optional[str] = None):
     if weights is not None:
         if weights not in VALID_WEIGHTS:
             raise ValueError(
@@ -34,7 +31,7 @@ def _build_msillm_projector(
         )
 
         LOGGER.error(
-            f"Downloading {weights} MS-ILLM projector weights. These weights are "
+            f"Downloading {weights} MS-ILLM VQ-VAE weights. These weights are "
             f"released under the CC-BY-NC 4.0 license which can be found at "
             "https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE."
         )
@@ -43,10 +40,10 @@ def _build_msillm_projector(
             torch.hub.load_state_dict_from_url(url, map_location="cpu")
         )
 
-    return VqVaeProjector(vq_model)
+    return vq_model
 
 
-def vqvae_xcit_p8_ch64_cb1024_h8_projector(pretrained=False, **kwargs):
+def vqvae_xcit_p8_ch64_cb1024_h8(pretrained=False, **kwargs):
     if pretrained is True:
         weights = "vqvae_xcit_p8_ch64_cb1024_h8"
     else:
@@ -74,4 +71,4 @@ def vqvae_xcit_p8_ch64_cb1024_h8_projector(pretrained=False, **kwargs):
         ),
     )
 
-    return _build_msillm_projector(vq_model, weights=weights)
+    return _build_msillm_vqvae(vq_model, weights=weights)
