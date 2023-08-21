@@ -19,7 +19,7 @@ VALID_WEIGHTS = [
 ]
 
 
-def _build_msillm_projector(model: nn.Module, weights: Optional[str] = None):
+def _build_msillm_projector(vq_model: nn.Module, weights: Optional[str] = None):
     if weights is not None:
         if weights not in VALID_WEIGHTS:
             raise ValueError(
@@ -37,11 +37,11 @@ def _build_msillm_projector(model: nn.Module, weights: Optional[str] = None):
             "https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE."
         )
 
-        model.load_state_dict(
+        vq_model.load_state_dict(
             torch.hub.load_state_dict_from_url(url, map_location="cpu")
         )
 
-    return model
+    return VqVaeProjector(model)
 
 
 def vqvae_xcit_p8_ch64_cb1024_h8_projector(pretrained=False, **kwargs):
@@ -71,6 +71,5 @@ def vqvae_xcit_p8_ch64_cb1024_h8_projector(pretrained=False, **kwargs):
             ),
         ),
     )
-    model = VqVaeProjector(vq_model)
 
-    return _build_msillm_projector(model, weights=weights)
+    return _build_msillm_projector(vq_model, weights=weights)
