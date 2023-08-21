@@ -41,7 +41,7 @@ def _build_msillm_projector(vq_model: nn.Module, weights: Optional[str] = None):
             torch.hub.load_state_dict_from_url(url, map_location="cpu")
         )
 
-    return VqVaeProjector(model)
+    return VqVaeProjector(vq_model)
 
 
 def vqvae_xcit_p8_ch64_cb1024_h8_projector(pretrained=False, **kwargs):
