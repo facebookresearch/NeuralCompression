@@ -130,30 +130,29 @@ And you'll need to put your pretrained VQ-VAE here:
 
 - `conf/pretrained_latent_autoencoder/your_file_name.yaml`
 
+Alternatively, you can use the pretrained VQ-VAE from `torch.hub` with the
+`20221108_vqvae_xcit_p8_ch64_cb1024_h8.yaml` config.
+
 Then, you can run the following:
 
 ```bash
 python train.py \
     experiment_name=finetune \
+    data.open_images_root=$PATH_TO_OPENIMAGES \
     data.batch_size=16 \
-    trainer.num_nodes=1 \
     trainer.max_steps=100000 \
     optimizer=model_adamw_disc_const \
     model=hific_autoencoder \
     model.freeze_encoder=true \
     model.freeze_bottleneck=true \
-    +pretrained_autoencoder=example \
     distortion_loss=mse_lpips \
     distortion_loss.mse_param=150.0 \
     distortion_loss.lpips_param=1.0 \
     distortion_loss.backbone=alex \
-    hydra.launcher.timeout_min=4320 \
     +discriminator=condunet_ch1025_factor8_context220 \
-    +lightning_module.generator_weight=0.0005 \
-    lightning_module.noisy_context_steps=0 \
-    lightning_module.distortion_lam=1.0,0.5,0.25,0.125,0.0625,0.03125,0.015625,0.0078125 \
+    +lightning_module.generator_weight=0.008 \
     +latent_projector=vqvae_xcit_p8_ch64_cb1024_h8 \
-    +pretrained_latent_autoencoder=vqvae_xcit_p8_ch64_cb1024_h8
+    +pretrained_latent_autoencoder=20221108_vqvae_xcit_p8_ch64_cb1024_h8
 ```
 
 ## Other notes

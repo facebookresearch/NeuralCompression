@@ -41,7 +41,6 @@ class TargetRateCompressionModule(ImageModule):
         distortion_loss: Optional[DistortionLoss] = None,
         gradient_clip_val: Optional[float] = None,
         gradient_clip_algorithm: str = "norm",
-        noisy_context_steps: int = 800000,
     ):
         super().__init__()
         self.model: HyperpriorAutoencoderBase = model
@@ -53,7 +52,6 @@ class TargetRateCompressionModule(ImageModule):
 
         self.gradient_clip_val = gradient_clip_val
         self.gradient_clip_algorithm = gradient_clip_algorithm
-        self.noisy_context_steps = noisy_context_steps
 
         if distortion_loss is None:
             distortion_loss = MSELoss()

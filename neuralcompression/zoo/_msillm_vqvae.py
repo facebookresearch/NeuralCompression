@@ -30,7 +30,7 @@ def _build_msillm_vqvae(vq_model: VqVaeXCiTAutoencoder, weights: Optional[str] =
             + f"{weights}.ckpt"
         )
 
-        LOGGER.error(
+        LOGGER.info(
             f"Downloading {weights} MS-ILLM VQ-VAE weights. These weights are "
             f"released under the CC-BY-NC 4.0 license which can be found at "
             "https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE."

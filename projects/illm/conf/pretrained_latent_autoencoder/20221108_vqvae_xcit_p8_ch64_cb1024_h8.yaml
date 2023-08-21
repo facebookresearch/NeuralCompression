@@ -1,3 +1,3 @@
 torchhub:
-  github: facebookresearch/NeuralCompression
-  model: msillm_vqvae_xcit_p8_ch64_cb1024_h8_projector
+  github: facebookresearch/NeuralCompression:mmuckley/add_vqvae_model
+  model: msillm_vqvae_xcit_p8_ch64_cb1024_h8
