@@ -16,6 +16,9 @@ from neuralcompression.zoo import noganms_quality_3 as _noganms_quality_3
 from neuralcompression.zoo import noganms_quality_4 as _noganms_quality_4
 from neuralcompression.zoo import noganms_quality_5 as _noganms_quality_5
 from neuralcompression.zoo import noganms_quality_6 as _noganms_quality_6
+from neuralcompression.zoo import (
+    vqvae_xcit_p8_ch64_cb1024_h8 as _vqvae_xcit_p8_ch64_cb1024_h8,
+)
 
 dependencies = ["torch"]
 
@@ -282,3 +285,25 @@ def noganms_quality_6(pretrained=True, **kwargs):
     """
 
     return _noganms_quality_6(pretrained=pretrained, **kwargs)
+
+
+def msillm_vqvae_xcit_p8_ch64_cb1024_h8(pretrained=True, **kwargs):
+    """
+    Pretrained VQ-VAE architecture.
+
+    This model was trained for the paper:
+
+    MJ Muckley, A El-Nouby, K Ullrich, H Jegou, J Verbeek.
+    Improving Statistical Fidelity for Neural Image Compression with Implicit
+    Local Likelihood Models. In *ICML*, 2023.
+
+    It was used to generate label maps for the discriminator.
+
+    The pretrained weights are released under the CC-BY-CC 4.0 license
+    available at
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
+
+    pretrained (bool): kwargs, load pretrained weights into the model
+    """
+
+    return _vqvae_xcit_p8_ch64_cb1024_h8(pretrained=pretrained, **kwargs)

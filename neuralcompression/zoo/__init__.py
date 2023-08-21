@@ -11,6 +11,7 @@ from ._msillm import (
     msillm_quality_5,
     msillm_quality_6,
 )
+from ._msillm_vqvae import vqvae_xcit_p8_ch64_cb1024_h8
 from ._noganms import (
     noganms_quality_1,
     noganms_quality_2,

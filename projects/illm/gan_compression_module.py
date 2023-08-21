@@ -37,7 +37,6 @@ class GANCompressionModule(TargetRateCompressionModule):
         generator_weight: float = 1.0,
         gradient_clip_val: Optional[float] = None,
         gradient_clip_algorithm: str = "norm",
-        noisy_context_steps: int = 0,
         mc_sampling: bool = True,
     ):
         super().__init__(
@@ -48,7 +47,6 @@ class GANCompressionModule(TargetRateCompressionModule):
             distortion_loss=distortion_loss,
             gradient_clip_val=gradient_clip_val,
             gradient_clip_algorithm=gradient_clip_algorithm,
-            noisy_context_steps=noisy_context_steps,
         )
 
         self.discriminator = discriminator
@@ -104,7 +102,7 @@ class GANCompressionModule(TargetRateCompressionModule):
 
         # if doing Monte Carlo sampling, split the batch for the discriminator
         model_images, disc_images = self._resample_batch(
-            batch[0], mc_sampling=self.mc_sampling
+            batch, mc_sampling=self.mc_sampling
         )
 
         # get the discriminator/generator targets
@@ -223,7 +221,7 @@ class GANCompressionModule(TargetRateCompressionModule):
         images: Tensor
         output: HyperpriorOutput
 
-        images, _ = batch
+        images = batch
         output = self.model(images)
         if self.latent_projector is not None:
             target = self.latent_projector(images)

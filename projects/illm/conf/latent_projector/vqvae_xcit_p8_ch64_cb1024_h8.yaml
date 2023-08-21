@@ -12,7 +12,6 @@ autoencoder:
   in_channels: 3
   resolution: 256
   embed_dim: 256
-  give_pre_end: false
   freeze_encoder: false
   norm_type: channel
   bottleneck_op:

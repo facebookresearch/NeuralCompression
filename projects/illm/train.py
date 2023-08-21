@@ -186,22 +186,31 @@ def build_module(cfg: DictConfig) -> ImageModule:
                 cfg.latent_projector.autoencoder
             )
 
-            if cfg.pretrained_latent_autoencoder is None:
+            if cfg.get("pretrained_latent_autoencoder") is None:
                 warn(
                     "No pretrained_latenet_projector specified, but latent_projector "
                     "is specified! This will likely give bad results."
                 )
             else:
-                LOGGER.info(
-                    "Loading pretrained projector from "
-                    f"{cfg.pretrained_latent_autoencoder.path}"
-                )
-                state_dict = pretrained_state_dict(
-                    cfg.pretrained_latent_autoencoder.path
-                )
-                latent_autoencoder.load_state_dict(state_dict)
+                if cfg.pretrained_latent_autoencoder.get("torchhub") is not None:
+                    LOGGER.info("Loading model from torchhub")
 
-            latent_projector: Optional[nn.Module] = hydra.utils.instantiate(
+                    latent_autoencoder = torch.hub.load(
+                        cfg.pretrained_latent_autoencoder.torchhub.github,
+                        cfg.pretrained_latent_autoencoder.torchhub.model,
+                        force_reload=True,
+                    )
+                else:
+                    LOGGER.info(
+                        "Loading pretrained projector from "
+                        f"{cfg.pretrained_latent_autoencoder.path}"
+                    )
+                    state_dict = pretrained_state_dict(
+                        cfg.pretrained_latent_autoencoder.path
+                    )
+                    latent_autoencoder.load_state_dict(state_dict)
+
+            latent_projector = hydra.utils.instantiate(
                 cfg.latent_projector.projector, latent_autoencoder
             )
             assert latent_projector is not None

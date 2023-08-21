@@ -13,8 +13,6 @@ from ._gan_losses import DiscriminatorLoss, GeneratorLoss
 def _verify_logit_target_shape(logits: Tensor, target: Tensor):
     if logits.ndim != 4:
         raise ValueError("Only expect 4-dimensional logits.")
-    if target.ndim != 3:
-        raise ValueError("Only expect 3-dimensional targets.")
 
     expected_target_numel = logits.shape[0] * logits.shape[-2] * logits.shape[-1]
     actual_target_shape = target.numel()
