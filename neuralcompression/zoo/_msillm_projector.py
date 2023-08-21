@@ -19,7 +19,9 @@ VALID_WEIGHTS = [
 ]
 
 
-def _build_msillm_projector(vq_model: nn.Module, weights: Optional[str] = None):
+def _build_msillm_projector(
+    vq_model: VqVaeXCiTAutoencoder, weights: Optional[str] = None
+):
     if weights is not None:
         if weights not in VALID_WEIGHTS:
             raise ValueError(
@@ -32,7 +34,7 @@ def _build_msillm_projector(vq_model: nn.Module, weights: Optional[str] = None):
         )
 
         LOGGER.error(
-            f"Downloading {weights} MS-ILLM ptojrcvyot weights. These weights are "
+            f"Downloading {weights} MS-ILLM projector weights. These weights are "
             f"released under the CC-BY-NC 4.0 license which can be found at "
             "https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE."
         )
