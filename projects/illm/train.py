@@ -125,38 +125,34 @@ def pretrained_state_dict(checkpoint_file: str, prefix: str = "model."):
     return state_dict
 
 
+def configure_and_load_state_dict(model: nn.Module, cfg: DictConfig):
+    if cfg.get("torchhub") is not None:
+        LOGGER.info("Loading model from torchhub")
+
+        model = torch.hub.load(
+            cfg.torchhub.github, cfg.torchhub.model, force_reload=True
+        )
+    else:
+        LOGGER.info("Loading pretrained projector from " f"{cfg.path}")
+        state_dict = pretrained_state_dict(cfg.path)
+        model.load_state_dict(state_dict)
+
+    return model
+
+
 def build_model(
     cfg: DictConfig,
 ) -> Tuple[HyperpriorAutoencoderBase, Optional[TargetRateConfig]]:
     model: HyperpriorAutoencoderBase = hydra.utils.instantiate(cfg.model)
-    target_rate_config: Optional[TargetRateConfig] = None
     if cfg.get("pretrained_autoencoder") is not None:
-        LOGGER.info(f"Loading pretrained model from {cfg.pretrained_autoencoder.path}")
-        state_dict = pretrained_state_dict(cfg.pretrained_autoencoder.path)
-        model.load_state_dict(state_dict)
+        model = configure_and_load_state_dict(model, cfg.pretrained_autoencoder)
 
-        if HAS_WANDB:
-            run_config = (
-                Path(cfg.pretrained_autoencoder.path).parents[1]
-                / "wandb_logs/wandb/latest-run/files/config.yaml"
-            )
-        else:
-            raise RuntimeError(
-                "wandb not found, so config structure is unknown. "
-                "Please modify this line in train.py to properly handle "
-                "your config structure."
-            )
-        with open(run_config, "r") as f:
-            rate_file_config = yaml.safe_load(f)["rate_target"]["value"]
-
-        target_rate_config = hydra.utils.instantiate(rate_file_config)
-
-    return model, target_rate_config
+    return model
 
 
 def build_module(cfg: DictConfig) -> ImageModule:
     """Builds the pl training module."""
-    model, target_rate_config = build_model(cfg)
+    model = build_model(cfg)
 
     if cfg.distortion_loss.get("_target_") is not None:
         distortion_fn = hydra.utils.instantiate(cfg.distortion_loss)
@@ -164,8 +160,7 @@ def build_module(cfg: DictConfig) -> ImageModule:
         raise ValueError("Misconfigured loss function.")
 
     # for HiFiC-style rate targeting
-    if target_rate_config is None:
-        target_rate_config = hydra.utils.instantiate(cfg.rate_target)
+    target_rate_config = hydra.utils.instantiate(cfg.rate_target)
 
     if cfg.get("discriminator") is None:
         module = TargetRateCompressionModule(
@@ -192,23 +187,9 @@ def build_module(cfg: DictConfig) -> ImageModule:
                     "is specified! This will likely give bad results."
                 )
             else:
-                if cfg.pretrained_latent_autoencoder.get("torchhub") is not None:
-                    LOGGER.info("Loading model from torchhub")
-
-                    latent_autoencoder = torch.hub.load(
-                        cfg.pretrained_latent_autoencoder.torchhub.github,
-                        cfg.pretrained_latent_autoencoder.torchhub.model,
-                        force_reload=True,
-                    )
-                else:
-                    LOGGER.info(
-                        "Loading pretrained projector from "
-                        f"{cfg.pretrained_latent_autoencoder.path}"
-                    )
-                    state_dict = pretrained_state_dict(
-                        cfg.pretrained_latent_autoencoder.path
-                    )
-                    latent_autoencoder.load_state_dict(state_dict)
+                latent_autoencoder = configure_and_load_state_dict(
+                    latent_autoencoder, cfg.pretrained_latent_autoencoder
+                )
 
             latent_projector = hydra.utils.instantiate(
                 cfg.latent_projector.projector, latent_autoencoder
