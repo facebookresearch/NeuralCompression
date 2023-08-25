@@ -17,13 +17,13 @@ def test_survival_function():
 
     batch_size = 32
 
-    loc = torch.tensor([random.standard_normal(batch_size)])
+    loc = torch.tensor(numpy.array([random.standard_normal(batch_size)]))
 
-    scale = torch.tensor([random.random(batch_size) + 1.0])
+    scale = torch.tensor(numpy.array([random.random(batch_size) + 1.0]))
 
     x = torch.linspace(-8.0, 8.0, batch_size).to(torch.float64)
 
-    torch.testing.assert_allclose(
+    torch.testing.assert_close(
         survival_function(x, Normal(loc, scale)),
-        scipy.stats.norm(loc, scale).sf(x),
+        torch.tensor(scipy.stats.norm(loc, scale).sf(x), dtype=torch.float32),
     )
