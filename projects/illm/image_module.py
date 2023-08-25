@@ -142,18 +142,26 @@ class ImageModule(LightningModule):
         rescaled_pred = ncF.image_to_255_scale(pred)
         rescaled_input_images = ncF.image_to_255_scale(input_images)
 
+        batch_size = pred.shape[0]
+
         if prefix == "train":
             with torch.no_grad():
                 self.train_psnr(rescaled_pred, rescaled_input_images)
                 self.train_msssim(rescaled_pred, rescaled_input_images)
-                self.train_mse(rescaled_pred, rescaled_input_images)
+                self.train_mse(
+                    rescaled_pred.view(batch_size, -1),
+                    rescaled_input_images.view(batch_size, -1),
+                )
             self.log(f"{prefix}/psnr", self.train_psnr, prog_bar=True)
             self.log(f"{prefix}/mse", self.train_mse, prog_bar=True)
             self.log(f"{prefix}/ms_ssim", self.train_msssim)
         elif prefix == "val":
             self.eval_psnr(rescaled_pred, rescaled_input_images)
             self.eval_msssim(rescaled_pred, rescaled_input_images)
-            mse_val = self.eval_mse(rescaled_pred, rescaled_input_images)
+            mse_val = self.eval_mse(
+                rescaled_pred.view(batch_size, -1),
+                rescaled_input_images.view(batch_size, -1),
+            )
             lpips_val = self.eval_lpips(pred, input_images)
             hific_distortion = (
                 self.hific_mse_param * mse_val + self.hific_lpips_param * lpips_val
@@ -184,7 +192,10 @@ class ImageModule(LightningModule):
 
             psnr_val = ncm.calc_psnr(rescaled_pred, rescaled_input_images)
             self.test_msssim(rescaled_pred, rescaled_input_images)
-            mse_val = self.test_mse(rescaled_pred, rescaled_input_images)
+            mse_val = self.test_mse(
+                rescaled_pred.view(batch_size, -1),
+                rescaled_input_images.view(batch_size, -1),
+            )
             lpips_val = self.test_lpips(pred, input_images)
             self.test_dists(pred, input_images)
             hific_distortion = (
