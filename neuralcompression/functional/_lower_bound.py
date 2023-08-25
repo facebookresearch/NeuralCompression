@@ -39,7 +39,7 @@ class _LowerBound(Function):
     def forward(ctx, *args):
         x, bound, gradient = args
 
-        bound = torch.tensor(bound, dtype=x.dtype)
+        bound = bound.to(x.dtype)
 
         ctx.save_for_backward(
             x,

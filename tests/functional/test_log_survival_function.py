@@ -23,7 +23,7 @@ def test_log_survival_function():
 
     x = numpy.linspace(-8.0, 8.0, batch_size, dtype=numpy.float64)
 
-    torch.testing.assert_allclose(
+    torch.testing.assert_close(
         log_survival_function(
             torch.tensor(x, dtype=torch.float),
             Normal(
@@ -31,5 +31,5 @@ def test_log_survival_function():
                 torch.tensor(scale, dtype=torch.float),
             ),
         ),
-        scipy.stats.norm(loc, scale).logsf(x),
+        torch.tensor(scipy.stats.norm(loc, scale).logsf(x), dtype=torch.float),
     )

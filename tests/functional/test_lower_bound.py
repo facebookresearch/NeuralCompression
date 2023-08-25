@@ -14,7 +14,7 @@ def test_lower_bound():
 
     bound = torch.rand(1)
 
-    torch.testing.assert_allclose(
+    torch.testing.assert_close(
         lower_bound(x, bound),
         torch.max(x, bound),
     )
@@ -32,7 +32,7 @@ def test_lower_bound():
 
     assert x.grad is not None
 
-    torch.testing.assert_allclose(
+    torch.testing.assert_close(
         x.grad,
         (x >= bound) * x,
     )
