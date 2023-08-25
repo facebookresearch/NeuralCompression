@@ -155,6 +155,8 @@ python train.py \
     +pretrained_latent_autoencoder=20221108_vqvae_xcit_p8_ch64_cb1024_h8
 ```
 
+This should give a model with about a 2.3 validation FID on OpenImages V6.
+
 ## Other notes
 
 ### Logging
