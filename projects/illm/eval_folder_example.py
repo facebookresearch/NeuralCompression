@@ -52,7 +52,7 @@ def main():
     totensor = ToTensor()
 
     msssim_metric = MultiscaleStructuralSimilarity(data_range=255.0).to(device)
-    lpips_metric = LearnedPerceptualImagePatchSimilarity().to(device)
+    lpips_metric = LearnedPerceptualImagePatchSimilarity(normalize=True).to(device)
     fid_metric = FrechetInceptionDistance().to(device)
 
     psnr_vals = []
@@ -85,7 +85,7 @@ def main():
             psnr_val = calc_psnr(pred_image, orig_image)
             psnr_vals.append(float(psnr_val))
             msssim_metric(pred_image, orig_image)
-            lpips_metric(pred_image, orig_image)
+            lpips_metric(decompressed, image)
 
     bpp_total = sum(bpp_vals) / len(bpp_vals)
     psnr_total = sum(psnr_vals) / len(psnr_vals)
