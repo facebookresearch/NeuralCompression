@@ -128,17 +128,16 @@ file:
 
 And you'll need to put your pretrained VQ-VAE here:
 
-- `conf/pretrained_latent_autoencoder/your_file_name.yaml`
+- `conf/pretrained_latent_autoencoder/example.yaml`
 
-Alternatively, you can use the pretrained VQ-VAE from `torch.hub` with the
-`20221108_vqvae_xcit_p8_ch64_cb1024_h8.yaml` config.
-
-Then, you can run the following:
+Alternatively, you can use the pretrained autoencoder and VQ-VAE from'
+`torch.hub` with the `20221108_vqvae_xcit_p8_ch64_cb1024_h8.yaml` and 
+`nogan_target0.14bpp` configs.:
 
 ```bash
 python train.py \
     experiment_name=finetune \
-    data.open_images_root=$PATH_TO_OPENIMAGES \
+    data.open_images_root=/datasets01/open_images/030822/v6 \
     data.batch_size=16 \
     trainer.max_steps=100000 \
     optimizer=model_adamw_disc_const \
@@ -152,8 +151,11 @@ python train.py \
     +discriminator=condunet_ch1025_factor8_context220 \
     +lightning_module.generator_weight=0.008 \
     +latent_projector=vqvae_xcit_p8_ch64_cb1024_h8 \
+    +pretrained_autoencoder=nogan_target0.14bpp \
     +pretrained_latent_autoencoder=20221108_vqvae_xcit_p8_ch64_cb1024_h8
 ```
+
+This should give a model with about a 2.3 validation FID on OpenImages V6.
 
 ## Other notes
 

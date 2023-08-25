@@ -36,7 +36,7 @@ def _build_msillm(weights: Optional[str] = None):
         )
 
         LOGGER.info(
-            f"Downloading {weights} MS-ILLM weights. These weights are released under "
+            f"Using {weights} MS-ILLM weights. These weights are released under "
             f"the CC-BY-NC 4.0 license which can be found at "
             "https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE."
         )

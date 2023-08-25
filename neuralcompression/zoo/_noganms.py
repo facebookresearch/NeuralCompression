@@ -36,7 +36,7 @@ def _build_noganms(weights: Optional[str] = None):
         )
 
         LOGGER.info(
-            f"Downloading {weights} NoGAN-MS weights. These weights are released under "
+            f"Using {weights} NoGAN-MS weights. These weights are released under "
             f"the CC-BY-NC 4.0 license which can be found at "
             "https://github.com/facebookresearch/NeuralCompression/tree/main/WEIGHTS_LICENSE."
         )
