@@ -35,7 +35,7 @@ def msillm_quality_1(pretrained=True, **kwargs):
 
     The target bitrate is 0.035 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -57,7 +57,7 @@ def msillm_quality_2(pretrained=True, **kwargs):
 
     The target bitrate is 0.07 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -79,7 +79,7 @@ def msillm_quality_3(pretrained=True, **kwargs):
 
     The target bitrate is 0.14 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -101,7 +101,7 @@ def msillm_quality_4(pretrained=True, **kwargs):
 
     The target bitrate is 0.3 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -123,7 +123,7 @@ def msillm_quality_5(pretrained=True, **kwargs):
 
     The target bitrate is 0.45 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -145,7 +145,7 @@ def msillm_quality_6(pretrained=True, **kwargs):
 
     The target bitrate is 0.9 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -167,7 +167,7 @@ def noganms_quality_1(pretrained=True, **kwargs):
 
     The target bitrate is 0.035 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -189,7 +189,7 @@ def noganms_quality_2(pretrained=True, **kwargs):
 
     The target bitrate is 0.07 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -211,7 +211,7 @@ def noganms_quality_3(pretrained=True, **kwargs):
 
     The target bitrate is 0.14 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -233,7 +233,7 @@ def noganms_quality_4(pretrained=True, **kwargs):
 
     The target bitrate is 0.3 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -255,7 +255,7 @@ def noganms_quality_5(pretrained=True, **kwargs):
 
     The target bitrate is 0.45 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -277,7 +277,7 @@ def noganms_quality_6(pretrained=True, **kwargs):
 
     The target bitrate is 0.9 bits per pixel
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
@@ -299,7 +299,7 @@ def msillm_vqvae_xcit_p8_ch64_cb1024_h8(pretrained=True, **kwargs):
 
     It was used to generate label maps for the discriminator.
 
-    The pretrained weights are released under the CC-BY-CC 4.0 license
+    The pretrained weights are released under the CC-BY-NC 4.0 license
     available at
     https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
 
