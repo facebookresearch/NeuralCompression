@@ -1,5 +1,6 @@
 include *.md
 include *.cc
 include LICENSE
+include WEIHTS_LICENSE
 include pyproject.toml
 include setup.py
