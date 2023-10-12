@@ -13,8 +13,8 @@ PyPI.
 Using `pip`, you can install the package in development mode by running:
 
 ```sh
+pip install --editable ".[dev]"
 pip install -e .
-pip install -r dev-requirements.txt
 ```
 
 ## Testing
