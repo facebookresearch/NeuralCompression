@@ -5,20 +5,25 @@
 
 import pytest
 import torch
+from conftest import MockBackbone
 from torch import Tensor
 
 import neuralcompression.functional as ncF
+import neuralcompression.metrics._fid
 from neuralcompression.metrics import FrechetInceptionDistance
 
 
 @pytest.mark.parametrize("num_samples", [5])
-def test_dists(num_samples: int, arange_4d_image: Tensor):
+def test_fid(num_samples: int, arange_4d_image: Tensor, monkeypatch):
     if arange_4d_image.shape[1] != 3:
         return
 
     rng = torch.Generator()
     rng.manual_seed(55)
 
+    monkeypatch.setattr(
+        neuralcompression.metrics._fid, "NoTrainInceptionV3", MockBackbone
+    )
     metric = FrechetInceptionDistance()
 
     for _ in range(num_samples):

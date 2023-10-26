@@ -12,7 +12,7 @@ import torch
 
 
 def create_input(shape, offset: int = 0):
-    x = np.arange(np.product(shape)).reshape(shape) + offset
+    x = np.arange(np.prod(shape)).reshape(shape) + offset
 
     return torch.from_numpy(x).to(torch.get_default_dtype())
 

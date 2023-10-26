@@ -13,7 +13,7 @@ from typing_extensions import Literal
 
 
 class NoTrainDists(_DISTS):
-    def train(self, mode: bool) -> "NoTrainDists":
+    def train(self, mode: bool = True) -> "NoTrainDists":
         """keep network in evaluation mode."""
         return super().train(False)
 

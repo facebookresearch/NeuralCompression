@@ -6,6 +6,38 @@
 
 import pytest
 import torch
+import torch.nn as nn
+from torch import Tensor
+
+
+class MockBackbone(nn.Module):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
+        self.model = nn.Sequential(
+            nn.Conv2d(3, 2048, kernel_size=3, padding=1),
+            nn.AdaptiveAvgPool2d(output_size=(1, 1)),
+        )
+        for param in self.parameters():
+            param.requires_grad_(False)
+
+        self.eval()
+
+    def train(self, mode: bool = True) -> "MockBackbone":
+        """keep network in evaluation mode."""
+        return super().train(False)
+
+    def forward(self, image: Tensor) -> Tensor:
+        return self.model(image.float() / 255.0).flatten(1)
+
+
+class MockDiffBackbone(nn.Module):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.model = MockBackbone()
+
+    def forward(self, image1: Tensor, image2: Tensor) -> Tensor:
+        return self.model(image1) - self.model(image2)
 
 
 @pytest.fixture(

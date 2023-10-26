@@ -8,6 +8,3 @@ requires = [
 
 [tool.setuptools_scm]
 write_to = "neuralcompression/version.py"
-
-[isort]
-profile = "black"
