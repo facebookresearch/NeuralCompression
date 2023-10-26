@@ -15,13 +15,13 @@ from neuralcompression.metrics import pickle_size_of
 
 @pytest.mark.parametrize("arr_size", [64, 128, 256, (64, 64)])
 def test_pickle_size(arr_size, tmp_path: Path):
-    x = np.reshape(np.arange(np.product(arr_size)), arr_size)
+    x = np.reshape(np.arange(np.prod(arr_size)), arr_size)
 
     obj = {"thearr": x}
 
     mem_size = pickle_size_of(obj)
 
-    tmp_file = f"pickle_size_of_{np.product(arr_size)}.pkl"
+    tmp_file = f"pickle_size_of_{np.prod(arr_size)}.pkl"
     with open(tmp_path / tmp_file, "wb") as f:
         pickle.dump(obj, f)
 

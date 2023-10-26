@@ -7,10 +7,11 @@
 import pytest
 import torch
 import torch.nn as nn
+from torch import Tensor
 
 
 class MockBackbone(nn.Module):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super().__init__()
 
         self.model = nn.Sequential(
@@ -25,6 +26,18 @@ class MockBackbone(nn.Module):
     def train(self, mode: bool = True) -> "MockBackbone":
         """keep network in evaluation mode."""
         return super().train(False)
+
+    def forward(self, image: Tensor) -> Tensor:
+        return self.model(image.float() / 255.0).flatten(1)
+
+
+class MockDiffBackbone(nn.Module):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.model = MockBackbone()
+
+    def forward(self, image1: Tensor, image2: Tensor) -> Tensor:
+        return self.model(image1) - self.model(image2)
 
 
 @pytest.fixture(
@@ -43,8 +56,3 @@ def arange_4d_image_odd(request):
     x = torch.arange(torch.prod(torch.tensor(request.param))).reshape(request.param)
 
     return x.to(torch.get_default_dtype())
-
-
-@pytest.fixture(scope="session")
-def mock_backbone():
-    return MockBackbone()

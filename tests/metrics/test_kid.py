@@ -5,6 +5,7 @@
 
 import pytest
 import torch
+from conftest import MockBackbone
 from torch import Tensor
 
 import neuralcompression.functional as ncF
@@ -13,12 +14,12 @@ from neuralcompression.metrics import KernelInceptionDistance
 
 
 @pytest.mark.parametrize("num_samples", [5])
-def test_kid(num_samples: int, arange_4d_image: Tensor, monkeypatch, mock_backbone):
+def test_kid(num_samples: int, arange_4d_image: Tensor, monkeypatch):
     if arange_4d_image.shape[1] != 3:
         return
 
     monkeypatch.setattr(
-        neuralcompression.metrics._kid, "NoTrainInceptionV3", mock_backbone
+        neuralcompression.metrics._kid, "NoTrainInceptionV3", MockBackbone
     )
     metric = KernelInceptionDistance()
 
