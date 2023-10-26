@@ -6,6 +6,25 @@
 
 import pytest
 import torch
+import torch.nn as nn
+
+
+class MockBackbone(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+        self.model = nn.Sequential(
+            nn.Conv2d(3, 2048, kernel_size=3, padding=1),
+            nn.AdaptiveAvgPool2d(output_size=(1, 1)),
+        )
+        for param in self.parameters():
+            param.requires_grad_(False)
+
+        self.eval()
+
+    def train(self, mode: bool = True) -> "MockBackbone":
+        """keep network in evaluation mode."""
+        return super().train(False)
 
 
 @pytest.fixture(
@@ -24,3 +43,8 @@ def arange_4d_image_odd(request):
     x = torch.arange(torch.prod(torch.tensor(request.param))).reshape(request.param)
 
     return x.to(torch.get_default_dtype())
+
+
+@pytest.fixture(scope="session")
+def mock_backbone():
+    return MockBackbone()

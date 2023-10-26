@@ -8,17 +8,21 @@ import torch
 from torch import Tensor
 
 import neuralcompression.functional as ncF
+import neuralcompression.metrics._fid_swav
 from neuralcompression.metrics import FrechetInceptionDistanceSwAV
 
 
 @pytest.mark.parametrize("num_samples", [5])
-def test_dists(num_samples: int, arange_4d_image: Tensor):
+def test_dists(num_samples: int, arange_4d_image: Tensor, monkeypatch, mock_backbone):
     if arange_4d_image.shape[1] != 3:
         return
 
     rng = torch.Generator()
     rng.manual_seed(60)
 
+    monkeypatch.setattr(
+        neuralcompression.metrics._fid_swav, "NoTrainSwAV", mock_backbone
+    )
     metric = FrechetInceptionDistanceSwAV()
 
     for _ in range(num_samples):
