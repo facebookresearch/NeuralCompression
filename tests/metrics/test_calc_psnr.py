@@ -6,7 +6,7 @@
 import pytest
 import torch
 from torch import Tensor
-from torchmetrics.functional import peak_signal_noise_ratio
+from torchmetrics.functional.image import peak_signal_noise_ratio
 
 from neuralcompression.metrics import calc_psnr, calc_psnr_numpy
 

@@ -24,7 +24,7 @@ def open_images_datafolder(tmp_path: Path):
         directory = base_dir / subfolder
         directory.mkdir(parents=True)
 
-        n = int(rng.integers(1, 16, (1,)))
+        n = rng.integers(1, 16)
 
         images = []
 

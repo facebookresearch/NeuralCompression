@@ -25,6 +25,7 @@ def _create_dense_warp_base_grid(
     grid_y, grid_x = torch.meshgrid(
         torch.linspace(-1, 1, dim1, dtype=dtype, device=device),
         torch.linspace(-1, 1, dim2, dtype=dtype, device=device),
+        indexing="ij",
     )
 
     # for gridding we need to flip the order here
