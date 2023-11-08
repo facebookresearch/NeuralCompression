@@ -19,7 +19,7 @@ def data(tmp_path):
 
     directory.mkdir(parents=True)
 
-    n = int(rng.integers(1, 16, (1,)))
+    n = rng.integers(1, 16)
 
     for index in range(n):
         path = directory.joinpath(f"{index}.png")
