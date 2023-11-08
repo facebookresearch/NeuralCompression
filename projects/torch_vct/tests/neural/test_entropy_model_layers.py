@@ -1,10 +1,14 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 import pytest
 import torch
 
 from projects.torch_vct.neural.entropy_model_layers import (
     LearnedPosition,
     StartSym,
-    Transformer,
     TransformerBlock,
 )
 
