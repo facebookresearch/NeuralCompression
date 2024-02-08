@@ -4,8 +4,8 @@ This project trains the
 [Deep Video Compression model (DVC)](https://openaccess.thecvf.com/content_CVPR_2019/html/Lu_DVC_An_End-To-End_Deep_Video_Compression_Framework_CVPR_2019_paper.html) 
 on the [Vimeo-90k septuplet](http://toflow.csail.mit.edu/) dataset.
 
-**Note:** A PyTorch implementation linked by the original authors is available
-[here](https://github.com/ZhihaoHu/PyTorchVideoCompression).
+**Note:** This code base is deprecated! A PyTorch implementation linked by the
+original authors is available [here](https://github.com/ZhihaoHu/PyTorchVideoCompression).
 
 The project uses 
 [PyTorch Lightning](https://pytorch-lightning.readthedocs.io/en/latest/) 

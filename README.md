@@ -7,7 +7,6 @@
 - **August 2023 (image compression)** - [Released PyTorch implementation of MS-ILLM](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/illm)
 - **April 2023 (video compression)** - [Released PyTorch implementation of VCT](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/torch_vct)
 - **November 2022 (image compression)** - [Released Bits-Back coding with diffusion models](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/bits_back_diffusion)!
-- **July 2021 (video compression)** - [Released implementation of DVC](https://github.com/facebookresearch/NeuralCompression/tree/main/projects/deep_video_compression)
 
 ## About
 
@@ -76,7 +75,7 @@ The 2-tier structure enables rapid iteration and reproduction via code in
 
 - `projects` - recipes and code for reproducing papers
   - `bits_back_diffusion` - code for bits-back coding with diffusion models
-  - `deep_video_compression` [DVC (Lu et al., 2019)](https://openaccess.thecvf.com/content_CVPR_2019/html/Lu_DVC_An_End-To-End_Deep_Video_Compression_Framework_CVPR_2019_paper.html), might soon be deprecated
+  - `deep_video_compression` [DVC (Lu et al., 2019)](https://openaccess.thecvf.com/content_CVPR_2019/html/Lu_DVC_An_End-To-End_Deep_Video_Compression_Framework_CVPR_2019_paper.html), deprecated
   - `illm` [MS-ILLM (Muckley et al., 2023)](https://proceedings.mlr.press/v202/muckley23a.html)
   - `jax_entropy_coders` - implementations of arithmetic coding and ANS in JAX
   - `torch_vct` [VCT (Mentzer, et al.,)](https://proceedings.neurips.cc/paper_files/paper/2022/hash/54dcf25318f9de5a7a01f0a4125c541e-Abstract-Conference.html)
