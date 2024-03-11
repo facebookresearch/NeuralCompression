@@ -1,6 +1,8 @@
 include *.md
 include *.cc
 include LICENSE
-include WEIHTS_LICENSE
+include WEIGHTS_LICENSE
 include pyproject.toml
 include setup.py
+prune projects
+prune tests
