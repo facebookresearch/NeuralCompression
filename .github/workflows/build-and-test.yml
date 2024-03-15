@@ -15,7 +15,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        platform: [ubuntu-latest]
+        platform: ["4-core-ubuntu"]
         python-version: ["3.10"]
 
     runs-on: ${{ matrix.platform }}
@@ -41,7 +41,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        platform: [ubuntu-latest]
+        platform: ["4-core-ubuntu"]
         python-version: ["3.10"]
 
     runs-on: ${{ matrix.platform }}
