@@ -5,11 +5,13 @@
 
 import pickle
 
+import pytest
 import torch
 
 from neuralcompression.functional import dense_image_warp
 
 
+@pytest.mark.timeout(method="thread")
 def test_dense_image_warp():
     with open("tests/cached_data/dense_image_warp.pkl", "rb") as f:
         data = pickle.load(f)
