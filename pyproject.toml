@@ -8,3 +8,6 @@ requires = [
 
 [tool.setuptools_scm]
 write_to = "neuralcompression/version.py"
+
+[tool.pytest.ini_options]
+timeout = 300
