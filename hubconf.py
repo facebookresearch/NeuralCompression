@@ -10,6 +10,8 @@ from neuralcompression.zoo import msillm_quality_3 as _msillm_quality_3
 from neuralcompression.zoo import msillm_quality_4 as _msillm_quality_4
 from neuralcompression.zoo import msillm_quality_5 as _msillm_quality_5
 from neuralcompression.zoo import msillm_quality_6 as _msillm_quality_6
+from neuralcompression.zoo import msillm_quality_vlo1 as _msillm_quality_vlo1
+from neuralcompression.zoo import msillm_quality_vlo2 as _msillm_quality_vlo2
 from neuralcompression.zoo import noganms_quality_1 as _noganms_quality_1
 from neuralcompression.zoo import noganms_quality_2 as _noganms_quality_2
 from neuralcompression.zoo import noganms_quality_3 as _noganms_quality_3
@@ -21,6 +23,50 @@ from neuralcompression.zoo import (
 )
 
 dependencies = ["torch"]
+
+
+def msillm_quality_vlo1(pretrained=True, **kwargs):
+    """
+    Pretrained MS-ILLM model
+
+    This model was trained for the very low rates in the paper:
+
+    M Careil, MJ Muckley, J Verbeek, S Lathuliere.
+    Towards image compression with perfect realism at ultra-low bitrates.
+    In *ICLR*, 2024.
+
+    The target bitrate is 0.00218 bits per pixel
+
+    The pretrained weights are released under the CC-BY-NC 4.0 license
+    available at
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
+
+    pretrained (bool): kwargs, load pretrained weights into the model
+    """
+
+    return _msillm_quality_vlo1(pretrained=pretrained, **kwargs)
+
+
+def msillm_quality_vlo2(pretrained=True, **kwargs):
+    """
+    Pretrained MS-ILLM model
+
+    This model was trained for the very low rates in the paper:
+
+    M Careil, MJ Muckley, J Verbeek, S Lathuliere.
+    Towards image compression with perfect realism at ultra-low bitrates.
+    In *ICLR*, 2024.
+
+    The target bitrate is 0.00438 bits per pixel
+
+    The pretrained weights are released under the CC-BY-NC 4.0 license
+    available at
+    https://github.com/facebookresearch/NeuralCompression/blob/main/WEIGHTS_LICENSE
+
+    pretrained (bool): kwargs, load pretrained weights into the model
+    """
+
+    return _msillm_quality_vlo2(pretrained=pretrained, **kwargs)
 
 
 def msillm_quality_1(pretrained=True, **kwargs):

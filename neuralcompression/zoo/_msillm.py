@@ -13,6 +13,8 @@ from neuralcompression.models import HiFiCAutoencoder
 LOGGER = logging.getLogger(__file__)
 
 VALID_WEIGHTS = [
+    "target_0.00218bpp",
+    "target_0.00438bpp",
     "target_0.035bpp",
     "target_0.07bpp",
     "target_0.14bpp",
@@ -46,6 +48,24 @@ def _build_msillm(weights: Optional[str] = None):
         )
 
     return model
+
+
+def msillm_quality_vlo1(pretrained=False, **kwargs):
+    if pretrained is True:
+        weights = "target_0.00218bpp"
+    else:
+        weights = None
+
+    return _build_msillm(weights=weights)
+
+
+def msillm_quality_vlo2(pretrained=False, **kwargs):
+    if pretrained is True:
+        weights = "target_0.00438bpp"
+    else:
+        weights = None
+
+    return _build_msillm(weights=weights)
 
 
 def msillm_quality_1(pretrained=False, **kwargs):

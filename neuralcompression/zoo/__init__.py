@@ -10,6 +10,8 @@ from ._msillm import (
     msillm_quality_4,
     msillm_quality_5,
     msillm_quality_6,
+    msillm_quality_vlo1,
+    msillm_quality_vlo2,
 )
 from ._msillm_vqvae import vqvae_xcit_p8_ch64_cb1024_h8
 from ._noganms import (
